@@ -1,0 +1,1854 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>编程与 AI 零基础学习工作台</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;}
+:root{
+  --green:#2e9e5b;--blue:#2f7ed8;--amber:#f0a020;--red:#e2553b;--purple:#8a63d2;
+  --bg:#eef2f6;--card:#ffffff;--soft:#f5f8fb;--ink:#22304a;--sub:#64748b;--line:#e3e9f0;
+  --cell0:#e6ecf2;--prebg:#1b2433;--shadow:0 2px 12px rgba(30,45,70,.06);
+}
+html[data-theme=dark]{
+  --bg:#0d1420;--card:#161f2d;--soft:#1b2635;--ink:#e6edf5;--sub:#8fa1b5;--line:#28374a;
+  --cell0:#20303f;--shadow:0 2px 12px rgba(0,0,0,.35);
+}
+body{background:var(--bg);color:var(--ink);line-height:1.65;padding:18px 18px 60px;transition:background .3s,color .3s;}
+.container{max-width:1060px;margin:0 auto;}
+a{color:var(--blue);}
+button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-offset:2px;}
+
+/* ===== 头部 ===== */
+.header{position:relative;overflow:hidden;background:linear-gradient(135deg,#2f7ed8,#2e9e5b);border-radius:18px;padding:22px 26px;margin-bottom:16px;color:#fff;box-shadow:0 8px 24px rgba(47,126,216,.28);}
+.header::after{content:"";position:absolute;right:-60px;top:-80px;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,.10);pointer-events:none;}
+.header-top{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;position:relative;z-index:1;}
+.header h1{font-size:22px;font-weight:800;letter-spacing:.5px;}
+.header .sub{font-size:13px;opacity:.92;margin-top:3px;}
+.header .right{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.streak-chip{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.38);border-radius:30px;padding:7px 14px;font-weight:700;font-size:14px;}
+.level-badge{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.38);border-radius:14px;padding:6px 16px;text-align:center;min-width:104px;}
+.level-badge .lv{font-size:11px;opacity:.9;}
+.level-badge .tt{font-size:15px;font-weight:700;}
+.xp-wrap{min-width:170px;}
+.xp-wrap .xp-top{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;}
+.xp-bar{height:10px;background:rgba(255,255,255,.25);border-radius:6px;overflow:hidden;}
+.xp-fill{height:100%;width:0;background:#ffd24a;border-radius:6px;transition:width .6s ease;}
+.theme-btn{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.38);border-radius:10px;width:40px;height:40px;font-size:18px;cursor:pointer;color:#fff;transition:background .2s;}
+.theme-btn:hover{background:rgba(255,255,255,.28);}
+
+/* ===== 通用 ===== */
+.section{background:var(--card);border-radius:18px;padding:20px;margin-bottom:16px;box-shadow:var(--shadow);transition:background .3s;}
+.section h2{font-size:18px;color:var(--ink);margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.section h2 .tag{font-size:12px;font-weight:600;color:#fff;background:var(--blue);padding:2px 10px;border-radius:20px;}
+.btn{position:relative;overflow:hidden;padding:10px 18px;border:none;border-radius:10px;cursor:pointer;font-size:14px;font-weight:600;color:#fff;background:var(--blue);transition:transform .12s,box-shadow .2s,background .2s;box-shadow:0 3px 8px rgba(47,126,216,.25);}
+.btn:hover{box-shadow:0 5px 14px rgba(47,126,216,.35);}
+.btn:active{transform:scale(.94);}
+.btn:disabled{opacity:.55;cursor:not-allowed;}
+.btn.green{background:var(--green);box-shadow:0 3px 8px rgba(46,158,91,.25);}
+.btn.amber{background:var(--amber);color:#3a2c00;box-shadow:0 3px 8px rgba(240,160,32,.3);}
+.btn.ghost{background:var(--soft);color:var(--ink);border:1px solid var(--line);box-shadow:none;}
+.btn.ghost:hover{background:var(--line);}
+.btn.small{padding:6px 12px;font-size:13px;border-radius:8px;}
+.ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.55);transform:scale(0);animation:rip .6s ease-out;pointer-events:none;}
+@keyframes rip{to{transform:scale(3);opacity:0;}}
+.foot{text-align:center;color:var(--sub);font-size:12px;margin-top:10px;}
+
+/* ===== 打卡横幅 ===== */
+.checkin{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#fff4e0,#eafaf0);border:1px solid #ffe1a8;border-radius:16px;padding:14px 18px;margin-bottom:16px;color:var(--ink);}
+.checkin.done{background:linear-gradient(135deg,#e8f7ee,#eef8ff);border-color:#a9ddbb;}
+.checkin.urgent{background:linear-gradient(135deg,#ffe9e2,#fff4e0);border-color:#ffbd9e;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(226,85,59,.25);}50%{box-shadow:0 0 0 8px rgba(226,85,59,0);}}
+.checkin .ic{font-size:30px;}
+.checkin .tx{flex:1;font-size:14px;}
+.checkin .tx b{color:var(--green);}
+.checkin.urgent .tx b{color:var(--red);}
+
+/* ===== 仪表盘 ===== */
+.dash{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;}
+.stat{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center;}
+.stat .num{font-size:26px;font-weight:800;color:var(--blue);}
+.stat .num.g{color:var(--green);}.stat .num.a{color:var(--amber);}.stat .num.p{color:var(--purple);}
+.stat .lab{font-size:12px;color:var(--sub);margin-top:2px;}
+
+/* ===== 今日任务 ===== */
+.today-wrap{display:flex;gap:22px;align-items:flex-start;flex-wrap:wrap;}
+.goal-ring{flex:none;width:150px;text-align:center;background:var(--soft);border:1px solid var(--line);border-radius:16px;padding:14px 10px;}
+.ring{width:92px;height:92px;transform:rotate(-90deg);}
+.ring-bg{fill:none;stroke:var(--line);stroke-width:8;}
+.ring-fg{fill:none;stroke:var(--amber);stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset .6s ease;}
+.ring-txt{margin-top:6px;font-weight:700;font-size:15px;}
+.ring-sub{font-size:12px;color:var(--sub);}
+.today-main{flex:1;min-width:280px;}
+.today-item{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--soft);border:1px solid var(--line);border-radius:12px;margin-bottom:8px;transition:background .2s;}
+.today-item:hover{background:var(--line);}
+.today-item .od{flex:none;width:30px;height:30px;border-radius:9px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;}
+.today-item .info{flex:1;min-width:0;}
+.today-item .ti{font-weight:600;font-size:15px;}
+.today-item .me{font-size:12px;color:var(--sub);}
+.rev-hint{font-size:13px;color:var(--amber);font-weight:600;padding:4px 2px;}
+
+/* ===== 路线图 ===== */
+.phases{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;}
+.phase{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:14px;cursor:pointer;transition:transform .15s,box-shadow .2s;}
+.phase:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(30,45,70,.12);}
+.phase .ph-hd{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px;}
+.phase .ph-ds{font-size:12px;color:var(--sub);margin:4px 0 8px;}
+.phase .ph-bar{height:7px;background:var(--line);border-radius:5px;overflow:hidden;}
+.phase .ph-bar i{display:block;height:100%;background:var(--purple);border-radius:5px;transition:width .5s;}
+.phase .ph-pg{font-size:11px;color:var(--sub);margin-top:5px;}
+.phase.cur{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber) inset;}
+.cur-tag{font-size:11px;background:var(--amber);color:#3a2c00;border-radius:10px;padding:1px 8px;font-weight:700;}
+
+/* ===== 阶段 ===== */
+.stage{border:1px solid var(--line);border-radius:14px;margin-bottom:12px;overflow:hidden;background:var(--card);}
+.stage-hd{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;background:var(--soft);transition:background .2s;user-select:none;}
+.stage-hd:hover{background:var(--line);}
+.stage-hd .ic{font-size:22px;}
+.stage-hd .nm{flex:1;font-weight:700;font-size:15px;min-width:0;}
+.stage-hd .nm small{display:block;font-weight:500;color:var(--sub);font-size:12px;}
+.stage-hd .star{font-size:15px;}
+.stage-hd .pg{font-size:12px;color:var(--sub);min-width:88px;text-align:right;}
+.stage-bar{height:6px;background:var(--line);border-radius:4px;overflow:hidden;width:110px;}
+.stage-bar i{display:block;height:100%;background:var(--green);border-radius:4px;transition:width .5s;}
+.stage-hd .ar{transition:transform .25s;color:var(--sub);}
+.stage.open .stage-hd .ar{transform:rotate(180deg);}
+.stage-bd{display:none;padding:10px 14px 14px;}
+.stage.open .stage-bd{display:block;}
+.stage-goal{background:linear-gradient(135deg,#f0f6ff,#f2fbf5);border-left:4px solid var(--blue);padding:10px 14px;border-radius:0 10px 10px 0;font-size:13px;margin-bottom:10px;color:var(--ink);}
+html[data-theme=dark] .stage-goal{background:linear-gradient(135deg,#1c2b40,#1a3226);}
+.lesson{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;margin-bottom:6px;background:var(--card);border:1px solid var(--line);cursor:pointer;transition:background .15s,transform .1s;}
+.lesson:hover{background:var(--soft);transform:translateX(2px);}
+.lesson.done{background:#eef9f1;border-color:#cfe9d6;}
+html[data-theme=dark] .lesson.done{background:#17301f;border-color:#2b5a3a;}
+.lesson .chk{flex:none;width:20px;height:20px;border-radius:50%;border:2px solid #b9c4d0;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;}
+.lesson.done .chk{background:var(--green);border-color:var(--green);}
+.lesson .lt{flex:1;min-width:0;}
+.lesson .lt .t{font-weight:600;font-size:14px;}
+.lesson.done .lt .t{color:var(--sub);text-decoration:line-through;text-decoration-color:var(--sub);}
+.lesson .lt .m{font-size:11px;color:var(--sub);}
+.lesson .rev{font-size:11px;color:var(--amber);font-weight:600;}
+.stage-links{margin:8px 0 4px;font-size:12.5px;color:var(--sub);}
+.stage-links a{margin-right:14px;text-decoration:none;border-bottom:1px dashed var(--blue);}
+.stage-links a:hover{opacity:.8;}
+
+/* ===== 复习队列 ===== */
+.rev-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--soft);border:1px solid #ffe1c2;border-radius:10px;margin-bottom:6px;}
+.rev-item .ti{flex:1;font-weight:600;font-size:14px;cursor:pointer;}
+.rev-item .ti:hover{color:var(--blue);}
+.rev-item .me{font-size:11px;color:var(--sub);}
+
+/* ===== 热力图 ===== */
+.heat{display:flex;gap:4px;overflow-x:auto;padding-bottom:6px;}
+.heat-col{display:flex;flex-direction:column;gap:3px;align-items:center;}
+.heat-lbl{height:14px;font-size:10px;color:var(--sub);}
+.cell{width:14px;height:14px;border-radius:4px;background:var(--cell0);cursor:pointer;transition:transform .1s;}
+.cell:hover{transform:scale(1.3);}
+.cell.blank{visibility:hidden;cursor:default;}
+.cell.l1{background:#bcdcff;}.cell.l2{background:#7db4f5;}.cell.l3{background:#3d86e0;}.cell.l4{background:#1f5fb8;}
+.heat-legend{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--sub);margin-top:8px;}
+.heat-legend .cell{width:11px;height:11px;cursor:default;}
+.heat-legend .cell:hover{transform:none;}
+
+/* ===== 成就 ===== */
+.ach{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
+.ach-item{display:flex;gap:10px;align-items:center;padding:12px;border-radius:12px;background:var(--soft);border:1px solid var(--line);opacity:.45;filter:grayscale(1);transition:all .3s;}
+.ach-item.unlocked{opacity:1;filter:none;background:#fff8e8;border-color:#ffe1a8;}
+html[data-theme=dark] .ach-item.unlocked{background:#33290f;}
+.ach-item .ai{font-size:26px;}
+.ach-item .at{font-weight:700;font-size:13px;}
+.ach-item .ad{font-size:11px;color:var(--sub);}
+
+/* ===== 报告 ===== */
+.week-bars{display:flex;align-items:flex-end;gap:8px;height:76px;margin-bottom:14px;padding:0 4px;}
+.wb{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;}
+.wb .bar{width:70%;max-width:34px;background:linear-gradient(180deg,#7db4f5,#3d86e0);border-radius:5px 5px 0 0;min-height:2px;transition:height .5s;}
+.wb.today .bar{background:linear-gradient(180deg,#ffd24a,#f0a020);}
+.wb .wl{font-size:11px;color:var(--sub);}
+.report{background:var(--soft);border:1px dashed var(--line);border-radius:12px;padding:16px;font-size:14px;white-space:pre-wrap;line-height:1.8;}
+.report-actions{display:flex;gap:8px;margin-top:10px;}
+
+/* ===== 设置 ===== */
+.set-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap;}
+.set-row label{font-size:14px;font-weight:600;min-width:130px;}
+.set-row input[type=text],.set-row input[type=number],.set-row input[type=time]{padding:8px 12px;border:1px solid var(--line);border-radius:8px;font-size:14px;width:200px;background:var(--card);color:var(--ink);}
+.set-hint{font-size:12px;color:var(--sub);}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;}
+
+/* ===== 弹窗 ===== */
+.modal-mask{position:fixed;inset:0;background:rgba(15,23,38,.55);display:none;align-items:flex-start;justify-content:center;padding:30px 16px;z-index:300;overflow:auto;}
+.modal-mask.show{display:flex;}
+.modal{background:var(--card);border-radius:18px;max-width:740px;width:100%;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.35);animation:rise .3s ease;}
+@keyframes rise{from{transform:translateY(20px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+.modal h3{font-size:20px;margin-bottom:4px;}
+.modal .meta{font-size:12px;color:var(--sub);margin-bottom:14px;}
+.modal h4{font-size:14px;margin:16px 0 6px;color:var(--ink);}
+.modal .sum li{margin:6px 0 6px 18px;font-size:14px;}
+.modal pre{background:var(--prebg);color:#e6edf3;border-radius:10px;padding:14px;overflow:auto;font-size:13px;line-height:1.55;margin:10px 0;font-family:Consolas,"SFMono-Regular",monospace;}
+.modal pre .cm{color:#8fbf7f;}.modal pre .kw{color:#f78c6c;}.modal pre .st{color:#c3e88d;}
+.modal .target{background:#eef9f1;border-left:3px solid var(--green);padding:10px 12px;border-radius:0 8px 8px 0;font-size:13px;margin-top:8px;}
+html[data-theme=dark] .modal .target{background:#17301f;}
+.modal .pit{background:#fff7e8;border-left:3px solid var(--amber);padding:10px 12px;border-radius:0 8px 8px 0;font-size:13px;margin-top:8px;}
+html[data-theme=dark] .modal .pit{background:#33290f;}
+.ex-box{background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:8px;}
+.ex-box .ex-q{font-size:14px;font-weight:600;}
+.ex-box .ex-a{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);font-size:13px;color:var(--sub);}
+.modal .notes{width:100%;min-height:70px;margin-top:14px;padding:10px;border:1px solid var(--line);border-radius:10px;font-size:14px;resize:vertical;background:var(--card);color:var(--ink);}
+.modal .modal-actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+.copy-code{position:relative;}
+.copy-code .cp{position:absolute;top:9px;right:9px;font-size:12px;padding:3px 9px;border-radius:6px;background:rgba(255,255,255,.14);color:#fff;cursor:pointer;border:none;}
+.copy-code .cp:hover{background:rgba(255,255,255,.26);}
+.q-opt{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;cursor:pointer;background:var(--card);transition:background .15s;}
+.q-opt:hover{background:var(--soft);}
+.q-opt .abc{flex:none;width:26px;height:26px;border-radius:8px;background:var(--soft);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;}
+.q-opt.right{background:#eef9f1;border-color:#9fd8b0;}
+.q-opt.wrong{background:#fdeeea;border-color:#f2b3a4;}
+.q-why{background:var(--soft);border-left:3px solid var(--blue);padding:10px 12px;border-radius:0 8px 8px 0;font-size:13px;margin-top:6px;}
+.q-dots{display:flex;gap:6px;margin:8px 0;}
+.q-dots i{width:9px;height:9px;border-radius:50%;background:var(--line);}
+.q-dots i.on{background:var(--blue);}
+.q-dots i.ok{background:var(--green);}
+.q-dots i.no{background:var(--red);}
+.intro-step{display:flex;gap:10px;align-items:flex-start;margin:10px 0;font-size:14px;}
+.intro-step .n{flex:none;width:24px;height:24px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;}
+
+/* ===== Toast ===== */
+.toast-wrap{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:400;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;}
+.toast{background:#233044;color:#fff;padding:12px 20px;border-radius:30px;font-size:14px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.3);animation:toastIn .3s ease,toastOut .4s ease 2.6s forwards;display:flex;align-items:center;gap:8px;}
+.toast.xp{background:#2e9e5b;}
+.toast.ach{background:#f0a020;color:#3a2c00;}
+.toast.lv{background:#8a63d2;}
+.toast.warn{background:#e2553b;}
+@keyframes toastIn{from{transform:translateY(-16px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+@keyframes toastOut{to{transform:translateY(-16px);opacity:0;}}
+/* ===== 编程实战 ===== */
+.lab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;}
+.lab-card{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:14px;cursor:pointer;transition:transform .15s,box-shadow .2s;position:relative;}
+.lab-card:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(30,45,70,.12);}
+.lab-card.locked{opacity:.55;cursor:not-allowed;}
+.lab-card.locked:hover{transform:none;box-shadow:none;}
+.lab-card.done{background:#eef9f1;border-color:#cfe9d6;}
+html[data-theme=dark] .lab-card.done{background:#17301f;border-color:#2b5a3a;}
+.lab-card .lc-t{font-weight:700;font-size:14px;padding-right:24px;}
+.lab-card .lc-m{font-size:12px;color:var(--sub);margin-top:4px;}
+.lab-card .lc-badge{position:absolute;top:10px;right:10px;font-size:16px;}
+.lab-req li{margin:5px 0 5px 18px;font-size:14px;}
+textarea.code-area{width:100%;min-height:150px;margin-top:8px;padding:10px;border:1px solid var(--line);border-radius:10px;font-family:Consolas,"SFMono-Regular",monospace;font-size:13px;background:var(--card);color:var(--ink);resize:vertical;}
+textarea.out-area{min-height:64px;}
+.ai-out pre{background:var(--soft);border:1px dashed var(--line);color:var(--ink);border-radius:10px;padding:12px;font-size:12px;line-height:1.6;max-height:260px;overflow:auto;white-space:pre-wrap;margin-top:8px;}
+
+/* ===== 篇章通关庆祝 ===== */
+.cele-mask{position:fixed;inset:0;background:rgba(10,18,32,.72);z-index:500;display:flex;align-items:center;justify-content:center;animation:fadeIn .3s;}
+.cele-card{background:var(--card);border-radius:22px;padding:34px 40px;text-align:center;max-width:440px;width:90%;animation:celePop .55s cubic-bezier(.2,1.4,.4,1);box-shadow:0 30px 80px rgba(0,0,0,.45);}
+@keyframes celePop{from{transform:scale(.4);opacity:0;}to{transform:scale(1);opacity:1;}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+.cele-icon{font-size:64px;animation:bounceIn 1s;}
+@keyframes bounceIn{0%{transform:scale(0) rotate(-30deg);}60%{transform:scale(1.25) rotate(8deg);}100%{transform:scale(1) rotate(0);}}
+.cele-card h3{margin:10px 0 6px;font-size:20px;}
+.cele-card p{font-size:14px;color:var(--sub);}
+.confetti{position:fixed;top:-24px;z-index:501;pointer-events:none;display:block;animation:confFall linear forwards;}
+@keyframes confFall{to{transform:translateY(112vh) rotate(720deg);}}
+.nav-lesson{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+
+@media(max-width:640px){
+  .header h1{font-size:19px;}
+  .goal-ring{width:100%;}
+  .today-wrap{gap:12px;}
+}
+/* ===== 学习计时器 ===== */
+.timer-wrap{display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+.timer-display{font-size:40px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--blue);min-width:120px;text-align:center;letter-spacing:2px;}
+.timer-actions{display:flex;gap:10px;flex-wrap:wrap;}
+.timer-tip{font-size:13px;color:var(--sub);width:100%;margin-top:4px;}
+/* ===== 错题本 ===== */
+.mistake-item{background:var(--soft);border:1px solid var(--line);border-left:4px solid var(--red);border-radius:12px;padding:12px 14px;margin-bottom:10px;}
+.mistake-item .mi-top{font-size:13px;color:var(--sub);}
+.mistake-item .mi-q{font-weight:600;font-size:14px;margin:4px 0;}
+.mistake-item .mi-ans{font-size:13px;color:var(--red);margin:2px 0;}
+.mistake-item .mi-why{font-size:12px;color:var(--sub);margin:4px 0 8px;line-height:1.5;}
+.mistake-item .mi-actions{display:flex;gap:8px;}
+.mi-clear{margin-top:6px;}
+html[data-theme=dark] .checkin{background:linear-gradient(135deg,#1e2c1f,#16202e);border-color:#2b5a3a;color:var(--ink);}
+html[data-theme=dark] .checkin.done{background:linear-gradient(135deg,#15291c,#16202e);border-color:#2b5a3a;}
+html[data-theme=dark] .checkin.urgent{background:linear-gradient(135deg,#3a201a,#2a2118);border-color:#7a3a2a;}
+html[data-theme=dark] .checkin .tx b{color:#7fd99a;}
+html[data-theme=dark] .checkin.urgent .tx b{color:#ff9b7a;}
+/* ===== 难度星级 / 筛选 / 前置 ===== */
+.lv-tag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:20px;margin-left:8px;vertical-align:middle;font-weight:600;}
+.lv-tag.lv-basic{background:rgba(46,158,91,.14);color:#2e9e5b;}
+.lv-tag.lv-adv{background:rgba(242,160,32,.16);color:#d98a12;}
+.lv-tag.lv-hard{background:rgba(226,85,59,.16);color:#e2553b;}
+.filter-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px;}
+.fb-label{font-size:13px;color:var(--sub);}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:5px 12px;border-radius:20px;cursor:pointer;font-size:13px;transition:all .15s;}
+.chip:hover{border-color:var(--blue);}
+.chip.active{background:var(--blue);color:#fff;border-color:var(--blue);}
+#stages[data-filter="basic"] .stage:not([data-level="basic"]){display:none;}
+#stages[data-filter="adv"] .stage:not([data-level="adv"]){display:none;}
+#stages[data-filter="hard"] .stage:not([data-level="hard"]){display:none;}
+.stage-pre{font-size:13px;color:var(--amber);background:var(--soft);border-left:3px solid var(--amber);padding:6px 10px;border-radius:6px;margin-bottom:8px;}
+/* ===== 笔记中心 ===== */
+.note-tools{display:flex;gap:8px;margin-bottom:10px;}
+.note-search{flex:1;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font-size:14px;}
+.tag-cloud{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 14px;}
+.tag-cloud .chip{padding:3px 10px;font-size:12px;}
+.note-item{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px;}
+.note-item .ni-top{font-size:14px;margin-bottom:4px;}
+.note-item .ni-body{font-size:13px;color:var(--ink);line-height:1.6;white-space:pre-wrap;word-break:break-word;}
+.ntag{display:inline-block;background:rgba(47,126,216,.14);color:var(--blue);border-radius:6px;padding:0 5px;margin:0 1px;font-size:12px;}
+/* ===== 参考解答 / 周期报告 ===== */
+.ex-box .ex-a pre{background:var(--soft);border:1px dashed var(--line);border-radius:10px;padding:12px;overflow:auto;margin-top:8px;}
+.period-box{margin-top:14px;border-top:1px dashed var(--line);padding-top:12px;}
+.period-actions{display:flex;gap:8px;margin-bottom:8px;}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="header-top">
+      <div>
+        <h1>🚀 编程与 AI · 长期学习工作台</h1>
+        <div class="sub" id="learnerLine"></div>
+      </div>
+      <div class="right">
+        <div class="streak-chip" id="streakChip">🔥 连续 0 天</div>
+        <div class="level-badge"><div class="lv">等级</div><div class="tt" id="lvTitle">萌新学徒</div></div>
+        <div class="xp-wrap">
+          <div class="xp-top"><span id="xpText">0 XP</span><span id="lvText">Lv.1</span></div>
+          <div class="xp-bar"><div class="xp-fill" id="xpFill"></div></div>
+        </div>
+        <button class="theme-btn" id="themeBtn" data-act="theme" title="切换浅色 / 深色 / 跟随系统">🌓</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="checkinSlot"></div>
+
+  <div class="section">
+    <h2>📊 成长仪表盘</h2>
+    <div class="dash" id="dash"></div>
+  </div>
+
+  <div class="section" id="timerSec">
+    <h2>⏱️ 学习计时 <span class="tag">专注当下</span></h2>
+    <div class="timer-wrap">
+      <div class="timer-display" id="timerDisplay">00:00</div>
+      <div class="timer-actions">
+        <button class="btn green" data-act="timer-start" id="timerStartBtn">▶ 开始</button>
+        <button class="btn amber" data-act="timer-pause" id="timerPauseBtn" style="display:none">⏸ 暂停</button>
+        <button class="btn ghost" data-act="timer-stop">⏹ 结束并记录</button>
+      </div>
+      <div class="timer-tip" id="timerTip">点「开始」计时，专注学完一节后点「结束并记录」，时长会累计进今日学时。</div>
+    </div>
+  </div>
+
+  <div class="section" id="todaySec">
+    <h2>🎯 今日任务 <span class="tag">今日事今日毕</span></h2>
+    <div class="today-wrap">
+      <div class="goal-ring" id="goalRing"></div>
+      <div class="today-main"><div id="todayList"></div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🗺️ 学习路线 <span class="tag" id="phaseTag"></span></h2>
+    <div class="phases" id="phases"></div>
+  </div>
+
+  <div class="section">
+    <h2>📚 课程全景 <span class="tag" id="curTag"></span></h2>
+    <div class="filter-bar" id="stageFilter">
+      <span class="fb-label">难度筛选：</span>
+      <button class="chip active" data-act="stage-filter" data-filter="all">全部</button>
+      <button class="chip" data-act="stage-filter" data-filter="basic">🟢 基础</button>
+      <button class="chip" data-act="stage-filter" data-filter="adv">🟡 进阶</button>
+      <button class="chip" data-act="stage-filter" data-filter="hard">🔴 挑战</button>
+      <input type="text" id="searchInput" placeholder="🔍 搜索课程关键词（如：指针 / lambda / 构造）" style="margin-left:auto;flex:1;min-width:200px;max-width:300px;padding:7px 14px;border:1px solid var(--line);border-radius:20px;background:var(--card);color:var(--ink);">
+    </div>
+    <div id="stages"></div>
+  </div>
+
+  <div class="section" id="labSec">
+    <h2>💻 编程实战 <span class="tag">多道编译题 · AI 批改</span></h2>
+    <div class="rev-hint" style="margin-bottom:10px">每学完一个阶段即解锁对应实战题：在编译器里独立完成 → 把「代码 + 运行输出」粘贴回来 → 一键生成 AI 批改提示词，发给任意大模型（ChatGLM / DeepSeek / Kimi / Claude…）就能获得打分、纠错与改进建议。</div>
+    <div class="lab-grid" id="labGrid"></div>
+  </div>
+
+  <div class="section" id="reviewSec">
+    <h2>🔁 间隔复习 <span class="tag">科学防遗忘</span></h2>
+    <div id="reviewList"></div>
+  </div>
+
+  <div class="section" id="mistakeSec">
+    <h2>📕 错题本 <span class="tag" id="mistakeTag">0 题</span></h2>
+    <div id="mistakeList"></div>
+  </div>
+
+  <div class="section">
+    <h2>🗓️ 学习日历 <span class="tag">坚持看得见</span></h2>
+    <div class="heat" id="heat"></div>
+    <div class="heat-legend"><span>少</span><span class="cell"></span><span class="cell l1"></span><span class="cell l2"></span><span class="cell l3"></span><span class="cell l4"></span><span>多</span><span style="margin-left:8px">点击格子查看当天明细</span></div>
+  </div>
+
+  <div class="section">
+    <h2>📒 笔记中心 <span class="tag" id="noteCount"></span></h2>
+    <div class="note-tools">
+      <input type="text" id="noteSearch" class="note-search" placeholder="🔍 搜索笔记内容或课程名…">
+      <button class="btn small ghost" data-act="note-clear-search">清空</button>
+    </div>
+    <div id="noteTagCloud" class="tag-cloud"></div>
+    <div id="noteList"></div>
+  </div>
+
+  <div class="section">
+    <h2>🏆 成就墙 <span class="tag" id="achTag"></span></h2>
+    <div class="ach" id="achWall"></div>
+  </div>
+
+  <div class="section">
+    <h2>📝 每日进度报告 <span class="tag">近 7 天 XP 趋势</span></h2>
+    <div class="week-bars" id="weekBars"></div>
+    <div class="report" id="dailyReport"></div>
+    <div class="report-actions">
+      <button class="btn small green" data-act="refresh-report">刷新报告</button>
+      <button class="btn small ghost" data-act="copy-report">复制报告</button>
+      <button class="btn small amber" data-act="week-report">🗓️ 本周报告</button>
+      <button class="btn small amber" data-act="month-report">📆 本月报告</button>
+    </div>
+    <div class="period-box">
+      <div class="period-actions">
+        <button class="btn small ghost" data-act="copy-period">复制周期报告</button>
+        <button class="btn small ghost" data-act="dl-period">下载 .md</button>
+      </div>
+      <div class="report" id="periodReport" style="margin-top:10px"></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>⚙️ 设置与数据</h2>
+    <div class="set-row"><label>学习者昵称</label><input type="text" id="nameInput" placeholder="例如：小明"><span class="set-hint">会出现在打卡和日报里</span></div>
+    <div class="set-row"><label>每日目标（节）</label><input type="number" id="goalInput" min="1" max="10" value="2"><span class="set-hint">建议 1~3 节，贵在坚持</span></div>
+    <div class="set-row"><label>打卡提醒时间</label><input type="time" id="remindInput" value="20:00"><span class="set-hint">到点未打卡时页面会高亮提醒</span></div>
+    <div class="set-row"><label>浏览器通知</label><button class="btn small ghost" data-act="notify" id="notifyBtn">🔔 开启桌面通知</button><span class="set-hint" id="notifyStat">未开启（页面保持打开时，到点也会弹窗提醒）</span></div>
+    <div class="controls">
+      <button class="btn ghost" data-act="export">导出备份</button>
+      <button class="btn ghost" data-act="import">导入恢复</button>
+      <button class="btn ghost" data-act="reset" style="color:var(--red)">清空重置</button>
+      <input type="file" id="importFile" accept=".json" style="display:none">
+    </div>
+    <div class="set-hint" id="backupHint" style="display:none;margin-top:8px;color:var(--amber)">💾 你已有学习记录但超过 14 天没导出备份了，建议点上方「导出备份」保存一份，防止浏览器清理缓存丢失进度。</div>
+    <div class="foot">所有数据仅保存在你本机浏览器中；定期「导出备份」可防止换设备或清理缓存后丢失。</div>
+  </div>
+
+  <div class="foot">编程与 AI 学习工作台 · 完成一节、打卡一天，时间会给你答案。 · 🤖 由 AI 辅助搭建</div>
+</div>
+
+<div class="modal-mask" id="modalMask"><div class="modal" id="modalBox"></div></div>
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script src="cpp-extra-data.js"></script>
+<script>
+/* ================================================================
+ * 一、课程数据：22 阶段 · 由浅入深
+ *    每课自带：讲解 summary / 示例 code / 易错点 pit /
+ *    随堂思考 ex / 目标 target；每阶段自带：goal 目标 / links 外链 / quiz 测评
+ * ================================================================ */
+const CURRICULUM=[
+{id:"s1",icon:"🚀",name:"准备与启航",desc:"认识 C++、装好环境、写出第一个程序",
+ goal:"装好环境，独立运行第一个程序，建立「编辑 → 编译 → 运行」的心智模型。",
+ links:[["菜鸟教程 · C++ 入门","https://www.runoob.com/cplusplus/cpp-tutorial.html"],["C语言中文网 · C++ 教程","http://c.biancheng.net/cplus/"],["视频精讲 · B站 P1","https://www.bilibili.com/video/BV1et411b73Z?p=1"]],
+ lab:{t:"自我介绍程序",req:["用 cout 输出 3 行：你的昵称、一句为什么学 C++、今天的日期","每条信息单独一行，程序末尾正常 return 0","给关键行加上注释"],starter:`#include <iostream>\n\nint main() {\n    // 在这里输出你的自我介绍\n\n    return 0;\n}`,hint:"多个 << 可以把文字和变量拼在同一行；std::endl 表示换行。",xp:20},
+ lessons:[
+ {id:"1-1",title:"认识 C++：它能做什么",min:8,summary:["C++ 是一门高效、贴近硬件又支持面向对象的通用编程语言。","广泛用于游戏引擎、操作系统、高频交易、嵌入式与大型服务端。","学习路径：先打牢语法与思想，再逐步进入工程实战。"],code:`// C++ 既能写底层，也能写上层应用\n// 这门课的目标：从完全不会到能独立写小项目`,pit:"别陷入「哪门语言最好」的争论——选定了就坚持，编程思维是通用的。",ex:{q:"用自己的话说：C++ 和 Python 这类语言相比最大的特点是什么？",a:"参考：C++ 编译成机器码、贴近硬件、性能高、可精细控制内存；代价是要自己管理更多细节。"},target:"能用一句话向朋友说清楚：C++ 是什么、为什么要学它。"},
+ {id:"1-2",title:"搭建环境：编译器与编辑器",min:15,summary:["编译器把 C++ 源码变成可执行程序：Windows 常用 MSVC / MinGW(g++)，macOS/Linux 用 clang/g++。","编辑器可选 VS Code（免费、插件丰富），或直接用在线编译器（如 onlinegdb、godbolt）免安装。","建议初学者先用在线编译器跑通第一个程序，再装本地环境。"],code:`// 检查是否装好编译器（命令行）\n// g++ --version\n// 出现版本号即表示安装成功`,pit:"命令行里 g++ 报「不是内部或外部命令」，说明没加入 PATH，重装时勾选或手动添加。",ex:{q:"在线编译器和本地环境各适合什么时候用？",a:"参考：入门头几天用在线编译器零门槛跑代码；正式学习后装本地环境，方便多文件项目和调试。"},target:"成功运行出编译器版本号，或能打开一个在线编译器新建文件。"},
+ {id:"1-3",title:"第一个程序：Hello World",min:10,summary:["#include <iostream> 引入输入输出库。","int main(){ } 是程序入口，所有代码从这里开始执行。","std::cout << \"...\" 把内容输出到屏幕；return 0 表示正常结束。"],code:`#include <iostream>\nint main() {\n    std::cout << "Hello, World!" << std::endl;\n    return 0;\n}`,pit:"C++ 大小写敏感：Cout、Main 都会编译失败；语句末尾的分号千万别漏。",ex:{q:"把 Hello 改成你的名字运行一遍，再删掉一个分号看看报什么错。",a:"参考：会报 expected ';' 一类错误——学会读编译器的第一行报错信息非常重要。"},target:"独立写出并能运行这个程序，理解每一行的作用。"},
+ {id:"1-4",title:"程序的生命周期：编辑→编译→运行",min:10,summary:["编辑：写 .cpp 源文件。","编译：编译器把源码翻译成机器能懂的目标代码。","链接：把多个目标文件和库拼成可执行文件，最后运行。"],code:`// 典型命令（g++）\n// g++ main.cpp -o main\n// ./main`,pit:"改了代码没生效？运行的永远是上次编译出的文件——记得重新编译。",ex:{q:"编译和链接分别做什么？",a:"参考：编译把每个 .cpp 翻译成目标文件；链接把它们和用到的库拼成最终可执行文件。"},target:"理解「为什么写错一个符号就编译不过」，建立编译-运行的基本心智模型。"},
+ {id:"1-5",title:"注释与代码风格",min:6,summary:["// 单行注释，/* ... */ 多行注释，给人看、不影响运行。","良好的缩进与命名让代码易读、易维护。","养成写注释解释「为什么」而非「是什么」的习惯。"],code:`// 这是单行注释\n/* 这是\n   多行注释 */\nint age = 18; // 行尾也可注释`,pit:"多行注释不能嵌套：/* /* */ */ 在第一个 */ 就结束了。",ex:{q:"注释是写给谁看的？什么时候最该写？",a:"写给未来的自己和同伴看；最该写的是「为什么这么做」，而不是复述代码。"},target:"能在自己的代码里正确添加注释，并保持整齐的缩进。"}
+],
+quiz:[{q:"C++ 程序的入口函数是？",o:["start()","main()","run()","begin()"],a:1,why:"所有 C++ 程序都从 main() 开始执行。"},{q:"#include <iostream> 的作用是？",o:["定义主函数","引入输入输出功能","编译程序","声明变量"],a:1,why:"它把标准输入输出库引入进来，才能用 cin/cout。"},{q:"下面哪项是单行注释？",o:["<!-- -->","// 注释","# 注释","\" 注释"],a:1,why:"C++ 用 // 写单行注释，# 是预处理指令。"}]},
+
+{id:"s2",icon:"🔢",name:"变量与基本类型",desc:"程序的数据从哪来、怎么存",
+ goal:"能正确选择类型声明变量，理解作用域与类型转换的规则。",
+ links:[["cppreference · 基本类型","https://zh.cppreference.com/w/cpp/language/types"],["菜鸟教程 · 数据类型","https://www.runoob.com/cplusplus/cpp-data-types.html"],["视频精讲 · B站 P4","https://www.bilibili.com/video/BV1et411b73Z?p=4"]],
+ lab:{t:"圆的面积计算器",req:["用 const 定义 PI = 3.14159","从键盘读入半径（用 double）","输出面积，保留两位小数"],starter:`#include <iostream>\n#include <iomanip>\n\nint main() {\n    const double PI = 3.14159;\n    double r = 0;\n    // 读入 r，计算并输出面积\n\n    return 0;\n}`,hint:"fixed + setprecision(2) 控制小数位数。",xp:20},
+ lessons:[
+ {id:"2-1",title:"变量：给数据起个名字",min:8,summary:["变量是内存中一块有名字的空间，用来存放会变化的数据。","声明方式：类型 名字 = 初值; 例如 int score = 0;。","变量在使用前必须先声明。"],code:`int score = 0;\nscore = 95;   // 之后可修改\nstd::cout << score;`,pit:"读取未初始化的变量是未定义行为，值是随机的——声明时最好给初值。",ex:{q:"声明一个未初始化的 int 并打印，多运行几次会怎样？",a:"值可能每次都不同（垃圾值），所以声明时顺手给个初值最稳。"},target:"能声明并修改一个整数变量，输出它的值。"},
+ {id:"2-2",title:"基本数据类型",min:12,summary:["整数：int、short、long、long long；浮点：float、double。","字符：char（单个字符）；布尔：bool（true/false）。","不同类型占用内存不同，double 比 float 精度更高。"],code:`int n = 10;\nlong long big = 10000000000LL;\ndouble pi = 3.14159;\nchar c = 'A';\nbool ok = true;`,pit:"int 通常约 ±21 亿：存电话号码、大 ID 会溢出，请用 long long。",ex:{q:"存「一个人的年龄」和「全世界人口」分别选什么类型？",a:"年龄 int 足够；人口约 80 亿超出 int 范围，要用 long long。"},target:"说出常见类型及用途，能正确选择 int 还是 double。"},
+ {id:"2-3",title:"常量 const 与 constexpr",min:8,summary:["const 表示「只读」，一旦赋值不能再改。","constexpr 在编译期就能确定值，更高效。","用常量避免魔法数字，提升可读性。"],code:`const double PI = 3.14159;\nconstexpr int MAX = 100;\n// PI = 3;  // 错误：常量不能修改`,pit:"const 必须在声明时初始化，之后再赋值会编译错误——这正是它的保护作用。",ex:{q:"把代码里写死的 3.14159 定义成常量有什么好处？",a:"见名知义、一处修改处处生效、防止被误改。"},target:"能用 const 定义圆的半径等不该变化的量。"},
+ {id:"2-4",title:"类型转换",min:10,summary:["隐式转换：编译器自动进行（如 int→double）。","显式转换用 static_cast<类型>(值)，更安全清晰。","整数相除会丢弃小数，注意 5/2 得 2 而非 2.5。"],code:`int a = 5, b = 2;\ndouble r = static_cast<double>(a) / b; // 2.5`,pit:"整数除法向零取整：5/2==2；只要有一边是 double（如 5/2.0）结果才是小数。",ex:{q:"static_cast<double>(a)/b 和 a/(double)b 结果一样吗？",a:"一样，都是先把 int 转成 double 再做浮点除法，得到 2.5。"},target:"理解为何 5/2=2，并会用 static_cast 得到小数结果。"},
+ {id:"2-5",title:"作用域初探",min:8,summary:["变量的「作用域」指它在哪段代码里可见。","{} 内定义的变量只在该块内有效（局部）。","同名变量在不同作用域互不干扰。"],code:`{\n  int x = 1;\n} // 这里再访问 x 就会报错`,pit:"在 if 里定义的变量出了 } 就销毁，外面再用会编译错误。",ex:{q:"int x=1; { int x=2; } 之后外面的 x 是多少？",a:"内层 x=2 只在内层有效；内层结束后外面的 x 仍是 1。"},target:"理解「变量在哪一对大括号里定义，就在哪里有效」。"}
+],
+quiz:[{q:"存储小数的合适类型是？",o:["int","char","double","bool"],a:2,why:"double 是双精度浮点，适合存小数。"},{q:"const 变量的特点是？",o:["可随时修改","只读不可改","必须是字符串","自动变全局"],a:1,why:"const 即只读，初始化后不可再赋值。"},{q:"5 / 2 的结果是？",o:["2.5","2","3","2.0"],a:1,why:"两个整数相除还是整数，小数部分被丢弃。"}]},
+
+{id:"s3",icon:"➗",name:"运算符与输入输出",desc:"让程序会计算、会对话",
+ goal:"会用运算符写表达式，能完成带输入输出的交互小程序。",
+ links:[["菜鸟教程 · 运算符","https://www.runoob.com/cplusplus/cpp-operators.html"],["cppreference · 输入输出","https://zh.cppreference.com/w/cpp/io"],["视频精讲 · B站 P16","https://www.bilibili.com/video/BV1et411b73Z?p=16"]],
+ lab:{t:"摄氏度转华氏度",req:["读入摄氏温度（允许小数）","按 F = C × 9 ÷ 5 + 32 计算，注意整数除法的坑","输出结果保留 1 位小数"],starter:`#include <iostream>\n#include <iomanip>\n\nint main() {\n    double c;\n    std::cin >> c;\n    // 计算 f 并输出\n\n    return 0;\n}`,hint:"9/5 是整数除法会得 1，要写成 9.0/5 或 c*9.0/5。",xp:20},
+ lessons:[
+ {id:"3-1",title:"算术运算符",min:8,summary:["+ - * / %：加减乘除取余。","% 取余常用于判断奇偶、拆分位数、循环下标。","复合赋值：+=、-= 等简写。"],code:`int a = 7 % 3; // 1\nint b = 5; b += 2; // 7`,pit:"% 只能用于整数；两个整数相除结果还是整数。",ex:{q:"怎么求三位数 123 的个、十、百位？",a:"个位 123%10，十位 123/10%10，百位 123/100。"},target:"熟练使用四则运算与取余，写出简单算式。"},
+ {id:"3-2",title:"关系与逻辑运算符",min:10,summary:["关系：== != > < >= <=，结果是一个 bool。","逻辑：&&（与）||（或）!（非）。","短路求值：&& 前为假则后面不执行。"],code:`bool t = (3 > 2) && (5 < 10); // true\nbool f = !(4 == 4);          // false`,pit:"= 是赋值、== 才是比较，写错往往不报错但结果离谱。",ex:{q:"写出「年龄在 18~60 且不是学生」的条件。",a:"age>=18 && age<=60 && !isStudent。"},target:"能写出判断「年龄在 18~60 之间」的条件表达式。"},
+ {id:"3-3",title:"位运算（基础）",min:8,summary:["& | ^ ~ << >> 直接操作二进制位。","常用于底层、状态标志、性能优化。","初学者了解即可，后续按需深入。"],code:`int x = 5;      // 0101\nint y = x << 1; // 1010 = 10`,pit:"别移过头：1<<31 对 int 已到符号位，容易出问题。",ex:{q:"x & 1 的结果有什么用？",a:"取二进制最低位：结果是 1 为奇数，0 为偶数。"},target:"理解左移相当于乘 2 的直观含义。"},
+ {id:"3-4",title:"运算符优先级",min:8,summary:["乘除取余高于加减；比较高于逻辑。","不确定时一律用括号，清晰又安全。","= 赋值优先级很低，别和 == 混淆。"],code:`int r = (a + b) * 2; // 括号明确意图`,pit:"a|b==c 会被解析成 a|(b==c)——位运算优先级低于比较，务必加括号。",ex:{q:"2+3*2 和 (2+3)*2 各是多少？",a:"8 和 10——括号改变结合顺序。"},target:"养成「拿不准就加括号」的习惯。"},
+ {id:"3-5",title:"标准输入输出 cin / cout",min:10,summary:["std::cin >> 变量 从键盘读入；>> 可链式连续读。","std::cout << 内容 输出；<< 可链式拼接。","endl 换行并刷新，也可用 '\\n' 仅换行。"],code:`int age;\nstd::cout << "请输入年龄: ";\nstd::cin >> age;\nstd::cout << "你输入了 " << age << std::endl;`,pit:"cin >> 读字符串遇到空格就断开；要读带空格的一整行用 getline。",ex:{q:"连续 cin >> a >> b，输入「3 4」会怎样？",a:"a=3、b=4，>> 会自动跳过空白分隔。"},target:"能写一个小程序：读入两个数并输出它们的和。"},
+ {id:"3-6",title:"格式化输出 iomanip",min:8,summary:["<iomanip> 提供 setprecision、fixed 等格式化工具。","fixed + setprecision(2) 可控制小数位数。","setw 设置字段宽度，常用于对齐表格。"],code:`#include <iomanip>\nstd::cout << std::fixed << std::setprecision(2);\nstd::cout << 3.14159; // 3.14`,pit:"fixed 一旦设置会一直生效，想恢复默认用 std::defaultfloat。",ex:{q:"如何输出 1/3 保留 4 位小数？",a:"std::cout << std::fixed << std::setprecision(4) << 1.0/3; 输出 0.3333。"},target:"能把 3.14159 按两位小数输出。"}
+],
+quiz:[{q:"从键盘读入整数用？",o:["std::cin >> x","std::cout << x","scanf()","input()"],a:0,why:"cin 配合 >> 从标准输入读取。"},{q:"判断奇偶常用哪个运算符？",o:["/","%","*","&"],a:1,why:"x%2 为 1 是奇数、0 是偶数。"},{q:"下面优先级最高的是？",o:["+","*","=","||"],a:1,why:"乘除高于加减，加减高于比较与逻辑，= 最低。"}]},
+
+{id:"s4",icon:"🔀",name:"控制流",desc:"让程序学会判断与重复",
+ goal:"能用分支与循环解决打印、累加、查找类的基础问题。",
+ links:[["菜鸟教程 · 循环","https://www.runoob.com/cplusplus/cpp-loops.html"],["cppreference · if 语句","https://zh.cppreference.com/w/cpp/language/if"],["视频精讲 · B站 P24","https://www.bilibili.com/video/BV1et411b73Z?p=24"]],
+ lab:{t:"九九乘法表",req:["用双重 for 循环打印 9×9 乘法表","格式如 1*2=2，用 \\t 对齐","只输出下三角（内层 j<=i）"],starter:`#include <iostream>\n\nint main() {\n    for (int i = 1; i <= 9; i++) {\n        // 内层循环 j 从 1 到 i\n\n    }\n    return 0;\n}`,hint:"内层循环条件写 j<=i，每行结束补一个 std::endl。",xp:25},
+ lessons:[
+ {id:"4-1",title:"if / else 条件分支",min:8,summary:["if(条件){} 条件为真时执行。","else 处理「否则」的情况。","条件是 bool，0 视为假、非 0 视为真。"],code:`if (score >= 60) {\n    std::cout << "及格";\n} else {\n    std::cout << "不及格";\n}`,pit:"if(x>0); 多写的分号会让「空语句」成立，下面的块永远执行。",ex:{q:"score==100 和 score=100 的区别？",a:"前者是判断；后者是赋值且结果恒为真，是常见 bug。"},target:"能用 if/else 实现「成绩是否及格」的判断。"},
+ {id:"4-2",title:"级联 if / else if",min:8,summary:["多分支用 else if 依次判断。","一旦某个条件满足，其余分支不再执行。","注意顺序，更严格的条件放前面。"],code:`if (score >= 90) grade = 'A';\nelse if (score >= 80) grade = 'B';\nelse grade = 'C';`,pit:"条件顺序有讲究：若先判断 >=60，90 分也会停在 60 档。",ex:{q:"把 >=90 的判断放到最后会怎样？",a:"95 分会先命中 >=80 得到 B——从严格到宽松排序才正确。"},target:"能写出「优良中差」多档评级。"},
+ {id:"4-3",title:"switch 多路选择",min:8,summary:["switch(整型/枚举) 在多常量间选择。","每个 case 用 break 跳出，否则会贯穿。","default 处理未匹配的情况。"],code:`switch (day) {\n  case 1: std::cout << "一"; break;\n  default: std::cout << "其他";\n}`,pit:"忘写 break 会「贯穿」到下一个 case 继续执行，是经典 bug。",ex:{q:"switch 的条件能是 double 吗？",a:"不能，只能是整数、字符、枚举等整型类值。"},target:"理解 switch 与 if-else 的适用场景差异。"},
+ {id:"4-4",title:"三元运算符",min:6,summary:["条件 ? 表达式1 : 表达式2，一行完成二选一。","适合简单赋值，复杂逻辑仍用 if。"],code:`int max = (a > b) ? a : b;`,pit:"三元是表达式，可嵌套但别超过两层，否则难读。",ex:{q:"用三元输出及格与否怎么写？",a:"std::cout << (score>=60 ? \"及格\" : \"不及格\");"},target:"能用三元运算符求两数较大值。"},
+ {id:"4-5",title:"for 循环",min:10,summary:["for(初值; 条件; 步进) 适合已知次数的重复。","常用于遍历数组、累加、打印序列。","for(int i=0;i<10;i++) 从 0 循环到 9。"],code:`int sum = 0;\nfor (int i = 1; i <= 100; i++) {\n    sum += i; // 1+2+...+100\n}`,pit:"差一错误最常见：边界是 i<n 还是 i<=n，动笔前先数清楚。",ex:{q:"for(int i=0;i<5;i++) 执行几次？循环结束后 i 是几？",a:"执行 5 次（0~4）；循环结束后 i==5。"},target:"能算出 1 到 100 的和。"},
+ {id:"4-6",title:"while 与 do-while",min:8,summary:["while(条件) 先判断后执行，可能一次都不执行。","do{ }while(条件) 先执行一次再判断。","用于「不知道次数、靠条件结束」的场景。"],code:`int i = 0;\nwhile (i < 5) { std::cout << i; i++; }`,pit:"循环体内忘了改变条件变量就会死循环。",ex:{q:"什么时候用 while 而不是 for？",a:"重复次数未知、靠条件结束（如读到文件尾、用户输入 0 停止）时用 while。"},target:"理解 while 与 for 的取舍。"},
+ {id:"4-7",title:"break 与 continue",min:6,summary:["break 立即结束整个循环。","continue 跳过本次剩余、进入下一轮。","滥用会让逻辑难懂，谨慎使用。"],code:`for (int i=0;i<10;i++){\n  if (i%2==0) continue; // 跳过偶数\n  std::cout << i;\n}`,pit:"continue 不会跳过 for 的步进语句（i++ 仍会执行），但在 while 里要小心死循环。",ex:{q:"怎么只累加 1~100 中 3 的倍数？",a:"for 循环里写 if(i%3) continue; sum+=i;"},target:"能用 continue 只打印奇数。"}
+],
+quiz:[{q:"先执行一次再判断的循环是？",o:["for","while","do-while","if"],a:2,why:"do-while 先执行循环体，再检查条件。"},{q:"break 的作用是？",o:["跳过本次","结束整个循环","暂停程序","什么都不做"],a:1,why:"break 直接跳出循环；跳过本次的是 continue。"},{q:"for 循环的第三部分通常用来？",o:["初始化","判断条件","更新步进","声明变量"],a:2,why:"第三部分每轮结束后执行，用于更新循环变量。"}]},
+
+{id:"s5",icon:"🧩",name:"函数",desc:"把代码组织成可复用的积木",
+ goal:"会把代码拆成函数，理解值/引用传递与递归。",
+ links:[["cppreference · 函数","https://zh.cppreference.com/w/cpp/language/functions"],["菜鸟教程 · 函数","https://www.runoob.com/cplusplus/cpp-functions.html"],["视频精讲 · B站 P50","https://www.bilibili.com/video/BV1et411b73Z?p=50"]],
+ lab:{t:"质数判断函数",req:["编写 bool isPrime(int n)：n<2 返回 false","用循环判断，尝试 i*i<=n 的高效写法","main 读入一个数，输出「是/不是质数」"],starter:`#include <iostream>\n\nbool isPrime(int n) {\n    // 请实现\n    return true;\n}\n\nint main() {\n    int n; std::cin >> n;\n    std::cout << (isPrime(n) ? "是质数" : "不是质数");\n    return 0;\n}`,hint:"只需检查到 sqrt(n)，用 i*i<=n 可避免引入 <cmath>。",xp:25},
+ lessons:[
+ {id:"5-1",title:"函数的定义与调用",min:10,summary:["函数封装一段功能，避免重复代码。","形式：返回类型 函数名(参数){ 体; return 值; }。","先定义（或在前面声明）再调用。"],code:`int add(int a, int b) {\n    return a + b;\n}\n// 调用：add(3, 4)`,pit:"函数要「先声明（或定义）再调用」，否则编译器不认识它。",ex:{q:"把 main 里重复的三行打印抽成函数有什么好处？",a:"一处修改处处生效、命名让意图更清晰、代码更短。"},target:"能写一个求两数之和的函数并调用它。"},
+ {id:"5-2",title:"参数传递：值 vs 引用",min:12,summary:["值传递：传入的是副本，函数内修改不影响外面。","引用传递：用 &，函数内改的就是原变量。","需要「修改外部变量」或「避免大对象拷贝」时用引用。"],code:`void inc(int &x) { x++; } // 改外部\nint n = 1; inc(n); // n 变成 2`,pit:"想通过函数交换两个变量却传了值——函数内交换的只是副本。",ex:{q:"写出正确版 swap 的函数签名。",a:"void mySwap(int &a, int &b)。"},target:"理解为何 swap 要用引用参数。"},
+ {id:"5-3",title:"返回值与 void",min:6,summary:["有返回类型的函数用 return 给出结果。","void 表示不返回任何值。"],code:`void greet() { std::cout << "hi"; }`,pit:"void 函数里也能用 return; 提前退出（不带值）。",ex:{q:"有返回值的函数漏写 return 会怎样？",a:"是未定义行为，可能返回垃圾值；编译器通常给警告，务必处理。"},target:"能区分有返回值函数与 void 函数。"},
+ {id:"5-4",title:"函数重载",min:8,summary:["同名函数可用不同参数类型/个数区分。","编译器按调用时实参匹配最合适的版本。","返回值不同不能构成重载。"],code:`int max(int a,int b);\ndouble max(double a,double b);`,pit:"仅返回值类型不同不构成重载，参数必须有差异。",ex:{q:"max(int,int) 和 max(double,double) 并存时，max(3,4.5) 会怎样？",a:"编译器二义性报错；写成 max(3.0,4.5) 或 max<double>(3,4.5) 明确类型。"},target:"理解同名函数按参数区分的便利。"},
+ {id:"5-5",title:"默认参数",min:6,summary:["参数可设默认值，调用时可省略。","默认参数从右往左连续设置。"],code:`void log(std::string s, bool err=false) {}`,pit:"f(int a=1, int b) 非法——默认值必须从右往左连续给。",ex:{q:"log(\"msg\") 和 log(\"msg\", true) 有区别吗？",a:"调用同一个函数：前者用默认值 err=false，后者覆盖默认值。"},target:"能写出一个带默认参数的函数。"},
+ {id:"5-6",title:"递归",min:10,summary:["函数调用自身即递归，需有「终止条件」防止无限循环。","典型：阶乘、斐波那契、汉诺塔。","注意深度过大可能栈溢出。"],code:`int fact(int n) {\n    if (n <= 1) return 1;\n    return n * fact(n - 1);\n}`,pit:"忘写或写错终止条件 → 无限递归直到栈溢出崩溃。",ex:{q:"fact(5) 的调用展开过程是怎样的？",a:"5*fact(4)→…→fact(1) 触底返回，共 5 层调用后逐层算出 120。"},target:"能写出阶乘的递归版本，并说清终止条件。"},
+ {id:"5-7",title:"作用域与存储周期",min:8,summary:["局部变量在函数内创建、结束即销毁。","全局变量在所有函数外定义，全程可见（慎用）。","static 局部变量只初始化一次、跨调用保留值。"],code:`void f(){ static int c=0; c++; }`,pit:"全局变量谁都能改，出了 bug 难排查，尽量少用。",ex:{q:"static 局部变量和普通局部变量的初始化次数有何不同？",a:"static 只在首次执行时初始化一次并保留值；普通局部变量每次都重新初始化。"},target:"理解局部/全局/static 三者的生命周期差异。"},
+ {id:"5-8",title:"inline 内联函数",min:6,summary:["inline 建议编译器把函数体直接展开，减少调用开销。","适合短小、频繁调用的函数。","只是「建议」，最终由编译器决定。"],code:`inline int square(int x){ return x*x; }`,pit:"别为性能盲目手写 inline，现代编译器会自己决定。",ex:{q:"现在还有必要到处写 inline 吗？",a:"多数不需要；它更常见的作用是允许头文件中安全地定义函数。"},target:"知道内联的适用场景即可。"},
+ {id:"5-9",title:"头文件与分文件编写",min:10,summary:["项目变大后，标准做法：.h 头文件放函数声明，.cpp 放函数实现。","main.cpp 通过 #include \"xxx.h\" 引入声明，链接器自动拼装实现。","#pragma once 防止同一个头文件被重复包含。"],code:`// mySwap.h\n#pragma once\nvoid mySwap(int &a, int &b);\n\n// mySwap.cpp\n#include "mySwap.h"\nvoid mySwap(int &a, int &b) { int t=a; a=b; b=t; }\n\n// main.cpp\n#include "mySwap.h"\nint main() { int x=1,y=2; mySwap(x,y); }`,pit:"尖括号 <> 找系统头文件；双引号 \"\" 先在当前目录找你自己写的头文件。",ex:{q:"为什么模板不适合这样分文件编写？",a:"编译器要在使用处看到模板的完整定义才能生成代码（呼应 11-3），所以模板通常整体放头文件。"},target:"会把一个函数拆成 .h 声明 + .cpp 实现并编译运行通过。"}
+],
+quiz:[{q:"要修改函数外部的变量，参数应？",o:["值传递","引用传递","不用参数","用 static"],a:1,why:"引用传递让函数直接操作原变量。"},{q:"递归必须有的部分是？",o:["循环","终止条件","数组","return 0"],a:1,why:"没有终止条件的递归会无限调用直到栈溢出。"},{q:"void 函数表示？",o:["返回整数","不返回值","返回布尔","返回字符串"],a:1,why:"void 即无返回值。"}]},
+
+{id:"s6",icon:"📦",name:"数组与字符串",desc:"批量管理数据与文本",
+ goal:"能批量处理数据与文本，熟练使用 string 常用操作。",
+ links:[["cppreference · string","https://zh.cppreference.com/w/cpp/string/basic_string"],["菜鸟教程 · 字符串","https://www.runoob.com/cplusplus/cpp-strings.html"],["视频精讲 · B站 P42","https://www.bilibili.com/video/BV1et411b73Z?p=42"]],
+ lab:{t:"一行文本统计",req:["用 getline 读入一整行文字","统计并输出：字母数、数字数、空格数、其他字符数","建议用 <cctype> 的 isalpha / isdigit"],starter:`#include <iostream>\n#include <string>\n#include <cctype>\n\nint main() {\n    std::string line;\n    std::getline(std::cin, line);\n    // 遍历统计四类字符\n\n    return 0;\n}`,hint:"for (char c : line) 逐字符遍历，再分类计数。",xp:25},
+ lessons:[
+ {id:"6-1",title:"一维数组",min:10,summary:["数组是同类型元素的连续集合：类型 名[长度]。","下标从 0 开始，arr[0] 是第一个元素。","可用循环批量读写。"],code:`int a[5] = {1,2,3,4,5};\nfor(int i=0;i<5;i++) std::cout << a[i];`,pit:"数组越界不报错但属于未定义行为——C++ 不帮你检查边界。",ex:{q:"怎样安全地遍历数组？",a:"用 for(i=0;i<长度;i++) 并用常量维护长度；或直接用 vector。"},target:"能遍历数组求和、找最大值。"},
+ {id:"6-2",title:"多维数组",min:8,summary:["二维数组可理解为「表格」：行×列。","int m[3][4] 表示 3 行 4 列。","常用两重循环遍历。"],code:`int m[2][3];\nfor(int i=0;i<2;i++) for(int j=0;j<3;j++) m[i][j]=i+j;`,pit:"初始化时行数可省、列数不可省。",ex:{q:"m[i][j] 的 i、j 分别对应什么？",a:"i 是行、j 是列，先选行再选行内位置。"},target:"能初始化并遍历一个二维数组。"},
+ {id:"6-3",title:"C 风格字符串",min:8,summary:["C 字符串是 char 数组，以 '\\0' 结尾。","如 char s[]=\"hi\"; 实际存了 h,i,\\0。","操作需用 <cstring> 的 strcpy/strlen 等。"],code:`char s[] = "hello";\n// 长度 5，但数组占 6 字节(含\\0)`,pit:"char s[3]=\"abc\" 装不下——还要一个位置给 '\\0'，至少 char s[4]。",ex:{q:"strlen(\"hi\") 和 sizeof(\"hi\") 各是几？",a:"strlen 是 2（不含 \\0），sizeof 是 3（含 \\0）。"},target:"理解 C 字符串以 \\0 结尾这一关键事实。"},
+ {id:"6-4",title:"std::string 基础",min:10,summary:["std::string 是更安全方便的可变字符串。","可直接用 + 拼接、== 比较，不用关心长度。","现代 C++ 优先用它而非 C 字符串。"],code:`std::string s = "Hello";\ns = s + " World";\nif (s == "Hello World") {}`,pit:"string 扩容后之前保存的引用/迭代器可能失效。",ex:{q:"string 和 char 数组比好在哪？",a:"自动管理长度与内存、支持 + 和 ==、不易越界。"},target:"能用 string 拼接与比较字符串。"},
+ {id:"6-5",title:"string 常用操作",min:8,summary:[".size()/.length() 长度；.substr(起,长) 截取。",".find(子串) 查找；.append() 追加。",".empty() 判空。"],code:`std::string s="abcdef";\nstd::string t=s.substr(1,3); // bcd\nsize_t p=s.find("cd");        // 2`,pit:"find 找不到返回 string::npos 而不是 -1，判断要用 != npos。",ex:{q:"如何判断 s 中是否含有 \"cpp\"？",a:"if(s.find(\"cpp\") != std::string::npos)。"},target:"能截取子串并查找指定内容的位置。"},
+ {id:"6-6",title:"数字与字符串互转",min:8,summary:["to_string(数字) 转字符串。","stoi/stod 把字符串转 int/double。","处理用户输入时非常常用。"],code:`std::string s = std::to_string(123);\nint n = std::stoi("456");`,pit:"stoi 解析失败（如 \"abc\"）会抛异常，转换用户输入要考虑容错。",ex:{q:"\"12\" + 3 能得到 15 吗？怎么写才行？",a:"不能直接相加；要写 std::stoi(\"12\") + 3 == 15。"},target:"能在数字与字符串之间正确转换。"}
+],
+quiz:[{q:"数组下标从几开始？",o:["1","0","-1","任意"],a:1,why:"C/C++ 数组下标从 0 开始。"},{q:"C 字符串以什么结尾？",o:["'a'","'\\0'","'\\n'","'.'"],a:1,why:"以空字符 '\\0' 作为结束标志。"},{q:"拼接两个 std::string 用？",o:["+","&",".concat()",", "],a:0,why:"string 重载了 + 运算符可直接拼接。"}]},
+
+{id:"s7",icon:"🧭",name:"指针与引用",desc:"C++ 的精髓与难点，慢慢啃",
+ goal:"理解内存与地址，会用指针/引用，能安全地 new/delete。",
+ links:[["cppreference · 指针","https://zh.cppreference.com/w/cpp/language/pointer"],["菜鸟教程 · 指针","https://www.runoob.com/cplusplus/cpp-pointers.html"],["视频精讲 · B站 P56","https://www.bilibili.com/video/BV1et411b73Z?p=56"]],
+ lab:{t:"动态数组求和",req:["读入 n，用 new 创建长度为 n 的 int 数组","填入 1~n，用指针遍历求总和与平均值","用完 delete[] 并把指针置 nullptr"],starter:`#include <iostream>\n\nint main() {\n    int n; std::cin >> n;\n    int* a = nullptr;\n    // new、填充、遍历求和、delete[]\n\n    return 0;\n}`,hint:"int* a = new int[n]; 之后 *(a+i) 与 a[i] 都能访问元素。",xp:30},
+ lessons:[
+ {id:"7-1",title:"内存地址与取地址 &",min:8,summary:["每个变量在内存中都有地址。","&变量 取得它的地址。","地址可打印观察。"],code:`int x = 10;\nstd::cout << &x; // 打印 x 的地址`,pit:"每次运行程序变量地址可能不同（系统随机化），别依赖具体地址值。",ex:{q:"&x 的类型是什么？",a:"int*（指向 int 的指针），& 在这里是「取地址」。"},target:"理解「变量在内存中有位置」这一概念。"},
+ {id:"7-2",title:"指针的定义与解引用 *",min:12,summary:["指针是「存地址的变量」：类型* 名。","*指针 取得它指向的值（解引用）。","指针未初始化很危险，用前务必指向有效对象。"],code:`int x = 10;\nint* p = &x;\nstd::cout << *p; // 10`,pit:"野指针（未初始化就解引用）是崩溃大户：声明时先置 nullptr。",ex:{q:"* 在 int* p 和 *p 中含义相同吗？",a:"不同！前者是「声明指针类型」，后者是「解引用取值」。"},target:"能声明指针、指向变量并解引用取值。"},
+ {id:"7-3",title:"指针与数组",min:8,summary:["数组名在很多场合会「退化」为指向首元素的指针。","p[i] 等价于 *(p+i)。","指针算术让遍历更高效。"],code:`int a[3]={1,2,3};\nint* p=a;\nstd::cout << *(p+1); // 2`,pit:"数组不可整体赋值/拷贝，a=b 不合法（a 会退化成指针）。",ex:{q:"a[i] 与 *(a+i) 是什么关系？",a:"完全等价，[] 本质就是指针加偏移再解引用。"},target:"理解数组名与指针的关系。"},
+ {id:"7-4",title:"指针算术",min:8,summary:["指针加减整数，按所指类型大小移动。","p+1 实际地址增加 sizeof(类型)。","常用于数组遍历、字符串处理。"],code:`const char* s="abc";\nwhile(*s){ std::cout<<*s; s++; }`,pit:"指针加减按「元素个数」移动不是按字节：double* 的 p+1 地址加 8 字节。",ex:{q:"用指针遍历数组 a[5] 的循环条件怎么写？",a:"for(int* p=a; p<a+5; ++p) std::cout<<*p;"},target:"能用指针遍历一个字符串。"},
+ {id:"7-5",title:"引用（左值引用）",min:8,summary:["引用是「别名」，定义时必须绑定到一个变量。","int& r = x; 之后 r 就是 x 的另一个名字。","比指针更安全、语法更简洁，常用于函数参数。"],code:`int x=5; int& r=x; r=10; // x 也变 10`,pit:"引用定义时必须初始化、之后不能再改绑——它是别名，不是变量。",ex:{q:"引用和指针最大的区别？",a:"引用不能为空、不可改绑、用法像原变量；指针可以为空、可以改指向、需要 * 解引用。"},target:"能区分指针与引用，并说出引用「必须初始化」。"},
+ {id:"7-6",title:"const 与指针/引用",min:8,summary:["const int* p：指向的内容不可改。","int* const p：指针本身不可改指向。","const int& 常用于「只读引用参数」，避免拷贝又防误改。"],code:`const int& ref = x; // 只读别名`,pit:"从右往左读：const int* p 是「内容只读」，int* const p 是「指向只读」。",ex:{q:"想在函数里「只读大对象且不拷贝」，参数怎么写？",a:"const 类型&，例如 const std::string& s。"},target:"理解「指向常量」与「常量指针」的区别。"},
+ {id:"7-7",title:"动态内存 new / delete",min:10,summary:["new 在堆上分配内存，返回指针；delete 释放。","动态内存的生命周期由你掌控，不自动回收。","new[] 配 delete[]，普通 new 配 delete。"],code:`int* p = new int(42);\n// ... 使用 ...\ndelete p;`,pit:"new[] 必须配 delete[]，配错是未定义行为。",ex:{q:"为什么需要动态内存？",a:"大小编译期未知（如运行时输入的 n）、对象要跨作用域存活时，用堆自己管理。"},target:"能 new 一个对象并在用完后 delete。"},
+ {id:"7-8",title:"内存泄漏与悬空指针",min:8,summary:["忘记 delete 会导致内存泄漏（长期占用不释放）。","delete 后指针变「悬空」，再解引用很危险。","养成「谁分配谁释放」，或优先用智能指针（后面学）。"],code:`int* p = new int(1);\ndelete p;\np = nullptr; // 释放后立即置空`,pit:"delete 后立即置 nullptr，之后误用会立刻崩溃在明处，便于定位。",ex:{q:"什么是内存泄漏？",a:"new 出的内存失去所有指针记录又没 delete，再也无法释放，程序越跑越占内存。"},target:"知道泄漏与悬空的危害，并学会 delete 后置 nullptr。"},
+ {id:"7-9",title:"内存分区模型（内存四区）",min:10,summary:["代码区：存机器指令，只读共享。","全局区：全局变量、静态变量、字符串常量，程序结束由系统释放。","栈区：函数参数、局部变量，编译器自动分配释放。","堆区：new/delete 管理，生命周期由你掌控。"],code:`int g = 10;            // 全局区\nint main() {\n    int a = 1;         // 栈区\n    int* p = new int(2); // 堆区\n    delete p;          // 堆要自己释放\n    return 0;\n}`,pit:"不要 return 局部变量的地址或引用——函数一结束栈帧销毁，拿到的是悬空指针。",ex:{q:"四个区里，哪一区的内存需要你亲自管理？",a:"只有堆区（new/delete）；其余由操作系统或编译器负责。"},target:"能说出任意一个变量落在哪个区，理解「为什么不能返回局部变量地址」。"}
+],
+quiz:[{q:"解引用指针用哪个符号？",o:["&","*","#","%"],a:1,why:"*p 解引用取得指向的值；& 是取地址。"},{q:"int* const p 表示？",o:["指向常量","指针本身不可改","无含义","空指针"],a:1,why:"const 修饰 p 本身，指向不可变。"},{q:"动态分配后释放用？",o:["free","delete","close","end"],a:1,why:"new 配 delete，new[] 配 delete[]。"}]},
+
+{id:"s8",icon:"🏗️",name:"结构体与枚举",desc:"把相关数据打包成新类型",
+ goal:"会用 struct/enum 自定义类型来组织数据。",
+ links:[["菜鸟教程 · 数据结构(struct)","https://www.runoob.com/cplusplus/cpp-data-structures.html"],["cppreference · 类","https://zh.cppreference.com/w/cpp/language/classes"],["视频精讲 · B站 P64","https://www.bilibili.com/video/BV1et411b73Z?p=64"]],
+ lab:{t:"学生成绩排名",req:["定义 struct Student{name; score}","存入至少 3 名学生","输出分数最高者的姓名，再按分数从高到低输出全部"],starter:`#include <iostream>\n#include <string>\n\nstruct Student { std::string name; double score; };\n\nint main() {\n    Student st[3] = {{"Alice", 88}, {"Bob", 95}, {"Cara", 72}};\n    // 找最高分并排序输出\n\n    return 0;\n}`,hint:"两两比较找最大；排序时交换整个结构体变量即可。",xp:25},
+ lessons:[
+ {id:"8-1",title:"struct 结构体",min:10,summary:["struct 把多个不同类型的数据组合成一个整体。","用 . 访问成员。","比零散变量更利于表达「一个对象」。"],code:`struct Student {\n  std::string name;\n  int age;\n};\nStudent s; s.name="Tom"; s.age=18;`,pit:"结构体定义结尾的大括号后要有分号 struct S{...}; 漏了是高频编译错误。",ex:{q:"struct 和多个独立变量比有什么优势？",a:"把「一个实体」的数据打包，传递、存储、语义都更清晰。"},target:"能定义 Student 结构体并访问其成员。"},
+ {id:"8-2",title:"结构体数组与嵌套",min:8,summary:["可定义结构体数组批量管理多个对象。","结构体成员也可以是另一个结构体（嵌套）。","常配合循环做统计、排序。"],code:`Student cls[30];\ncls[0].age = 17;`,pit:"结构体数组默认未初始化，遍历前确保每个元素都赋过值。",ex:{q:"如何按成绩给学生数组排序？（提示：学完 STL 后有更优解）",a:"可手写选择排序交换整个结构体；学完 sort + lambda 后一行搞定。"},target:"能用一个结构体数组管理一个班级。"},
+ {id:"8-3",title:"enum 枚举",min:8,summary:["enum 给一组整数常量起有意义的名字。","提升可读性，避免魔法数字。","默认从 0 递增，也可显式赋值。"],code:`enum Color { RED, GREEN, BLUE };\nColor c = GREEN;`,pit:"普通枚举本质是整数、能和别的枚举比较；C++11 的 enum class 更安全。",ex:{q:"enum {RED,GREEN,BLUE} 中 BLUE 的值是多少？",a:"2，默认从 0 开始依次递增。"},target:"能用枚举表示「星期/颜色/状态」等固定集合。"},
+ {id:"8-4",title:"union 联合体",min:6,summary:["union 的所有成员共用同一段内存，节省空间。","同一时刻只能用一个成员。","多用于底层/协议解析，初学者了解即可。"],code:`union U { int i; float f; };`,pit:"写入一个成员后读另一个成员结果无意义——必须自己记住「当前存的是谁」。",ex:{q:"union 什么时候值得用？",a:"空间苛刻、同一时刻只用一种类型的底层场景（协议、硬件）；日常业务几乎不用。"},target:"知道 union 与 struct 内存布局的不同。"},
+ {id:"8-5",title:"类型别名 typedef 与 using",min:6,summary:["typedef 旧名 新名; 给类型起短名。","C++ 推荐 using 新名 = 旧名; 更清晰。","复杂类型（如容器迭代器）别名很有用。"],code:`using ll = long long;\nusing Vec = std::vector<int>;`,pit:"using 别名不产生新类型，只是同义词：LL 就是 long long 本身。",ex:{q:"using Vec=std::vector<int>; 之后写 Vec v; 等价于？",a:"std::vector<int> v; 让长类型名变短、换类型只改一处。"},target:"能用 using 给长类型起简洁别名。"}
+],
+quiz:[{q:"访问结构体成员用？",o:["->",".","::","#"],a:1,why:"对象用点号；指针才用 ->。"},{q:"enum 的主要作用是？",o:["提速","用名字代替魔法数字","分配内存","定义函数"],a:1,why:"枚举让一组固定值有了可读的名字。"},{q:"C++ 推荐的类型别名写法是？",o:["typedef","using","define","auto"],a:1,why:"using 新名=旧名 更清晰直观。"}]},
+
+{id:"s9",icon:"🧱",name:"面向对象基础",desc:"用类与对象组织真实世界",
+ goal:"能设计带封装的类，理解构造/析构与对象生命周期。",
+ links:[["菜鸟教程 · 类和对象","https://www.runoob.com/cplusplus/cpp-classes-objects.html"],["cppreference · 构造函数","https://zh.cppreference.com/w/cpp/language/constructor"],["视频精讲 · B站 P99","https://www.bilibili.com/video/BV1et411b73Z?p=99"]],
+ lab:{t:"银行账户类",req:["class BankAccount：balance 设为 private","deposit(double) 金额必须 >0 才存入","withdraw(double) 余额不足时打印提示且不扣款","show() 显示余额；构造给初始余额 1000"],starter:`#include <iostream>\n\nclass BankAccount {\n    double balance = 1000;\npublic:\n    // 实现 deposit / withdraw / show\n};\n\nint main() {\n    BankAccount acc;\n    acc.deposit(500);\n    acc.withdraw(9999);\n    acc.show();\n    return 0;\n}`,hint:"成员函数里直接读写 balance；条件不满足就打印提示并 return。",xp:30},
+ lessons:[
+ {id:"9-1",title:"类与对象",min:12,summary:["class 是「蓝图」，对象是根据蓝图造出的实例。","类里可放数据（成员）和行为（成员函数）。","面向对象让程序更贴近现实模型。"],code:`class Dog {\npublic:\n  std::string name;\n  void bark() { std::cout << "汪!"; }\n};\nDog d; d.name="阿黄"; d.bark();`,pit:"类定义末尾同样要分号；成员函数内可直接用成员，无需 this->。",ex:{q:"类和对象的关系像什么？",a:"图纸和按图纸造的房子：一个类可创建多个对象，各自有独立数据。"},target:"能定义简单类并创建对象、调用其方法。"},
+ {id:"9-2",title:"访问修饰符",min:8,summary:["public：对外公开；private：仅类内部可访问。","protected：派生类可访问（继承时讲）。","封装原则：数据尽量 private，通过接口访问。"],code:`class A {\nprivate:\n  int secret;\npublic:\n  void set(int v){ secret=v; }\n};`,pit:"private 不是「安全加密」，而是约束接口、防止外部随意改坏内部状态的设计约定。",ex:{q:"为什么要 setX(int v) 而不是把 x 设为 public？",a:"setX 里可以校验（如拒绝负数）、记日志，把「怎么改」的主动权留在类手里。"},target:"理解封装：把数据藏起来，通过公开方法操作。"},
+ {id:"9-3",title:"构造函数",min:10,summary:["构造函数在对象创建时自动调用，用于初始化。","与类同名、无返回类型。","可重载多个、也可带默认参数。"],code:`class Point {\npublic:\n  int x, y;\n  Point(int a,int b):x(a),y(b){}\n};`,pit:"一旦写了带参构造，Point p; 就不再自动可用——要么补默认构造，要么总是传参。",ex:{q:"成员初始化列表 x(a),y(b) 和体内 x=a;y=b; 有何区别？",a:"列表是直接初始化，体内是先默认初始化再赋值；const/引用成员只能用列表。"},target:"能写构造函数，让对象一创建就有合理初值。"},
+ {id:"9-4",title:"析构函数",min:8,summary:["析构函数 ~类名() 在对象销毁时自动调用。","用于释放资源（如 delete 动态内存）。","一个类只有一个析构函数，无参数。"],code:`~Point() { std::cout << "销毁"; }`,pit:"析构顺序与构造相反；类里 new 了资源，几乎总要写析构去释放。",ex:{q:"局部对象什么时候析构？",a:"离开所在作用域（} 处）立即析构——这正是 RAII 的基础。"},target:"理解「对象生命周期结束时会自动清理」。"},
+ {id:"9-5",title:"this 指针",min:6,summary:["this 指向「当前对象」自身。","当参数名与成员同名时，用 this->成员 区分。","绝大多数情况可省略。"],code:`void set(int x){ this->x = x; }`,pit:"返回 *this 可以支持链式调用 obj.set(1).set(2); 前提是返回引用。",ex:{q:"编译器怎么知道 this 指向谁？",a:"调用 obj.f() 时，编译器把 &obj 悄悄作为 this 传给 f。"},target:"知道 this 代表「调用该函数的那个对象」。"},
+ {id:"9-6",title:"静态成员 static",min:8,summary:["static 成员属于「类」而非某个对象，所有对象共享。","static 函数只能访问 static 成员。","常用于计数、全局配置。"],code:`class C { public: static int count; };\nint C::count = 0;`,pit:"static 成员变量传统上要在类外定义一次（C++17 可写 inline static）。",ex:{q:"如何统计「某类创建了多少对象」？",a:"构造函数里 ++count、析构里 --count，count 是 static 成员。"},target:"理解静态成员被所有对象共享这一特性。"},
+ {id:"9-7",title:"深拷贝与浅拷贝",min:10,summary:["编译器默认提供的拷贝是「逐成员复制」（浅拷贝）。","若成员含指向堆内存的指针，浅拷贝会让两个对象共用同一块内存。","析构时同一块内存被 delete 两次（double free）崩溃；解决：自定义拷贝构造做深拷贝（重新分配内存并复制内容）。"],code:`class Buf {\n    int* d; int n;\npublic:\n    Buf(const Buf& o) : n(o.n), d(new int[o.n]) {\n        for (int i=0;i<n;i++) d[i]=o.d[i]; // 深拷贝\n    }\n};`,pit:"经典报错 double free / heap corruption，多半是浅拷贝踩的坑。",ex:{q:"什么时候必须自己写拷贝构造函数？",a:"当成员持有 new 出来的资源（指针指向堆内存）时，必须深拷贝。"},target:"理解浅拷贝的坑，并能写出深拷贝版拷贝构造。"}
+],
+quiz:[{q:"构造函数何时被调用？",o:["销毁时","创建对象时","编译时","每次调用方法"],a:1,why:"构造函数在对象诞生时自动执行。"},{q:"封装原则建议数据成员设为？",o:["public","private","static","extern"],a:1,why:"数据藏起来，通过公开接口访问与校验。"},{q:"this 指针指向？",o:["类","当前对象","父类","空"],a:1,why:"this 是调用该成员函数的对象地址。"}]},
+
+{id:"s10",icon:"🌳",name:"面向对象进阶",desc:"继承、多态、重载，OOP 真正强大之处",
+ goal:"能用继承与多态写出可扩展的程序结构。",
+ links:[["菜鸟教程 · 继承","https://www.runoob.com/cplusplus/cpp-inheritance.html"],["cppreference · 虚函数","https://zh.cppreference.com/w/cpp/language/virtual"],["视频精讲 · B站 P121","https://www.bilibili.com/video/BV1et411b73Z?p=121"]],
+ lab:{t:"多态图形面积",req:["抽象类 Shape：virtual double area()=0 + 虚析构","派生 Circle(r) 与 Rect(w,h) 各自实现 area","用 Shape* 容器保存两种图形，遍历输出各自面积与总面积"],starter:`#include <iostream>\n#include <vector>\n\nclass Shape {\npublic:\n    virtual double area() const = 0;\n    virtual ~Shape() = default;\n};\n// 定义 Circle 和 Rect\n\nint main() {\n    std::vector<Shape*> shapes;\n    // 填入图形并遍历输出\n\n    return 0;\n}`,hint:"通过基类指针 p->area() 会自动调用各自版本——这就是多态。",xp:30},
+ lessons:[
+ {id:"10-1",title:"继承",min:12,summary:["派生类 : 继承方式 基类，复用基类成员。","如 Dog : public Animal，Dog 自动拥有 Animal 的特征。","避免重复代码，体现「是一个」的关系。"],code:`class Animal { public: void eat(){} };\nclass Dog : public Animal { public: void bark(){} };`,pit:"构造顺序：先基类再派生类；析构顺序相反。",ex:{q:"Dog d; 调用了哪些构造函数？",a:"先 Animal() 再 Dog()；销毁时先 ~Dog() 再 ~Animal()。"},target:"能用继承表达「狗是一种动物」。"},
+ {id:"10-2",title:"访问控制与继承",min:8,summary:["public 继承最常用，保持基类接口公开。","基类的 private 成员派生类无法直接访问，可用 protected。","不同继承方式影响基类成员在派生类的可见性。"],code:`class B { protected: int x; };`,pit:"基类 private 成员派生类也不可直接访问——「继承」不等于「全部可见」。",ex:{q:"protected 和 private 对派生类的区别？",a:"private 派生类不可访问；protected 派生类内部可访问、外部仍不可。"},target:"理解 protected 在继承中的意义。"},
+ {id:"10-3",title:"多态与虚函数 virtual",min:12,summary:["基类用 virtual 声明函数，派生类可重写（override）。","通过「基类指针指向派生对象」调用，会自动选正确版本。","多态让同一接口适配不同实现，是 OOP 核心。"],code:`class Animal { public: virtual void sound(){} };\nclass Cat : public Animal { void sound() override { std::cout<<"喵"; } };`,pit:"基类析构函数若不是 virtual，通过基类指针 delete 派生对象是未定义行为——基类析构永远写 virtual。",ex:{q:"去掉 virtual 会发生什么？",a:"通过基类指针调用只会执行基类版本（静态绑定），失去「各自发声」的效果。"},target:"能写一个简单的多态例子：不同动物发出不同叫声。"},
+ {id:"10-4",title:"纯虚函数与抽象类",min:8,summary:["virtual 返回 函数() = 0; 是纯虚函数。","含纯虚函数的类叫抽象类，不能实例化，只作接口。","强制派生类提供实现，定义统一规范。"],code:`class Shape { public: virtual double area() = 0; };`,pit:"抽象类不能实例化，但可以有构造函数供派生类调用。",ex:{q:"Shape 定义 area()=0 有什么用？",a:"强制每种图形实现自己的 area，编译器保证「能算面积的都会算」。"},target:"理解抽象类作为「接口/规范」的作用。"},
+ {id:"10-5",title:"运算符重载",min:10,summary:["可为自定义类型重载 +、<< 等运算符，用起来像内置类型。","本质是写一个名为 operator+ 等的函数。","应保持语义直观，勿滥用。"],code:`Point operator+(Point a, Point b){\n  return Point(a.x+b.x, a.y+b.y);\n}`,pit:"重载后的语义要贴近直觉：+ 就该像加法，别把 - 重载成打印。",ex:{q:"为什么 cout << 自定义类型常写成友元？",a:"左操作数是 ostream 不是你的类，只能写成非成员函数（常配友元访问私有数据）。"},target:"能为自定义类重载一个运算符。"},
+ {id:"10-6",title:"友元 friend",min:6,summary:["friend 让某个函数/类突破 private 限制访问成员。","用于需要紧密协作的场景（如重载 << 输出）。","会削弱封装，谨慎使用。"],code:`friend std::ostream& operator<<(std::ostream&, const Point&);`,pit:"friend 是单向的、不能被继承——它是封装的「应急通道」。",ex:{q:"friend 函数是成员函数吗？",a:"不是，它只是获得访问权限的普通外部函数，不通过对象调用。"},target:"知道 friend 能「开个小后门」访问私有成员。"},
+ {id:"10-7",title:"菱形继承与虚继承",min:8,summary:["B、C 都继承 A，D 又同时继承 B 和 C → D 里有两份 A 的数据。","访问 A 的成员时产生二义性（编译器不知道走哪条链）。","虚继承 class B : virtual public A 让 A 在 D 中只保留一份。","实际工程尽量避免复杂多继承。"],code:`class A { public: int x; };\nclass B : virtual public A {};\nclass C : virtual public A {};\nclass D : public B, public C {};\n// d.x 只有唯一一份，不再歧义`,pit:"不加 virtual 时 d.x 会报「访问不明确」的二义性错误。",ex:{q:"菱形继承的两条链路分别是什么？",a:"D→B→A 与 D→C→A，两条链各带一份 A，虚继承后合并为一份。"},target:"认识菱形继承的问题与虚继承的解法（了解即可）。"},
+ {id:"10-8",title:"虚析构函数",min:8,summary:["用基类指针 delete 派生类对象时，若基类析构不是 virtual，只会执行基类析构。","派生类新增的资源（如 new 的内存）不会被释放 → 泄漏。","工程规则：只要类可能被继承并通过指针使用，析构函数就写成 virtual。"],code:`class Base {\npublic:\n    virtual ~Base() {}   // 虚析构\n};\nclass Der : public Base {\n    int* p = new int[10];\npublic:\n    ~Der() { delete[] p; }\n};\nBase* b = new Der;\ndelete b;  // 虚析构保证 ~Der 一定被调用`,pit:"虚析构哪怕函数体是空的也要写——这是多态基类的默认习惯。",ex:{q:"10-3 的多态示例里，为什么建议基类析构写成 virtual？",a:"否则 delete 基类指针时派生类析构不会执行，派生类的资源就泄漏了。"},target:"记住铁律：「会被继承的类，析构函数写 virtual」。"}
+],
+quiz:[{q:"实现多态通常需要？",o:["static","virtual + 重写","友元","枚举"],a:1,why:"虚函数 + 派生类重写 + 基类指针调用 = 运行期多态。"},{q:"含纯虚函数的类称为？",o:["具体类","抽象类","友元类","模板类"],a:1,why:"含纯虚函数的抽象类不能实例化。"},{q:"重载运算符本质是？",o:["宏","写 operator 函数","改语法","声明变量"],a:1,why:"运算符重载就是名为 operator+ 之类的函数。"}]},
+
+{id:"s11",icon:"🧬",name:"模板与泛型",desc:"写一次，适配多种类型",
+ goal:"会写函数/类模板，理解泛型的价值与限制。",
+ links:[["菜鸟教程 · 模板","https://www.runoob.com/cplusplus/cpp-templates.html"],["cppreference · 模板","https://zh.cppreference.com/w/cpp/language/templates"],["视频精讲 · B站 P167","https://www.bilibili.com/video/BV1et411b73Z?p=167"]],
+ lab:{t:"泛型工具箱",req:["写函数模板 myMax(T,T) 返回较大值","写函数模板 sumArr(T*, int) 求数组元素和","用 int 和 double 两组类型各测试一次"],starter:`#include <iostream>\n\ntemplate<typename T>\nT myMax(T a, T b) {\n    return a > b ? a : b;\n}\n// 再实现 sumArr\n\nint main() {\n    // int 与 double 各测一次\n\n    return 0;\n}`,hint:"数组名传参就是首元素地址：sumArr(arr, n)。",xp:25},
+ lessons:[
+ {id:"11-1",title:"函数模板",min:10,summary:["template<typename T> 让函数参数类型「待定」。","调用时编译器自动推导 T。","避免为不同类型重复写相同逻辑。"],code:`template<typename T>\nT max(T a, T b){ return a>b?a:b; }`,pit:"模板里的操作要对所有传入类型都成立（如 >），否则编译错误。",ex:{q:"max(3, 4.5) 用上面的模板会怎样？",a:"T 无法同时推导为 int 和 double，编译错误；可写 max<double>(3,4.5)。"},target:"能写一个适用于任意类型的 max 模板。"},
+ {id:"11-2",title:"类模板",min:10,summary:["类也能模板化，如 std::vector<int> 中的 int 就是模板参数。","使用时显式指定类型：Box<int> b;。","STL 容器正是类模板。"],code:`template<typename T>\nclass Box { T val; public: void set(T v){val=v;} };`,pit:"类模板使用时必须显式给类型 Box<int>，不像函数模板能自动推导。",ex:{q:"vector<string> 中「模板」体现在哪？",a:"同一个 vector 类模板，换成 string 就实例化出管理字符串的版本。"},target:"能定义一个简单的类模板。"},
+ {id:"11-3",title:"模板机制简介",min:6,summary:["模板在编译期为每种用到的类型「生成」对应代码。","因此模板常写在头文件中。","理解「编译期多态」与虚函数运行期多态的区别。"],code:`// 模板代码通常放在 .h 里`,pit:"模板只有被实际使用才会实例化——没用到的类型错误不会报出来。",ex:{q:"为什么模板一般放头文件？",a:"编译器要在每个使用处看到完整定义来生成代码，放 .cpp 会链接不到。"},target:"知道模板多在头文件、编译期展开。"}
+],
+quiz:[{q:"函数模板的关键字通常是？",o:["class","template","virtual","using"],a:1,why:"template<typename T> 声明模板。"},{q:"std::vector<int> 中的 int 是？",o:["变量","模板参数","函数名","注释"],a:1,why:"它把类模板实例化为管理 int 的版本。"},{q:"模板通常在哪里实现？",o:[".cpp",".h 头文件",".txt",".exe"],a:1,why:"使用处需要完整定义来实例化，故放头文件。"}]},
+
+{id:"s12",icon:"🗃️",name:"STL 顺序容器",desc:"标准库给你现成的数据结构",
+ goal:"能按场景选对顺序容器并熟练增删改查。",
+ links:[["cppreference · 容器库","https://zh.cppreference.com/w/cpp/container"],["cppreference · vector","https://zh.cppreference.com/w/cpp/container/vector"],["视频精讲 · B站 P185","https://www.bilibili.com/video/BV1et411b73Z?p=185"]],
+ lab:{t:"中位数查找",req:["读入 n 与 n 个整数存入 vector","排序后输出中位数","n 为偶数时输出中间两数的平均值（可为小数）"],starter:`#include <iostream>\n#include <vector>\n#include <algorithm>\n\nint main() {\n    int n; std::cin >> n;\n    std::vector<int> v(n);\n    for (auto& x : v) std::cin >> x;\n    // 排序并输出中位数\n\n    return 0;\n}`,hint:"sort 后看奇偶：v[n/2] 或 (v[n/2-1]+v[n/2])/2.0。",xp:25},
+ lessons:[
+ {id:"12-1",title:"std::vector 动态数组",min:12,summary:["vector 是可变长度数组，最常用容器。",".push_back() 追加；.size() 长度；下标访问。","内存连续，随机访问快，中间插入慢。"],code:`#include <vector>\nstd::vector<int> v; v.push_back(1); v.push_back(2);`,pit:"遍历中 push_back 可能触发扩容、迭代器失效——别边遍历边增删。",ex:{q:"vector 和原生数组怎么选？",a:"需要动态增长、传参、拷贝就用 vector；长度固定且追求零开销可用 array。"},target:"能用 vector 存一组数并遍历。"},
+ {id:"12-2",title:"array 与 deque",min:8,summary:["std::array 固定大小、栈上、无开销。","std::deque 双端队列，头尾增删都快。","按场景选择：固定用 array，频繁头插用 deque。"],code:`#include <array>\nstd::array<int,3> a{1,2,3};`,pit:"std::array<int,3> 和 std::array<int,4> 是两个不同类型，大小是类型的一部分。",ex:{q:"什么时候 deque 比 vector 合适？",a:"频繁在头部插入/删除时，deque 两端都是 O(1)。"},target:"理解 array 与 vector 的取舍。"},
+ {id:"12-3",title:"list 与 forward_list",min:8,summary:["std::list 是双向链表，任意位置插入删除快。","不支持下标随机访问，需迭代器遍历。","forward_list 是单向链表，更省空间。"],code:`#include <list>\nstd::list<int> l; l.push_back(1); l.push_front(0);`,pit:"list 不支持 []，定位中间元素只能顺序走，O(n)。",ex:{q:"list 的强项是什么？",a:"已知位置的插入/删除 O(1)（拿到迭代器）；随机访问是弱项。"},target:"知道链表「插入快、访问慢」的权衡。"},
+ {id:"12-4",title:"容器通用接口",min:8,summary:["大部分容器有 .size()/.empty()/.clear()。","begin()/end() 返回迭代器，界定元素范围。","掌握共性能快速上手任意新容器。"],code:`if(!v.empty()) std::cout << v.size();`,pit:"end() 指向「最后一个的下一个」，永远不要解引用 end()。",ex:{q:"empty() 和 size()==0 哪个好？",a:"语义等价，但 empty() 更直观，优先用它。"},target:"能说出容器通用的几个成员函数。"},
+ {id:"12-5",title:"stack 与 queue",min:8,summary:["stack 栈：后进先出 LIFO，push / pop / top，不支持遍历。","queue 队列：先进先出 FIFO，push / pop / front / back。","头文件 <stack> / <queue>；典型应用：撤销与括号匹配用栈，排队与广搜用队列。"],code:`#include <stack>\nstd::stack<int> st;\nst.push(1); st.push(2);\nst.top();  // 2（只看不删）\nst.pop();  // 删除栈顶`,pit:"stack 没有 clear()，清空只能循环 pop；top()/front() 前先确认非空。",ex:{q:"浏览器的「后退」更像 stack 还是 queue？",a:"stack——最后访问的页面最先退回去。"},target:"能说出两者的进出规则并完成入栈出栈操作。"}
+],
+quiz:[{q:"最常用、可动态增长的数组容器是？",o:["array","vector","list","map"],a:1,why:"vector 自动扩容，是默认首选容器。"},{q:"vector 追加元素用？",o:[".add()",".push_back()",".insert()",".append()"],a:1,why:"push_back 在尾部追加。"},{q:"链表容器的特点是？",o:["随机访问快","中间插入快","固定大小","只能存字符串"],a:1,why:"链表改指针即可插入删除，但随机访问慢。"}]},
+
+{id:"s13",icon:"🔑",name:"STL 关联容器",desc:"按键快速查找的字典",
+ goal:"会用 map/set 解决查找、去重、计数问题。",
+ links:[["cppreference · map","https://zh.cppreference.com/w/cpp/container/map"],["cppreference · set","https://zh.cppreference.com/w/cpp/container/set"],["视频精讲 · B站 P223","https://www.bilibili.com/video/BV1et411b73Z?p=223"]],
+ lab:{t:"单词词频统计",req:["用 while(std::cin>>w) 连续读入单词直到输入结束","用 map<string,int> 统计每个单词出现次数","逐行输出「单词 次数」，最后输出不同单词总数"],starter:`#include <iostream>\n#include <string>\n#include <map>\n\nint main() {\n    std::map<std::string, int> cnt;\n    std::string w;\n    while (std::cin >> w) {\n        // 统计\n    }\n    // 输出结果\n\n    return 0;\n}`,hint:"cnt[w]++ 会在键不存在时自动创建并置 0 再自增。",xp:30},
+ lessons:[
+ {id:"13-1",title:"std::map 与 multimap",min:10,summary:["map 是「键值对」集合（红黑树），按键有序、键唯一。","用 [键] 存取，如 m[\"age\"]=18。","multimap 允许重复键。"],code:`#include <map>\nstd::map<std::string,int> m;\nm["apple"]=3;`,pit:"m[key] 在键不存在时会「悄悄创建」默认值——只想查询应该用 count/find。",ex:{q:"map 和 vector<pair> 的区别？",a:"map 按键有序、O(log n) 查找；vector 查找 O(n) 但内存连续可下标访问。"},target:"能用 map 存「名字→分数」并查询。"},
+ {id:"13-2",title:"std::set 与 multiset",min:8,summary:["set 只存「键」（去重、有序），用于判重/去重。","multiset 允许重复元素。","底层红黑树，查找 O(log n)。"],code:`#include <set>\nstd::set<int> s; s.insert(5); s.insert(5); // 只剩一个`,pit:"insert 已存在的键不报错也不重复，返回值里可查是否真的插入。",ex:{q:"给 10 万个数去重并升序输出，怎么做？",a:"全部 insert 进 set，天然去重 + 升序，再遍历输出。"},target:"能用 set 给一组数去重。"},
+ {id:"13-3",title:"unordered_map / unordered_set",min:8,summary:["unordered_* 用哈希表，查找平均 O(1)，但无序。","数据量大、只求快查时用它。","键需支持哈希（内置类型默认可用）。"],code:`#include <unordered_map>\nstd::unordered_map<std::string,int> um;`,pit:"哈希冲突多时性能会退化；自定义类型作键需自己提供哈希函数。",ex:{q:"map 与 unordered_map 怎么选？",a:"要按序遍历/范围查找选 map；只求平均最快查找、不在乎顺序选 unordered_map。"},target:"理解有序 map 与无序 map 的取舍。"},
+ {id:"13-4",title:"pair 与 tuple",min:6,summary:["std::pair 把两个值打包（map 的元素就是 pair）。","std::tuple 可打包多个值。","用 std::make_pair / std::get 操作。"],code:`auto p = std::make_pair("a", 1);`,pit:"pair 的 first/second 别记混；解包可用 std::tie 或结构化绑定。",ex:{q:"map 的元素是什么类型？",a:"pair<const Key, Value>——first 是键（不可改），second 是值。"},target:"能用一个 pair 表示「键+值」。"}
+],
+quiz:[{q:"按键-值存储、键唯一的容器是？",o:["set","map","vector","list"],a:1,why:"map 存键值对且键唯一、有序。"},{q:"要快速给数组去重，可用？",o:["map","set","deque","array"],a:1,why:"set 自动去重（有序版）；unordered_set 更快但无序。"},{q:"unordered_map 的查找复杂度约？",o:["O(n)","O(1) 平均","O(n^2)","O(log n)"],a:1,why:"哈希表平均 O(1)，最坏退化 O(n)。"}]},
+
+{id:"s14",icon:"🔁",name:"迭代器与算法",desc:"优雅地遍历与处理容器",
+ goal:"会用迭代器与常用算法 + lambda 处理数据。",
+ links:[["cppreference · 算法库","https://zh.cppreference.com/w/cpp/algorithm"],["cppreference · lambda","https://zh.cppreference.com/w/cpp/language/lambda"],["视频精讲 · B站 P237","https://www.bilibili.com/video/BV1et411b73Z?p=237"]],
+ lab:{t:"成绩统计与排序",req:["vector<Student{name,score}> 存 5 名学生","用 sort + lambda 按分数降序输出","用 count_if 统计及格（>=60）人数并输出"],starter:`#include <iostream>\n#include <vector>\n#include <string>\n#include <algorithm>\n\nstruct Student { std::string name; int score; };\n\nint main() {\n    std::vector<Student> v = {\n        {"A", 55}, {"B", 78}, {"C", 92}, {"D", 47}, {"E", 66}};\n    // sort + lambda 降序；count_if 统计及格人数\n\n    return 0;\n}`,hint:"比较器写 return a.score > b.score; 就是降序。",xp:25},
+ lessons:[
+ {id:"14-1",title:"迭代器概念",min:10,summary:["迭代器像「指针」，指向容器中的元素。","begin() 指向首元素，end() 指向末尾之后。","用 *it 取元素，it++ 移动到下一个。"],code:`for(auto it=v.begin(); it!=v.end(); ++it)\n  std::cout << *it;`,pit:"对容器做插入/删除后，原有迭代器可能失效，要用返回值更新。",ex:{q:"v.begin() == v.end() 说明什么？",a:"容器为空——[begin,end) 区间为空。"},target:"能用迭代器遍历一个 vector。"},
+ {id:"14-2",title:"常用算法 sort / find",min:10,summary:["<algorithm> 提供 sort(起,末) 排序。","find(起,末,值) 查找，返回迭代器。","算法作用于「范围」，与容器解耦。"],code:`#include <algorithm>\nstd::sort(v.begin(), v.end());\nauto p = std::find(v.begin(), v.end(), 3);`,pit:"sort 需要元素支持 <；自定义类型可重载 < 或传比较器。",ex:{q:"怎么降序排序？",a:"sort(v.begin(),v.end(),std::greater<int>{}); 或用 lambda [](a,b){return a>b;}。"},target:"能给容器排序并查找某个值。"},
+ {id:"14-3",title:"for_each 与 transform",min:8,summary:["for_each(起,末,函数) 对每个元素执行操作。","transform 把一段元素变换后写入另一处。","配合 lambda 非常简洁。"],code:`std::for_each(v.begin(),v.end(),[](int x){std::cout<<x;});`,pit:"想在算法里修改元素，必须让回调参数是引用 auto&；传值改的是副本。",ex:{q:"用 transform 把 v 每个元素翻倍怎么写？",a:"std::transform(v.begin(),v.end(),v.begin(),[](int x){return x*2;});"},target:"能用 for_each 打印容器全部元素。"},
+ {id:"14-4",title:"lambda 表达式基础",min:10,summary:["lambda 是「匿名小函数」：[](参数){ 体 }。","常作为算法参数，省去单独定义函数。","[&] 捕获外部变量引用，[=] 按值捕获。"],code:`auto f = [](int x){ return x*x; };\nstd::cout << f(5); // 25`,pit:"[&] 捕获引用有生命周期风险——lambda 活得比变量久时用 [=] 或显式捕获。",ex:{q:"[](int x){return x*x;}(6) 的值是？",a:"36——lambda 可以定义后立即调用。"},target:"能写一个 lambda 并用作算法参数。"},
+ {id:"14-5",title:"函数对象与谓词",min:8,summary:["重载 operator() 的类叫函数对象（仿函数），对象可以像函数一样调用。","比普通函数更灵活：可以携带状态（成员变量）。","「谓词」就是返回 bool 的函数/函数对象，常用作排序与查找的规则。","lambda 本质就是编译器生成的匿名函数对象——二者等价。"],code:`struct bigger {\n    bool operator()(int a, int b) const {\n        return a > b;\n    }\n};\nstd::sort(v.begin(), v.end(), bigger{});  // 降序`,pit:"仿函数的 operator() 记得加 const；它与 lambda 可以互相改写。",ex:{q:"[](int a,int b){return a>b;} 等价于本例的什么？",a:"等价于 bigger{}——先构造 bigger 的临时对象再传给 sort。"},target:"看懂仿函数写法，明白它与 lambda 的关系。"}
+],
+quiz:[{q:"遍历容器常用的「通用指针」是？",o:["指针","迭代器","下标","引用"],a:1,why:"迭代器统一了所有容器的遍历方式。"},{q:"给 vector 排序可用？",o:["order()","sort()","arrange()","filter()"],a:1,why:"std::sort 接受迭代器范围。"},{q:"匿名函数又称？",o:["lambda","macro","template","struct"],a:0,why:"lambda 即匿名函数对象。"}]},
+
+{id:"s15",icon:"📂",name:"文件操作",desc:"让数据离开内存、存到硬盘",
+ goal:"能完成数据的持久化读写并正确处理失败情况。",
+ links:[["cppreference · ifstream","https://zh.cppreference.com/w/cpp/io/basic_ifstream"],["cppreference · ofstream","https://zh.cppreference.com/w/cpp/io/basic_ofstream"],["视频精讲 · B站 P143","https://www.bilibili.com/video/BV1et411b73Z?p=143"]],
+ lab:{t:"日记本程序",req:["把 3 行文字写入 diary.txt（追加模式 ios::app）","再完整读出并逐行打印","文件打不开时给出提示而不是崩溃"],starter:`#include <iostream>\n#include <fstream>\n#include <string>\n\nint main() {\n    // 追加写 3 行\n\n    // 再读出打印\n\n    return 0;\n}`,hint:"写用 ofstream + std::ios::app；读用 ifstream + getline。",xp:25},
+ lessons:[
+ {id:"15-1",title:"文件流 fstream",min:10,summary:["<fstream> 提供 ofstream（写）、ifstream（读）、fstream（读写）。","用 open(路径) 或构造时直接给路径打开。","用完 close() 释放资源（或用 RAII 自动关）。"],code:`#include <fstream>\nstd::ofstream out("a.txt");\nout << "hello";\nout.close();`,pit:"文件路径写错不报错，流进入失败状态——open 后必须检查 is_open()。",ex:{q:"ofstream 打开已存在的文件会怎样？",a:"默认截断清空重写；想追加用 std::ios::app 模式。"},target:"能写一个小程序把文字保存到文件。"},
+ {id:"15-2",title:"文本文件读写",min:10,summary:["文本模式按字符读写，可用 << 和 >> 或 getline。","getline(流, 字符串) 读取一整行。","适合配置、日志、简单数据。"],code:`std::ifstream in("a.txt");\nstd::string line; while(std::getline(in,line)) std::cout<<line;`,pit:">> 按空白切分读「单词」，getline 读「整行」，混用注意 >> 留下的换行。",ex:{q:"统计文件有多少行怎么做？",a:"while(std::getline(in,line)) count++;"},target:"能逐行读取一个文本文件并打印。"},
+ {id:"15-3",title:"二进制文件",min:8,summary:["以 binary 模式读写，按字节存储，紧凑高效。","用 write()/read() 配合 reinterpret_cast。","适合图片、序列化的结构体等。"],code:`out.write((char*)&x, sizeof(x));`,pit:"结构体直接 write 有内存对齐填充问题，跨平台读写要确保布局一致。",ex:{q:"文本存 int 12345 和二进制存有什么不同？",a:"文本是 5 个字符占 5 字节；二进制是内存原样（通常 4 字节），更快但不可直接阅读。"},target:"理解文本模式与二进制模式的区别。"},
+ {id:"15-4",title:"文件状态与错误处理",min:6,summary:["流对象可当 bool 用：if(in) 判断打开/读取是否成功。",".is_open()、.eof()、.fail() 检查状态。","健壮程序必须检查文件是否成功打开。"],code:`if(!in.is_open()){ std::cerr<<"打开失败"; }`,pit:"别拿 eof() 当循环主条件（会多处理一次）——让读取动作本身当条件。",ex:{q:"正确的读取循环怎么写？",a:"while(std::getline(in,line)) 或 while(in>>x)，读取失败自动结束。"},target:"能在读写前检查文件是否成功打开。"}
+],
+quiz:[{q:"读取文件通常用？",o:["ofstream","ifstream","fstream写","cout"],a:1,why:"ifstream 专司读取。"},{q:"逐行读取文本用？",o:["read()","getline()","write()","scan()"],a:1,why:"getline 读到换行为止的一整行。"},{q:"判断文件是否打开成功可用？",o:["if(in)","if(open)","check()","ok()"],a:0,why:"流对象可转 bool 表示状态是否良好。"}]},
+
+{id:"s16",icon:"🛡️",name:"异常处理",desc:"让程序在出错时不崩溃",
+ goal:"能让程序优雅地处理错误而不崩溃。",
+ links:[["cppreference · 异常","https://zh.cppreference.com/w/cpp/error/exception"],["菜鸟教程 · 异常处理","https://www.runoob.com/cplusplus/cpp-exceptions.html"]],
+ lab:{t:"安全除法计算器",req:["读入 a、运算符、b（支持 + - * /）","除零时 throw std::runtime_error，用 catch 捕获并打印 what()","循环运行，直到输入 q 退出"],starter:`#include <iostream>\n#include <stdexcept>\n\nint main() {\n    double a, b; char op;\n    while (std::cin >> a >> op >> b) {\n        // try / catch / switch\n\n    }\n    return 0;\n}`,hint:"switch(op) 分发四种运算，'/' 分支里判断 b==0 就 throw。",xp:30},
+ lessons:[
+ {id:"16-1",title:"try / catch / throw",min:10,summary:["throw 抛出一个异常（错误信号）。","try 块里放可能出错的代码。","catch 捕获并处理对应类型的异常。"],code:`try {\n  if (x==0) throw std::runtime_error("除零");\n} catch (const std::exception& e) {\n  std::cerr << e.what();\n}`,pit:"throw 之后直接跳到匹配的 catch，中间代码不再执行——别依赖「继续往下走」。",ex:{q:"catch(const std::exception& e) 里 e.what() 是什么？",a:"异常自带的描述文字，用来报告出了什么错。"},target:"能写一个捕获「除零」异常的示例。"},
+ {id:"16-2",title:"标准异常 std::exception",min:8,summary:["<stdexcept> 提供 runtime_error、out_of_range 等常用异常。","它们都继承自 std::exception，可用基类统一捕获。",".what() 返回错误描述。"],code:`throw std::out_of_range("越界");`,pit:"vector 的 at() 越界抛 out_of_range，而 [] 越界不抛（未定义行为）。",ex:{q:"想让越界可控报错用什么？",a:"v.at(i)——越界抛 std::out_of_range，可被 catch 捕获处理。"},target:"能使用标准异常类型而非随意 throw 字符串。"},
+ {id:"16-3",title:"自定义异常",min:6,summary:["可继承 std::exception 定义自己的异常类型。","便于按业务分类处理错误。","保持轻量，只携带必要信息。"],code:`struct MyErr : std::exception { const char* what() const noexcept override { return "my"; } };`,pit:"自定义异常记得 override what()，调用方就能按基类统一处理。",ex:{q:"为什么建议自定义异常继承 std::exception？",a:"调用方可以用一个 catch(const std::exception&) 兜底所有异常。"},target:"知道可以定义自己的异常类。"},
+ {id:"16-4",title:"noexcept 与异常安全",min:6,summary:["noexcept 承诺函数不抛异常，利于优化。","异常安全指：即使出错，也不泄漏资源、不破坏状态。","结合 RAII（智能指针）可天然保证。"],code:`void f() noexcept { /* 保证不抛 */ }`,pit:"noexcept 函数若真的抛出会直接 terminate——承诺前想清楚。",ex:{q:"RAII 与异常安全是什么关系？",a:"异常展开栈时局部对象自动析构，RAII 资源（智能指针/文件流）随之释放，不会泄漏。"},target:"理解「异常安全」与 RAII 的关系。"}
+],
+quiz:[{q:"主动抛出错误用？",o:["catch","throw","try","error"],a:1,why:"throw 抛出异常对象。"},{q:"捕获异常用？",o:["try","catch","throw","if"],a:1,why:"catch 按类型捕获 try 块中抛出的异常。"},{q:"标准异常大多继承自？",o:["std::string","std::exception","int","void"],a:1,why:"都继承 std::exception，可统一捕获。"}]},
+
+{id:"s17",icon:"✨",name:"现代 C++ 特性",desc:"写出更简洁、更安全的 C++",
+ goal:"会用现代 C++ 写出更安全简洁的代码（智能指针、移动、auto）。",
+ links:[["cppreference · unique_ptr","https://zh.cppreference.com/w/cpp/memory/unique_ptr"],["cppreference · 范围 for","https://zh.cppreference.com/w/cpp/language/range-for"]],
+ lab:{t:"智能指针初体验",req:["用 make_unique<vector<int>> 存 1~10","用范围 for 输出全部元素（const auto&）","用两个 shared_ptr 指向同一 int，打印 use_count()"],starter:`#include <iostream>\n#include <memory>\n#include <vector>\n\nint main() {\n    auto v = std::make_unique<std::vector<int>>();\n    // 填入 1~10 并输出\n\n    auto p = std::make_shared<int>(42);\n    // 复制一个 shared_ptr 并打印 use_count\n\n    return 0;\n}`,hint:"make_shared 复制后两个指针共享计数，p.use_count() 应为 2。",xp:25},
+ lessons:[
+ {id:"17-1",title:"auto 与 decltype",min:8,summary:["auto 让编译器自动推导变量类型，减少冗长。","decltype(表达式) 获取表达式的类型。","常用于迭代器、lambda 等复杂类型。"],code:`auto it = v.begin();\nauto x = 3.14; // double`,pit:"auto 推导会丢弃引用和 const——要保留写 auto&。",ex:{q:"auto x = v[0]; 和 auto& x = v[0]; 的区别？",a:"前者拷贝一份元素；后者是元素的引用，改它会改 v。"},target:"能用 auto 简化迭代器声明。"},
+ {id:"17-2",title:"范围 for 循环",min:8,summary:["for(类型 变量 : 容器) 遍历每个元素，语法更清爽。","默认是「值拷贝」，要修改请用引用 for(auto& x: v)。"],code:`for (int x : v) std::cout << x;\nfor (auto& x : v) x++; // 修改`,pit:"for(auto x:v) 是拷贝，遍历大对象很贵——只读也建议 const auto&。",ex:{q:"遍历时把每个元素清零怎么写？",a:"for(auto& x : v) x = 0;"},target:"能用范围 for 遍历并修改容器元素。"},
+ {id:"17-3",title:"智能指针",min:12,summary:["unique_ptr：独占所有权，离开作用域自动释放。","shared_ptr：多个指针共享，引用计数归零才释放。","weak_ptr：旁观 shared_ptr，不增加计数，防循环引用。","用智能指针几乎可告别手动 delete。"],code:`#include <memory>\nauto p = std::make_unique<int>(42);\nauto q = std::make_shared<int>(10);`,pit:"别让两个裸指针接管同一块内存（double delete）；优先 make_unique/make_shared。",ex:{q:"unique_ptr 为什么不能拷贝？",a:"独占所有权——拷贝会导致重复释放；转移所有权用 std::move。"},target:"理解 unique_ptr 与 shared_ptr 的核心区别并能创建。"},
+ {id:"17-4",title:"lambda 深入",min:8,summary:["捕获列表 [&]/[=]/[x] 控制外部变量如何传入。","mutable 允许修改按值捕获的副本。","可指定返回类型 -> 类型。"],code:`int sum=0;\nauto add=[&sum](int x){ sum += x; };\nstd::for_each(v.begin(),v.end(),add);`,pit:"[=] 捕获的是定义那一刻的副本，之后外部变量再改，lambda 里还是旧值。",ex:{q:"[&] 和 [=] 各适合什么场景？",a:"[&] 适合当场同步使用；[=] 适合 lambda 存活更久（如异步回调）防悬空。"},target:"能写出带捕获的 lambda 做累加。"},
+ {id:"17-5",title:"移动语义与 RAII",min:10,summary:["右值引用 && 与 std::move 实现「移动」而非「拷贝」，提升性能。","RAII：资源获取即初始化，用对象生命周期管理资源。","RAII 让异常安全和资源管理变简单。"],code:`std::vector<int> a = std::move(b); // 移动而非拷贝`,pit:"被 move 的对象处于「有效但未指定」状态，重新赋值后才能再用。",ex:{q:"移动和拷贝一个 vector 的开销差异？",a:"拷贝要分配内存逐元素复制 O(n)；移动只「偷走」内部指针 O(1)。"},target:"理解 RAII 是「用对象管资源」的核心思想。"},
+ {id:"17-6",title:"nullptr 与 constexpr",min:6,summary:["nullptr 是类型安全的空指针常量，取代 NULL/0。","constexpr 在编译期求值，用于常量与模板参数。"],code:`int* p = nullptr;\nconstexpr int N = 8;`,pit:"NULL 本质是 0：重载 f(int) 和 f(char*) 时 f(NULL) 会调 int 版——nullptr 才指指针。",ex:{q:"constexpr 和 const 的区别？",a:"const 只读（运行期确定也行）；constexpr 承诺编译期算出，可作数组长度、模板参数。"},target:"知道用 nullptr 而非 NULL。"}
+],
+quiz:[{q:"独占所有权的智能指针是？",o:["shared_ptr","unique_ptr","weak_ptr","auto_ptr"],a:1,why:"unique_ptr 独占资源、不可拷贝。"},{q:"类型安全的空指针常量是？",o:["NULL","0","nullptr","void*"],a:2,why:"nullptr 专指空指针，不会误匹配整数重载。"},{q:"RAII 的核心是？",o:["用对象生命周期管理资源","手动 delete","全局变量","宏"],a:0,why:"对象析构时自动释放资源。"}]},
+
+{id:"s18",icon:"🎮",name:"项目实战",desc:"把知识拼成真正能跑的东西",
+ goal:"综合运用所学，完成并重构 5 个小项目，体验完整开发流程。",
+ links:[["Google C++ 风格指南","https://google.github.io/styleguide/cppguide.html"],["cppreference · 参考手册","https://zh.cppreference.com/w/cpp"],["视频项目 · B站 P72 通讯录","https://www.bilibili.com/video/BV1et411b73Z?p=72"]],
+ lab:{t:"综合项目：命令行计算器",req:["循环显示菜单：+ - * / q（退出）","计算逻辑封装成函数，switch 分发","除零用异常处理，非法输入给出提示","代码分函数组织、命名清晰、有注释"],starter:`#include <iostream>\n#include <stdexcept>\n\ndouble calc(double a, char op, double b) {\n    // 实现\n    return 0;\n}\n\nint main() {\n    // 菜单循环\n\n    return 0;\n}`,hint:"先把 calc 写对，再套菜单循环；异常从 calc 里 throw 出去。",xp:40},
+ lessons:[
+ {id:"18-1",title:"项目1：命令行计算器",min:30,summary:["综合运用：变量、运算符、函数、循环、分支。","支持加减乘除，处理除零异常。","锻炼「把需求拆成步骤」的能力。"],code:`// 读入 a 运算符 b，输出结果\n// 用 switch 分发 + try/catch 处理除零`,pit:"非法运算符、除零都要处理——健壮性从小项目开始练。",ex:{q:"动手前先在纸上列出程序要处理的所有输入情况。",a:"参考：数字、+ - * /、非法符号、除零、是否继续(y/n)——先想清楚再写。"},target:"完成一个能循环使用的四则运算计算器。"},
+ {id:"18-2",title:"项目2：学生成绩管理系统",min:45,summary:["用 struct/vector 存多个学生与成绩。","实现增删查、求平均、排序、文件保存。","综合运用容器、排序、文件 IO。"],code:`struct Stu { std::string name; double score; };\nstd::vector<Stu> list;`,pit:"功能一次写完容易乱——先跑通「录入+显示」，再加一个功能测一个。",ex:{q:"数据结构怎么设计：多个学生多门课？",a:"struct 里放 vector<double> scores；排序时按平均分写比较函数。"},target:"完成一个带增删查与存档的成绩管理系统。"},
+ {id:"18-3",title:"项目3：文件版通讯录",min:45,summary:["用 map/vector 管理联系人，支持按名查找。","程序启动时从文件载入，退出时写回。","强化「数据持久化」工程意识。"],code:`// 联系人: 姓名 -> 电话\n// 退出时 ofstream 写回, 启动 ifstream 载入`,pit:"首次运行文件不存在要能优雅处理——读取前判断打开是否成功。",ex:{q:"数据格式怎么设计才好扩展？",a:"一行一条记录、字段用分隔符（如 |），以后加字段也向后兼容。"},target:"完成一个能长期保存的通讯录。"},
+ {id:"18-4",title:"项目4：文本菜单小游戏",min:60,summary:["用循环+分支做文字交互（如猜数字、简易 RPG）。","随机数 <random>、状态变量驱动剧情。","体会「状态机」与游戏主循环。"],code:`#include <random>\nstd::mt19937 rng(std::random_device{}());\nstd::uniform_int_distribution<int> d(1,100);`,pit:"游戏主循环 = 输入→更新状态→输出；先画清状态再写代码。",ex:{q:"猜数字的「太大/太小」提示怎么实现？",a:"if(guess>target) 提示太大，else if(<) 提示太小，循环直到相等——这就是二分思想。"},target:"完成一个可玩的猜数字或文字冒险小游戏。"},
+ {id:"18-5",title:"项目5：重构与代码审美",min:30,summary:["把前面项目重构成清晰的函数/类结构。","加注释、统一命名、消除重复。","「能跑」到「好维护」是工程师的关键一步。"],code:`// 把长函数拆小、用有意义的名字\n// 用类封装数据与行为`,pit:"重构的前提是「能跑」：改一步测一步，别大拆大改一次到位。",ex:{q:"什么时候该重构？",a:"出现大段重复、函数超一屏、命名看不懂、加功能总要改多处时——「闻到坏味道」就重构。"},target:"对自己之前的项目做一次重构，体验代码质量提升。"}
+],
+quiz:[{q:"让程序退出后数据不丢失，应？",o:["用全局变量","写入文件","多开几个窗口","加大数组"],a:1,why:"持久化到文件（或数据库）才能跨次保存。"},{q:"猜数字游戏生成随机数常用？",o:["rand 旧式","<random> 现代","time()","math.h"],a:1,why:"<random> 的 mt19937 更均匀、更现代。"},{q:"「重构」主要目的是？",o:["让程序变慢","改善结构与可维护性","删功能","换语言"],a:1,why:"在不改变功能的前提下让代码更好维护。"}]}
+];
+
+/* 注入扩展课程并重新编排为 53 阶段 / 12 篇章 的 AGI 工程型总序
+   基础 C++ + 扩展(调试/拔高) + 求职(算法/工程) + AGI 前沿 全部汇入统一映射，
+   再按 FINAL_ORDER 排成「编程启航 → … → 通用人工智能前沿」的完整成长路径 */
+const _stageMap={};
+CURRICULUM.forEach(s=>{_stageMap[s.id]=s;});
+if(typeof EXTRA_STAGES!=="undefined")EXTRA_STAGES.forEach(s=>{_stageMap[s.id]=s;});
+if(typeof JOB_STAGES!=="undefined")JOB_STAGES.forEach(s=>{_stageMap[s.id]=s;});
+if(typeof AGI_STAGES!=="undefined")AGI_STAGES.forEach(s=>{_stageMap[s.id]=s;});
+const FINAL_ORDER=["s1","s2","s3","s4","s5","s6","s7","s8","py1","py2","py3","py4","ma1","ma2","ma3","ma4","s9","s10","s11","sdbg","s12","s13","s14","s15","s16","s17","s18","sbw","srec","sdp","dsl","dsk","dst","dsg","dsa","eng","career","sp1","sp2","sp3","ml1","ml2","ml3","ml4","dl1","dl2","dl3","dl4","dl5","agi1","agi2","agi3","agi4"];
+const _missStages=FINAL_ORDER.filter(id=>!_stageMap[id]);
+if(_missStages.length)console.error("AGI 工作台缺失阶段：",_missStages);
+CURRICULUM.length=0;
+FINAL_ORDER.forEach(id=>{ if(_stageMap[id])CURRICULUM.push(_stageMap[id]); });
+
+const PHASES=[
+ {icon:"🌱",name:"第一篇章 · 编程启航",range:[0,4],desc:"环境、语法、函数——打牢 C++ 地基",wk:3},
+ {icon:"🧱",name:"第二篇章 · 数据与对象",range:[5,7],desc:"数组、指针、面向对象——攻克 C++ 难关",wk:3},
+ {icon:"🐍",name:"第三篇章 · Python 入门",range:[8,11],desc:"AI 时代首选语言，先跑起来",wk:3},
+ {icon:"📐",name:"第四篇章 · 数学基石",range:[12,15],desc:"线代 / 微积分 / 概率——AI 的语言",wk:5},
+ {icon:"⚙️",name:"第五篇章 · C++ 系统深入",range:[16,19],desc:"指针进阶、调试、内存与底层功力",wk:4},
+ {icon:"🚀",name:"第六篇章 · C++ 实战与拔高",range:[20,29],desc:"STL、项目、位运算、递归、动态规划",wk:7},
+ {icon:"🧮",name:"第七篇章 · 算法修炼",range:[30,34],desc:"数据结构与算法——面试硬实力，求职分水岭",wk:8},
+ {icon:"💼",name:"第八篇章 · 工程素养与求职",range:[35,36],desc:"Git/CMake/多线程 + 面试冲刺",wk:5},
+ {icon:"🔢",name:"第九篇章 · 科学计算",range:[37,39],desc:"NumPy / Pandas / Jupyter——数据处理利器",wk:3},
+ {icon:"🤖",name:"第十篇章 · 机器学习",range:[40,43],desc:"从写规则到学规律：ML 全景",wk:6},
+ {icon:"🧠",name:"第十一篇章 · 深度学习",range:[44,48],desc:"神经网络、PyTorch、CNN、Transformer",wk:7},
+ {icon:"🌌",name:"第十二篇章 · 通用人工智能前沿",range:[49,52],desc:"RL / LLM / 多模态 / Agent——通往 AGI",wk:7}
+];
+const TITLES=["萌新学徒","代码新手","语法行者","函数旅人","双语言者","对象学徒","算法新星","数据匠人","现代行者","项目匠人","进阶工程师","AI 工程学徒","ML 实践者","DL 探索者","AGI 行者"];
+const ACHIEVEMENTS=[
+ {id:"first",icon:"🥇",t:"第一步",d:"完成第 1 节课"},
+ {id:"stage1",icon:"🚀",t:"扬帆起航",d:"通关「准备与启航」"},
+ {id:"week",icon:"🔥",t:"一周坚持",d:"连续学习 7 天"},
+ {id:"month",icon:"📅",t:"月度达人",d:"连续学习 30 天"},
+ {id:"hundred",icon:"💯",t:"百日筑基",d:"连续学习 100 天"},
+ {id:"half",icon:"🌗",t:"学海过半",d:"完成全部课程一半"},
+ {id:"all",icon:"🎓",t:"全栈毕业",d:"完成全部 53 阶段课程，踏上 AGI 工程之路"},
+ {id:"review",icon:"🔁",t:"温故知新",d:"完成首次复习"},
+ {id:"review10",icon:"🧠",t:"记忆大师",d:"累计 10 次复习"},
+ {id:"night",icon:"🦉",t:"深夜学者",d:"在 0:00–5:00 学习"},
+ {id:"early",icon:"🐦",t:"早起鸟",d:"在 5:00–8:00 学习"},
+ {id:"xp1000",icon:"⚡",t:"千锤百炼",d:"累计 XP 达到 1000"},
+ {id:"scribe",icon:"📝",t:"勤学笔记",d:"写下第一篇笔记"},
+ {id:"notes10",icon:"📓",t:"笔记达人",d:"累计 10 篇笔记"},
+ {id:"quizFirst",icon:"🎖️",t:"首战告捷",d:"通过首个阶段测评"},
+ {id:"quizPerfect",icon:"👑",t:"满分学员",d:"任意测评拿满分"},
+ {id:"quiz5",icon:"📚",t:"阶段学霸",d:"通过 5 个阶段测评"},
+ {id:"quizAll",icon:"🛡️",t:"满星通关",d:"通过全部阶段测评"},
+ {id:"labFirst",icon:"🧪",t:"初试锋芒",d:"完成首个编程实战"},
+ {id:"lab5",icon:"🔧",t:"百炼成钢",d:"完成 5 个编程实战"},
+ {id:"labAll",icon:"⚙️",t:"实战大师",d:"完成全部阶段实战"},
+ {id:"aiFirst",icon:"🤖",t:"AI 学伴",d:"首次生成 AI 批改提示词"},
+ {id:"goal7",icon:"📆",t:"七日达标",d:"连续 7 天完成每日目标"},
+ {id:"mistake1",icon:"📕",t:"错题收藏家",d:"在测评中第一次答错并收入错题本"},
+ {id:"xp5000",icon:"🌟",t:"学有所成",d:"累计 XP 达到 5000"},
+ {id:"debugger",icon:"🐞",t:"调试先锋",d:"完成「调试入门」阶段全部课程"},
+ {id:"advanced",icon:"🚀",t:"拔高挑战者",d:"完成第五篇章（拔高）全部课程"},
+ {id:"algo",icon:"🧮",t:"算法筑基",d:"完成「算法修炼」篇章全部课程"},
+ {id:"jobready",icon:"💼",t:"求职就绪",d:"完成「工程与就业」篇章全部课程"},
+ {id:"pythoner",icon:"🐍",t:"Python 双修",d:"完成「Python 入门」篇章全部课程"},
+ {id:"mathbase",icon:"📐",t:"数学基石",d:"完成「数学基石」篇章全部课程"},
+ {id:"agi_ml",icon:"🤖",t:"机器学习入门",d:"完成「机器学习」篇章全部课程"},
+ {id:"agi_dl",icon:"🧠",t:"深度学习入门",d:"完成「深度学习」篇章全部课程"},
+ {id:"agi_frontier",icon:"🌌",t:"前沿探索者",d:"完成「通用人工智能前沿」篇章全部课程"},
+ {id:"weekrep",icon:"🗓️",t:"周报作者",d:"生成首份周度学习报告"},
+ {id:"monthrep",icon:"📆",t:"月报作者",d:"生成首份月度学习报告"},
+ {id:"notepro",icon:"🔎",t:"笔记检索员",d:"首次在笔记中心使用搜索"},
+ {id:"solver",icon:"💡",t:"善用解答",d:"首次查看实战参考解答（不卡死）"},
+ {id:"focus",icon:"⏳",t:"专注达人",d:"累计专注学习时长达到 600 分钟"}
+];
+const QUOTES=["种一棵树最好的时间是十年前，其次是现在。","每天进步 1%，一年后强大 37 倍。","代码是写给人看的，只是恰好能在机器上运行。","慢即是快：扎实的基础胜过仓促的进度。","你不是不会，只是还没学。","报错不是失败，是编译器在教你。","先让它能跑，再让它优雅。","完成比完美更重要。","指针并不可怕，可怕的是从没真正理解过它。","百日之基，始于今日一课。"];
+
+/* ================================================================
+ * 二、状态与持久化（localStorage，兼容旧版 v2 数据）
+ * ================================================================ */
+const STORAGE_KEY="wb_cpp_workbench_v2";
+const RIV=[2,4,7,15,30,60]; // 复习间隔（天）
+let data=null, openStage=null, quizState=null, remindTimer=null, labId=null, lastPrompt=null;
+let settingsBound=false;
+let timer={running:false,start:0,elapsed:0,iv:null};
+
+function defaultData(){return{version:3,name:"学习者",goal:2,xp:0,
+ completed:{},daily:{},notes:{},quiz:{},achievements:{},labs:{},mistakes:{},phaseSeen:{},aiUsed:0,focusMinutes:0,flags:{},lastExport:null,
+ streak:0,longestStreak:0,lastStudyDate:null,lastCheckinDate:null,
+ settings:{theme:"auto",remind:"20:00",notify:false},
+ startedDate:todayStr(),introSeen:0};}
+function loadData(){
+  try{const raw=localStorage.getItem(STORAGE_KEY);if(raw)data=JSON.parse(raw);}catch(e){}
+  const def=defaultData();
+  if(!data||(data.version!==2&&data.version!==3)){data=def;return;}
+  data=Object.assign({},def,data,{settings:Object.assign({},def.settings,data.settings||{}),quiz:data.quiz||{},mistakes:data.mistakes||{}});
+  data.version=3;
+}
+function saveData(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data));}catch(e){}}
+
+/* ================= 工具 ================= */
+function $(id){return document.getElementById(id);}
+function todayStr(d){d=d||new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function parseDay(s){return new Date(s+"T00:00:00");}
+function daysSince(s){return Math.round((new Date()-parseDay(s))/86400000);}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function allLessons(){const r=[];CURRICULUM.forEach(s=>s.lessons.forEach(l=>r.push({stage:s,lesson:l})));return r;}
+function findLesson(id){for(const s of CURRICULUM){const l=s.lessons.find(x=>x.id===id);if(l)return{stage:s,lesson:l};}return null;}
+function totalLessons(){return CURRICULUM.reduce((a,s)=>a+s.lessons.length,0);}
+function completedCount(){return Object.keys(data.completed).length;}
+function levelInfo(xp){let lvl=1,need=80,rem=xp;while(rem>=need){rem-=need;lvl++;need=Math.round(need*1.22);}return{level:lvl,into:rem,need:need,title:TITLES[Math.min(lvl-1,TITLES.length-1)]};}
+function toast(msg,type){const el=document.createElement("div");el.className="toast"+(type?" "+type:"");el.innerHTML=msg;$("toastWrap").appendChild(el);setTimeout(()=>el.remove(),3200);}
+function copyText(txt,okMsg){
+  const done=()=>toast(okMsg||"已复制 📋");
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done).catch(()=>fallbackCopy(txt,done));}
+  else fallbackCopy(txt,done);
+}
+function fallbackCopy(txt,done){const ta=document.createElement("textarea");ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");done();}catch(e){toast("复制失败，请手动选择");}ta.remove();}
+function gainXp(n){
+  const before=levelInfo(data.xp).level;
+  data.xp+=n;
+  const after=levelInfo(data.xp);
+  if(after.level>before){toast("🎉 升级！Lv."+after.level+" "+after.title,"lv");confetti(50);}
+}
+
+/* ================= 学习行为 ================= */
+function updateStreak(){
+  const t=todayStr();
+  if(data.lastStudyDate===t)return;
+  if(data.lastStudyDate){
+    const diff=Math.round((parseDay(t)-parseDay(data.lastStudyDate))/86400000);
+    data.streak=diff===1?data.streak+1:1;
+  }else data.streak=1;
+  data.lastStudyDate=t;
+  if(data.streak>data.longestStreak)data.longestStreak=data.streak;
+}
+function recordDaily(xp,minutes,isLab){
+  const t=todayStr();
+  if(!data.daily[t])data.daily[t]={lessons:0,xp:0,minutes:0,labs:0};
+  if(isLab)data.daily[t].labs=(data.daily[t].labs||0)+1; else data.daily[t].lessons+=1;
+  data.daily[t].xp+=xp;data.daily[t].minutes+=minutes;
+}
+function completeLesson(id){
+  if(data.completed[id])return;
+  const f=findLesson(id);if(!f)return;
+  data.completed[id]={date:todayStr(),minutes:f.lesson.min,xp:f.lesson.min,box:0,lastReview:null};
+  gainXp(f.lesson.min);
+  updateStreak();recordDaily(f.lesson.min,f.lesson.min,false);
+  saveData();checkAchievements();checkPhaseDone(f.stage.id);
+  toast("＋"+f.lesson.min+" XP · 已掌握："+escapeHtml(f.lesson.title),"xp");
+  renderAll();
+}
+function undoLesson(id){
+  if(!data.completed[id])return;
+  const f=findLesson(id);
+  data.xp=Math.max(0,data.xp-(data.completed[id].xp||0));
+  delete data.completed[id];
+  saveData();
+  toast("已撤销："+escapeHtml(f?f.lesson.title:""));
+  renderAll();
+}
+function checkIn(){
+  const t=todayStr();
+  if(data.lastCheckinDate===t){toast("今天已经打卡啦 ✅");return;}
+  data.lastCheckinDate=t;
+  updateStreak();
+  const bonus=data.streak>=3?10:5;
+  gainXp(bonus);
+  const d=data.daily[t]||(data.daily[t]={lessons:0,xp:0,minutes:0});
+  d.xp+=bonus;d.checkin=1;
+  saveData();checkAchievements();scheduleRemind();
+  toast("＋"+bonus+" XP · 打卡成功，连续 "+data.streak+" 天 🔥","xp");
+  renderAll();
+}
+function needReview(id){
+  const r=data.completed[id];if(!r)return false;
+  if(!r.lastReview)return daysSince(r.date)>=RIV[0];
+  return daysSince(r.lastReview)>=RIV[Math.min(r.box||0,RIV.length-1)];
+}
+function doReview(id){
+  const rec=data.completed[id];if(!rec)return;
+  rec.lastReview=todayStr();
+  rec.box=Math.min((rec.box||0)+1,RIV.length-1);
+  gainXp(3);updateStreak();recordDaily(3,0,false);
+  saveData();checkAchievements();
+  toast("＋3 XP · 复习完成，记忆等级 L"+(rec.box+1)+" 🔁","xp");
+  renderAll();
+}
+function checkAchievements(){
+  const before=Object.keys(data.achievements).length;
+  const got=Object.assign({},data.achievements);
+  const cnt=completedCount(),tot=totalLessons();
+  const unlock=id=>{if(!got[id]){got[id]=todayStr();const a=ACHIEVEMENTS.find(x=>x.id===id);toast("🏅 解锁成就："+a.t,"ach");}};
+  if(cnt>=1)unlock("first");
+  if(CURRICULUM[0].lessons.every(l=>data.completed[l.id]))unlock("stage1");
+  if(data.streak>=7)unlock("week");
+  if(data.streak>=30)unlock("month");
+  if(data.streak>=100)unlock("hundred");
+  if(cnt>=Math.floor(tot/2))unlock("half");
+  if(cnt>=tot)unlock("all");
+  const revN=Object.values(data.completed).filter(r=>r.lastReview).length;
+  if(revN>=1)unlock("review");
+  if(revN>=10)unlock("review10");
+  const h=new Date().getHours();
+  if(h>=0&&h<5)unlock("night");
+  if(h>=5&&h<8)unlock("early");
+  if(data.xp>=1000)unlock("xp1000");
+  const notes=Object.values(data.notes).filter(n=>n&&n.trim()).length;
+  if(notes>=1)unlock("scribe");
+  if(notes>=10)unlock("notes10");
+  const qz=Object.values(data.quiz||{});
+  if(qz.some(q=>q.passed))unlock("quizFirst");
+  if(qz.some(q=>q.total>0&&q.best===q.total))unlock("quizPerfect");
+  const quizPassed=qz.filter(q=>q.passed).length;
+  if(quizPassed>=5)unlock("quiz5");
+  if(quizPassed>=CURRICULUM.length)unlock("quizAll");
+  const labDone=Object.values(data.labs||{}).filter(r=>r.done).length;
+  if(labDone>=1)unlock("labFirst");
+  if(labDone>=5)unlock("lab5");
+  if(labDone>=CURRICULUM.filter(s=>s.lab).length)unlock("labAll");
+  if(data.aiUsed)unlock("aiFirst");
+  if(goalStreakCount()>=7)unlock("goal7");
+  if(data.xp>=5000)unlock("xp5000");
+  if(Object.keys(data.mistakes||{}).length>=1)unlock("mistake1");
+  const dbg=CURRICULUM.find(s=>s.id==="sdbg");
+  if(dbg&&dbg.lessons.every(l=>data.completed[l.id]))unlock("debugger");
+  const phaseDone=pi=>{const p=PHASES[pi];return !!p&&CURRICULUM.slice(p.range[0],p.range[1]+1).every(s=>s.lessons.every(l=>data.completed[l.id]));};
+  if(phaseDone(2))unlock("pythoner");   // 第三篇章 · Python 入门
+  if(phaseDone(3))unlock("mathbase");   // 第四篇章 · 数学基石
+  if(phaseDone(5))unlock("advanced");   // 第六篇章 · C++ 实战与拔高
+  if(phaseDone(6))unlock("algo");       // 第七篇章 · 算法修炼
+  if(phaseDone(7))unlock("jobready");   // 第八篇章 · 工程与就业
+  if(phaseDone(9))unlock("agi_ml");     // 第十篇章 · 机器学习
+  if(phaseDone(10))unlock("agi_dl");    // 第十一篇章 · 深度学习
+  if(phaseDone(11))unlock("agi_frontier"); // 第十二篇章 · 通用人工智能前沿
+  if(data.flags){
+    if(data.flags.weekRep)unlock("weekrep");
+    if(data.flags.monthRep)unlock("monthrep");
+    if(data.flags.noteSearch)unlock("notepro");
+    if(data.flags.viewAnswer)unlock("solver");
+  }
+  if((data.focusMinutes||0)>=600)unlock("focus");
+  data.achievements=got;
+  if(Object.keys(got).length>before)saveData(); // 有新成就则立即持久化，防直接关页面丢失
+}
+
+/* ================================================================
+ * 三、渲染
+ * ================================================================ */
+function renderHeader(){
+  const li=levelInfo(data.xp);
+  $("lvTitle").textContent=li.title;
+  $("lvText").textContent="Lv."+li.level;
+  $("xpText").textContent=data.xp+" XP";
+  $("xpFill").style.width=Math.min(100,Math.round(li.into/li.need*100))+"%";
+  $("streakChip").textContent="🔥 连续 "+data.streak+" 天";
+  $("learnerLine").textContent=(data.name||"学习者")+" 的编程与 AI 成长之旅 · "+CURRICULUM.length+" 阶段 "+totalLessons()+" 节 · 每天一小步";
+}
+function renderDash(){
+  const cnt=completedCount(),tot=totalLessons();
+  const totalMin=Object.values(data.daily).reduce((a,d)=>a+(d.minutes||0),0);
+  const achN=Object.keys(data.achievements).length;
+  const cards=[
+    {n:Math.round(cnt/tot*100)+"%",l:"总进度",c:""},
+    {n:cnt+"/"+tot,l:"已学课程",c:"g"},
+    {n:data.streak,l:"连续天数 🔥",c:"a"},
+    {n:(totalMin/60).toFixed(1),l:"累计学时 (h)",c:"p"},
+    {n:data.xp,l:"累计 XP",c:""},
+    {n:achN+"/"+ACHIEVEMENTS.length,l:"成就徽章",c:"g"}
+  ];
+  $("dash").innerHTML=cards.map(c=>'<div class="stat"><div class="num '+c.c+'">'+c.n+'</div><div class="lab">'+c.l+'</div></div>').join("");
+}
+function remindDueNow(){
+  const parts=(data.settings.remind||"20:00").split(":");
+  const h=parseInt(parts[0],10),m=parseInt(parts[1],10);
+  const now=new Date();
+  return now.getHours()>h||(now.getHours()===h&&now.getMinutes()>=m);
+}
+function renderCheckin(){
+  const t=todayStr(),done=data.lastCheckinDate===t;
+  const urgent=!done&&remindDueNow();
+  $("checkinSlot").innerHTML=
+    '<div class="checkin '+(done?"done":urgent?"urgent":"")+'">'+
+    '<div class="ic">'+(done?"✅":urgent?"⏰":"⏰")+'</div>'+
+    '<div class="tx">'+(done
+      ?'今天已打卡，连续 <b>'+data.streak+'</b> 天，保持节奏！'
+      :urgent
+        ?'已到提醒时间（'+data.settings.remind+'），你今天还没<b>打卡</b>——别让连续 '+data.streak+' 天断在今天！'
+        :'你今天还没<b>打卡</b>，点击右侧按钮 +'+((data.streak+1)>=3?10:5)+' XP，连续 3 天起有额外加成 🔥')+'</div>'+
+    '<button class="btn '+(done?"ghost":"green")+'" data-act="checkin" '+(done?"disabled":"")+'>'+(done?"已打卡":"今日打卡")+'</button></div>';
+}
+function renderToday(){
+  const goal=data.goal||2;
+  const d=data.daily[todayStr()]||{};
+  const doneToday=d.lessons||0;
+  const pct=Math.min(1,doneToday/goal);
+  const C=2*Math.PI*30;
+  $("goalRing").innerHTML=
+    '<svg class="ring" viewBox="0 0 72 72"><circle class="ring-bg" cx="36" cy="36" r="30"/><circle class="ring-fg" cx="36" cy="36" r="30" style="stroke-dasharray:'+C+';stroke-dashoffset:'+(C*(1-pct))+'"/></svg>'+
+    '<div class="ring-txt">'+doneToday+' / '+goal+' 节</div><div class="ring-sub">'+(doneToday>=goal?"🎉 今日目标达成":"目标：学完 "+goal+" 节课程")+'</div>';
+  const next=allLessons().filter(x=>!data.completed[x.lesson.id]).slice(0,3);
+  const dueN=allLessons().filter(x=>data.completed[x.lesson.id]&&needReview(x.lesson.id)).length;
+  let html="";
+  if(dueN>0)html+='<div class="rev-hint">🔁 你有 '+dueN+' 节课到了复习时间，<a href="#reviewSec">去复习（每节 +3 XP）</a></div>';
+  if(next.length===0){
+    html+='<div class="today-item"><div class="od">🎓</div><div class="info"><div class="ti">全部课程已完成！</div><div class="me">可回顾项目实战、复习巩固，或挑战自己的小项目</div></div></div>';
+  }else{
+    html+=next.map((x,i)=>'<div class="today-item"><div class="od">'+(i+1)+'</div>'+
+      '<div class="info"><div class="ti">'+escapeHtml(x.lesson.title)+'</div><div class="me">'+escapeHtml(x.stage.name)+' · 约 '+x.lesson.min+' 分钟'+(i===0?" · 推荐现在开始":"")+'</div></div>'+
+      '<button class="btn small green" data-act="lesson" data-id="'+x.lesson.id+'">去学习</button></div>').join("");
+  }
+  $("todayList").innerHTML=html+'<div class="set-hint" style="margin-top:8px">🏁 '+etaText()+'</div>';
+}
+function renderPhases(){
+  const cur=allLessons().find(x=>!data.completed[x.lesson.id]);
+  const curIdx=cur?CURRICULUM.findIndex(s=>s.id===cur.stage.id):-1;
+  $("phases").innerHTML=PHASES.map((p,pi)=>{
+    const st=CURRICULUM.slice(p.range[0],p.range[1]+1);
+    const done=st.reduce((a,s)=>a+s.lessons.filter(l=>data.completed[l.id]).length,0);
+    const tot=st.reduce((a,s)=>a+s.lessons.length,0);
+    const min=st.reduce((a,s)=>a+s.lessons.reduce((b,l)=>b+l.min,0),0);
+    const pct=Math.round(done/tot*100);
+    const isCur=curIdx>=p.range[0]&&curIdx<=p.range[1];
+    return '<div class="phase'+(isCur?" cur":"")+'" data-act="phase" data-id="'+st[0].id+'" title="点击跳到该篇章">'+
+      '<div class="ph-hd">'+p.icon+' '+p.name+(done===tot?' 🏆':'')+(isCur?'<span class="cur-tag">📍 当前</span>':'')+'</div>'+
+      '<div class="ph-ds">'+p.desc+' · 约 '+Math.round(min/60)+' 小时 · 建议 '+p.wk+' 周</div>'+
+      '<div class="ph-bar"><i style="width:'+pct+'%"></i></div><div class="ph-pg">'+done+'/'+tot+' 节 · '+pct+'%</div></div>';
+  }).join("");
+  const tag=$("phaseTag");
+  if(tag){const tw=PHASES.reduce((a,p)=>a+(p.wk||0),0);tag.textContent=PHASES.length+" 大篇章 · 全程约 "+tw+" 周（≈ 半年）";}
+}
+function renderStages(){
+  if(!openStage){
+    const nx=allLessons().find(x=>!data.completed[x.lesson.id]);
+    openStage=nx?nx.stage.id:CURRICULUM[0].id;
+  }
+  const q=searchQ; // 课程搜索：按阶段名/简介/课程标题过滤
+  $("curTag").textContent=CURRICULUM.length+" 阶段 · "+totalLessons()+" 节 · 已完成 "+completedCount()+" 节";
+  $("stages").innerHTML=CURRICULUM.map((s,si)=>{
+    let ls=s.lessons;
+    if(q){
+      const stageHit=s.name.toLowerCase().indexOf(q)>=0||s.desc.toLowerCase().indexOf(q)>=0;
+      ls=stageHit?s.lessons:s.lessons.filter(l=>l.title.toLowerCase().indexOf(q)>=0);
+      if(ls.length===0)return "";
+    }
+    const done=s.lessons.filter(l=>data.completed[l.id]).length;
+    const pct=Math.round(done/s.lessons.length*100);
+    const qz=data.quiz[s.id];
+    const meta=(typeof STAGE_META!=="undefined"&&STAGE_META[s.id])||{};const lv=meta.lv||"basic";const lvMap={basic:["🟢","基础"],adv:["🟡","进阶"],hard:["🔴","挑战"]};const lvI=lvMap[lv];
+    const lessons=ls.map(l=>{
+      const c=data.completed[l.id];
+      const rev=c&&needReview(l.id)?' <span class="rev">· 待复习</span>':"";
+      return '<div class="lesson '+(c?"done":"")+'" data-act="lesson" data-id="'+l.id+'">'+
+        '<div class="chk">'+(c?"✓":"")+'</div>'+
+        '<div class="lt"><div class="t">'+escapeHtml(l.title)+'</div><div class="m">约 '+l.min+' 分钟'+rev+'</div></div></div>';
+    }).join("");
+    const links=(s.links||[]).map(l=>'<a href="'+l[1]+'" target="_blank" rel="noopener">'+l[0]+'</a>').join("");
+    return '<div class="stage '+(q?"open":(openStage===s.id?"open":""))+'" id="stage-'+s.id+'" data-level="'+lv+'">'+
+      '<div class="stage-hd" data-act="stage" data-id="'+s.id+'">'+
+        '<div class="ic">'+s.icon+'</div>'+
+        '<div class="nm">'+(si+1)+'. '+escapeHtml(s.name)+'<small>'+escapeHtml(s.desc)+'</small></div>'+
+        '<span class="lv-tag lv-'+lv+'" title="难度：'+lvI[1]+'">'+lvI[0]+' '+lvI[1]+'</span>'+
+        (qz&&qz.passed?'<div class="star" title="测评已通过">⭐</div>':'')+
+        '<div class="pg"><div class="stage-bar"><i style="width:'+pct+'%"></i></div><div style="margin-top:4px">'+done+'/'+s.lessons.length+'</div></div>'+
+        '<div class="ar">▾</div></div>'+
+      '<div class="stage-bd">'+
+        (meta.pre?'<div class="stage-pre">📌 前置：'+escapeHtml(meta.pre)+'</div>':'')+
+        '<div class="stage-goal">🎯 阶段目标：'+escapeHtml(s.goal)+'</div>'+
+        lessons+
+        '<div class="stage-links">🔗 延伸阅读：'+links+'</div>'+
+        '<button class="btn small amber" data-act="quiz" data-id="'+s.id+'">📝 阶段测评'+(qz&&qz.passed?"（已过 ⭐ 最佳 "+qz.best+"/"+qz.total+"，可重刷）":"（通关全部课程后解锁，通过 +50 XP）")+'</button>'+
+      '</div></div>';
+  }).join("")||'<div class="rev-item"><div class="ti">没有找到相关课程，换个关键词试试 🔍</div></div>';
+}
+function renderReview(){
+  const items=allLessons().filter(x=>data.completed[x.lesson.id]&&needReview(x.lesson.id)).slice(0,6);
+  if(items.length===0){$("reviewList").innerHTML='<div class="rev-item"><div class="ti">暂无待复习内容，保持学习节奏即可 🌿</div></div>';return;}
+  $("reviewList").innerHTML=items.map(x=>{
+    const r=data.completed[x.lesson.id];
+    return '<div class="rev-item"><div class="ti" data-act="lesson" data-id="'+x.lesson.id+'">'+escapeHtml(x.lesson.title)+'</div>'+
+      '<div class="me">'+escapeHtml(x.stage.name)+' · 记忆等级 L'+((r.box||0)+1)+'</div>'+
+      '<button class="btn small ghost" data-act="review" data-id="'+x.lesson.id+'">已复习 +3</button></div>';
+  }).join("");
+}
+function renderHeat(){
+  const days=126,today=new Date();
+  const winStart=new Date(today);winStart.setDate(today.getDate()-(days-1));
+  const start=new Date(winStart);
+  start.setDate(start.getDate()-((start.getDay()+6)%7)); // 对齐到周一
+  const cols=Math.ceil((today-start)/86400000/7)+1;
+  let html="",lastM=-1;
+  for(let c=0;c<cols;c++){
+    const d0=new Date(start);d0.setDate(start.getDate()+c*7);
+    const m=d0.getMonth();
+    const lbl=m!==lastM?(m+1)+"月":"";
+    lastM=m;
+    html+='<div class="heat-col"><div class="heat-lbl">'+lbl+'</div>';
+    for(let r=0;r<7;r++){
+      const d=new Date(start);d.setDate(start.getDate()+c*7+r);
+      const ds=todayStr(d);
+      if(d<winStart||d>today){html+='<div class="cell blank"></div>';continue;}
+      const rec=data.daily[ds];
+      const n=rec?(rec.lessons+(rec.labs||0)):0;
+      const lvl=n>=8?"l4":n>=5?"l3":n>=3?"l2":n>=1?"l1":"";
+      const tip=rec?ds+" · 学习 "+n+" 项 · "+rec.xp+" XP":ds+" · 未学习";
+      html+='<div class="cell '+lvl+'" data-date="'+ds+'" title="'+tip+'"></div>';
+    }
+    html+='</div>';
+  }
+  $("heat").innerHTML=html;
+}
+function renderAch(){
+  const n=Object.keys(data.achievements).length;
+  $("achTag").textContent=n+" / "+ACHIEVEMENTS.length+" 已解锁";
+  $("achWall").innerHTML=ACHIEVEMENTS.map(a=>{
+    const u=!!data.achievements[a.id];
+    return '<div class="ach-item '+(u?"unlocked":"")+'"><div class="ai">'+a.icon+'</div><div><div class="at">'+a.t+'</div><div class="ad">'+a.d+(u?' · '+data.achievements[a.id]:"")+'</div></div></div>';
+  }).join("");
+}
+function renderReport(){
+  const t=todayStr();
+  const d=data.daily[t]||{lessons:0,xp:0,minutes:0};
+  const cnt=completedCount(),tot=totalLessons();
+  const next=allLessons().find(x=>!data.completed[x.lesson.id]);
+  const li=levelInfo(data.xp);
+  const dueN=allLessons().filter(x=>data.completed[x.lesson.id]&&needReview(x.lesson.id)).length;
+  const quizN=Object.values(data.quiz).filter(q=>q.passed).length;
+  const checkedIn=data.lastCheckinDate===t;
+  const quote=QUOTES[Math.floor(new Date().getTime()/86400000)%QUOTES.length];
+  const goal=data.goal||2;
+  const L=[];
+  L.push("📅 "+t+" · "+(data.name||"学习者")+" 的编程与 AI 学习日报");
+  L.push("──────────────────────────");
+  L.push((checkedIn?"✅ 今日已打卡":"⏳ 今日未打卡")+" ｜ 连续 "+data.streak+" 天（最长 "+data.longestStreak+" 天）");
+  L.push("📖 今日学习："+d.lessons+" 节课程"+(d.labs?" ｜ 实战 "+d.labs+" 个":"")+" ｜ +"+(d.xp||0)+" XP ｜ 约 "+(d.minutes||0)+" 分钟");
+  L.push("🎯 今日目标："+d.lessons+"/"+goal+" 节 —— "+(d.lessons>=goal?"已达成 🎉":"还差 "+(goal-d.lessons)+" 节，加油"));
+  L.push("📊 累计进度："+cnt+"/"+tot+" 节（"+Math.round(cnt/tot*100)+"%）｜ "+li.title+"（Lv."+li.level+"）｜ 总 XP "+data.xp);
+  L.push("🏁 "+etaText());
+  L.push("🏅 成就："+Object.keys(data.achievements).length+"/"+ACHIEVEMENTS.length+" ｜ ⭐ 测评通过："+quizN+" 个阶段 ｜ 💻 实战："+Object.values(data.labs).filter(r=>r.done).length+"/"+CURRICULUM.filter(s=>s.lab).length+" ｜ 🔁 待复习："+dueN+" 节");
+  L.push("──────────────────────────");
+  L.push(next?"➡️ 下一步建议：「"+next.lesson.title+"」("+next.stage.name+" · 约 "+next.lesson.min+" 分钟)":"➡️ 课程已全部完成，可复习巩固或拓展自己的项目！");
+  L.push("💬 "+quote);
+  $("dailyReport").textContent=L.join("\n");
+  // 近 7 天 XP 柱状图
+  const days7=[];
+  for(let i=6;i>=0;i--){const dd=new Date();dd.setDate(dd.getDate()-i);const ds=todayStr(dd);days7.push({ds,xp:(data.daily[ds]||{}).xp||0,lab:"日一二三四五六"[dd.getDay()],today:i===0});}
+  const max=Math.max(10,...days7.map(x=>x.xp));
+  $("weekBars").innerHTML=days7.map(x=>'<div class="wb '+(x.today?"today":"")+'" title="'+x.ds+' · '+x.xp+' XP"><div class="bar" style="height:'+Math.max(3,Math.round(x.xp/max*52))+'px"></div><div class="wl">'+x.lab+'</div></div>').join("");
+}
+function renderAll(){
+  renderHeader();renderDash();renderCheckin();renderToday();renderPhases();
+  renderStages();renderLabs();renderReview();renderHeat();renderAch();renderReport();
+  renderMistakes();renderTimer();renderNotes();renderBackupHint();
+}
+function renderBackupHint(){
+  const el=$("backupHint");if(!el)return;
+  const need=completedCount()>3&&(!data.lastExport||daysSince(data.lastExport)>14);
+  el.style.display=need?"":"none";
+}
+/* 毕业日期预估：按近 7 天实际节奏推算 */
+function etaText(){
+  let last7=0;
+  for(let i=0;i<7;i++){const d=new Date();d.setDate(d.getDate()-i);last7+=((data.daily[todayStr(d)]||{}).lessons||0);}
+  const rem=totalLessons()-completedCount();
+  if(rem<=0)return "🎉 全部课程已完成，进入自由实战与复习阶段！";
+  if(last7<=0)return "完成今天的学习后，这里会按你的节奏预估毕业日期 🏁";
+  const avg=last7/7;
+  const days=Math.ceil(rem/avg);
+  const eta=new Date();eta.setDate(eta.getDate()+days);
+  return "按近 7 天节奏（约 "+avg.toFixed(1)+" 节/天）预估："+eta.getFullYear()+" 年 "+(eta.getMonth()+1)+" 月 "+eta.getDate()+" 日学完全部课程（还剩 "+rem+" 节）";
+}
+
+/* ================================================================
+ * 四、弹窗：课程 / 测评 / 新手引导
+ * ================================================================ */
+function highlight(code){
+  let s=escapeHtml(code);
+  const stash=[];
+  const keep=h=>{stash.push(h);return "\u0001"+(stash.length-1)+"\u0001";};
+  s=s.replace(/&quot;.*?&quot;/g,m=>keep('<span class="st">'+m+'</span>'));
+  s=s.replace(/\/\/.*$/gm,m=>keep('<span class="cm">'+m+'</span>'));
+  s=s.replace(/\b(int|double|float|char|bool|void|auto|class|struct|public|private|protected|return|if|else|for|while|do|switch|case|break|continue|new|delete|const|static|template|typename|using|namespace|enum|union|virtual|override|this|nullptr|true|false|include|std|try|catch|throw|unsigned|long|short)\b/g,'<span class="kw">$1</span>');
+  s=s.replace(/\u0001(\d+)\u0001/g,(_,i)=>stash[i]);
+  return s;
+}
+let modalLessonId=null;
+let searchQ="";
+function openLesson(id){
+  const f=findLesson(id);if(!f)return;
+  modalLessonId=id;
+  const l=f.lesson,c=data.completed[id];
+  const seq=allLessons(),ix=seq.findIndex(x=>x.lesson.id===id);
+  const pv=seq[ix-1],nx=seq[ix+1];
+  const links=(f.stage.links||[]).map(x=>'<a href="'+x[1]+'" target="_blank" rel="noopener">'+x[0]+'</a>').join(" · ");
+  $("modalBox").innerHTML=
+    '<h3>'+escapeHtml(l.title)+'</h3>'+
+    '<div class="meta">'+escapeHtml(f.stage.name)+' · 建议 '+l.min+' 分钟 · '+(c?'✅ 已完成'+(c.lastReview?" · 记忆等级 L"+((c.box||0)+1):""):'未学')+'</div>'+
+    '<h4>📖 内容讲解</h4><ul class="sum">'+l.summary.map(s=>'<li>'+escapeHtml(s)+'</li>').join("")+'</ul>'+
+    '<h4>💻 示例代码</h4><div class="copy-code"><button class="cp" data-act="copy-code">复制</button><pre><code>'+highlight(l.code)+'</code></pre></div>'+
+    (l.pit?'<div class="pit">⚠️ 易错点：'+escapeHtml(l.pit)+'</div>':'')+
+    (l.ex?'<div class="ex-box"><div class="ex-q">🤔 随堂思考：'+escapeHtml(l.ex.q)+'</div>'+
+      '<div class="ex-a" hidden>'+escapeHtml(l.ex.a)+'</div>'+
+      '<div style="margin-top:8px"><button class="btn small ghost" data-act="reveal">查看参考答案</button></div></div>':'')+
+    '<div class="target">🎯 学完你能做到：'+escapeHtml(l.target||"")+'</div>'+
+    '<textarea class="notes" id="noteArea" placeholder="✍️ 在这里写下你的理解、疑问或代码练习（自动保存，写笔记可解锁成就）">'+escapeHtml(data.notes[id]||"")+'</textarea>'+
+    '<div class="modal-actions">'+
+      (c?'<button class="btn ghost" data-act="undo">撤销完成</button>':'<button class="btn green" data-act="done">✅ 我学会了（+'+l.min+' XP）</button>')+
+      '<button class="btn ghost" data-act="close">关闭</button></div>'+
+    '<div class="nav-lesson">'+
+      (pv?'<button class="btn small ghost" data-act="lprev" data-id="'+pv.lesson.id+'">← 上一课：'+escapeHtml(pv.lesson.title)+'</button>':'')+
+      (nx?'<button class="btn small ghost" data-act="lnext" data-id="'+nx.lesson.id+'">下一课：'+escapeHtml(nx.lesson.title)+' →</button>':'')+
+    '</div>'+
+    (links?'<div class="stage-links" style="margin-top:12px">🔗 延伸阅读：'+links+'</div>':'');
+  $("modalMask").classList.add("show");
+  $("noteArea").addEventListener("input",function(){
+    data.notes[id]=this.value;saveData();
+    const had=data.achievements.scribe;
+    checkAchievements();
+    if(!had&&data.achievements.scribe){saveData();renderAch();}
+  });
+}
+function startQuiz(stageId,startIdx){
+  const s=CURRICULUM.find(x=>x.id===stageId);if(!s||!s.quiz)return;
+  const doneN=s.lessons.filter(l=>data.completed[l.id]).length;
+  if(doneN<s.lessons.length){toast("先完成本阶段全部课程再测评（"+doneN+"/"+s.lessons.length+"）📚","warn");return;}
+  const jump=typeof startIdx==="number"&&startIdx>0;
+  quizState={stage:s,idx:jump?startIdx:0,correct:0,answers:[],jump:jump};
+  showQuiz();
+}
+function showQuiz(){
+  const st=quizState,q=st.stage.quiz[st.idx];
+  const dots=st.stage.quiz.map((_,i)=>'<i class="'+(i===st.idx?"on":st.answers[i]===undefined?"":(st.answers[i].ok?"ok":"no"))+'"></i>').join("");
+  $("modalBox").innerHTML=
+    '<h3>📝 '+escapeHtml(st.stage.name)+' · 阶段测评</h3>'+
+    '<div class="meta">'+(st.jump?"🔁 错题重练 · 从第 "+(st.idx+1)+" 题开始 · 答对自动移出错题本，不计入正式成绩":"第 "+(st.idx+1)+" / "+st.stage.quiz.length+" 题 · 答对一半即通关")+'</div>'+
+    '<div class="q-dots">'+dots+'</div>'+
+    '<div style="font-size:16px;font-weight:600;margin:10px 0">'+escapeHtml(q.q)+'</div>'+
+    '<div id="opts">'+q.o.map((o,i)=>'<div class="q-opt" data-act="opt" data-i="'+i+'"><div class="abc">'+"ABCD"[i]+'</div><div>'+escapeHtml(o)+'</div></div>').join("")+'</div>'+
+    '<div id="qWhy"></div>'+
+    '<div class="modal-actions"><button class="btn ghost" data-act="close">退出测评</button></div>';
+  $("modalMask").classList.add("show");
+}
+function answerQuiz(i){
+  const st=quizState;if(!st||st.answers[st.idx]!==undefined)return;
+  const q=st.stage.quiz[st.idx];
+  const ok=q.a===i;
+  st.answers[st.idx]={pick:i,ok:ok};
+  if(ok)st.correct++; else recordMistake(st.stage.id,st.idx,i);
+  const mk=st.stage.id+"#"+st.idx;
+  if(ok&&data.mistakes&&data.mistakes[mk]){ // 重做答对 → 自动移出错题本
+    delete data.mistakes[mk];saveData();renderMistakes();renderAch();
+    toast("✅ 答对了，这题已自动移出错题本");
+  }
+  const opts=$("opts").querySelectorAll(".q-opt");
+  opts[i].classList.add(ok?"right":"wrong");
+  if(!ok)opts[q.a].classList.add("right");
+  $("qWhy").innerHTML='<div class="q-why">'+(ok?"✅ 正确！":"❌ 正确答案是 "+"ABCD"[q.a]+"。")+' '+escapeHtml(q.why||"")+'</div>'+
+    (st.idx<st.stage.quiz.length-1
+      ?'<div class="modal-actions"><button class="btn green" data-act="next-q">下一题 →</button></div>'
+      :'<div class="modal-actions"><button class="btn green" data-act="finish-quiz">查看成绩 🏁</button></div>');
+}
+function finishQuiz(){
+  const st=quizState,s=st.stage,total=st.stage.quiz.length;
+  const answered=st.answers.filter(Boolean).length;
+  const full=answered===total;                 // 错题重练（从中间开始）不计正式成绩
+  const passed=full&&st.correct>=Math.ceil(total/2);
+  let xpGot=0;
+  if(full){
+    const prev=data.quiz[s.id]||{best:0,total:total,tries:0,passed:false};
+    if(passed&&!prev.passed)xpGot=50;          // 首次通关 +50
+    else if(st.correct>prev.best)xpGot=10;     // 刷新最佳 +10
+    if(xpGot>0)gainXp(xpGot);
+    if(passed&&!prev.passed)confetti(40);
+    data.quiz[s.id]={best:Math.max(prev.best,st.correct),total:total,tries:prev.tries+1,passed:prev.passed||passed,date:todayStr()};
+    saveData();checkAchievements();saveData();
+  }
+  $("modalBox").innerHTML=
+    '<h3>'+(full?(passed?"🎉 测评通过！":"📚 再复习一下"):"🔁 错题重练完成")+'</h3>'+
+    '<div class="meta">'+escapeHtml(s.name)+(full?' · 第 '+data.quiz[s.id].tries+' 次尝试 · 历史最佳 '+data.quiz[s.id].best+'/'+total:' · 从中间开始作答，不影响正式成绩')+'</div>'+
+    '<div style="font-size:16px;margin:12px 0">答对 '+st.correct+' / '+answered+' 题'+(xpGot>0?" ｜ ＋"+xpGot+" XP":(full?" ｜ 本次无奖励 XP（刷新最佳成绩可得 +10）":""))+'</div>'+
+    '<div class="target">'+(full?(passed?"阶段通关 ⭐，继续向下一个阶段进发！":"建议回看本阶段讲解与易错点，再来一次会更稳。"):"答对的错题已自动移出错题本 ✅ 想刷新正式成绩就完整测一次。")+'</div>'+
+    '<div class="modal-actions">'+
+      '<button class="btn green" data-act="quiz" data-id="'+s.id+'">'+(full?"再测一次":"完整测一次")+'</button>'+
+      '<button class="btn ghost" data-act="close">好的</button></div>';
+  if(xpGot>0)toast((passed?"🎉 阶段通关 ＋":"📈 刷新最佳 ＋")+xpGot+" XP","xp");
+  renderAll();
+}
+function showIntro(){
+  $("modalBox").innerHTML=
+    '<h3>👋 欢迎来到编程与 AI 学习工作台</h3>'+
+    '<div class="meta">为零基础设计的完整学习系统 · 数据保存在本机浏览器</div>'+
+    '<div class="intro-step"><div class="n">1</div><div>每天打开先<b>打卡</b>，连续坚持可获得 XP 加成与成就（可在设置里设定提醒时间）。</div></div>'+
+    '<div class="intro-step"><div class="n">2</div><div>按「今日任务」学 1~2 节：先读<b>讲解</b>，把<b>示例代码</b>抄进编译器跑一遍。</div></div>'+
+    '<div class="intro-step"><div class="n">3</div><div>做每课的<b>随堂思考</b>，写下<b>笔记</b>；留意「易错点」能少走弯路。</div></div>'+
+    '<div class="intro-step"><div class="n">4</div><div>学完一个阶段的全部课程即可参加<b>阶段测评</b>（拿 ⭐），并解锁一道<b>编程实战</b>：写完代码一键生成「AI 批改提示词」，发给任意大模型就能获得打分与建议。</div></div>'+
+    '<div class="intro-step"><div class="n">5</div><div>通关整座篇章有<b>庆祝动画 +100 XP</b> 通关奖励。</div></div>'+
+    '<div class="intro-step"><div class="n">6</div><div>隔几天回到「间隔复习」巩固记忆，防遗忘。</div></div>'+
+    '<div class="intro-step"><div class="n">7</div><div>课程按 <b>约 60 周</b>规划为 12 大篇章：从 C++ 与 Python 双语言、数学基石，到 <b>机器学习 / 深度学习</b>，再到 <b>强化学习 / 大语言模型 / 多模态 / Agent</b> 等通用人工智能前沿，陪你一路走到 AGI 工程岗。</div></div>'+
+    '<div class="modal-actions"><button class="btn green" data-act="intro-done">🚀 开始学习之旅</button></div>';
+  $("modalMask").classList.add("show");
+}
+function closeModal(){$("modalMask").classList.remove("show");modalLessonId=null;quizState=null;labId=null;lastPrompt=null;}
+
+/* ================================================================
+ * 四B、编程实战 + AI 批改提示词 + 篇章庆祝
+ * ================================================================ */
+function renderLabs(){
+  $("labGrid").innerHTML=CURRICULUM.map((s,si)=>{
+    const unlocked=s.lessons.every(l=>data.completed[l.id]);
+    const rec=data.labs[s.id];
+    const cls="lab-card "+(rec&&rec.done?"done":unlocked?"":"locked");
+    return '<div class="'+cls+'" '+(unlocked?'data-act="lab"':'')+' data-id="'+s.id+'">'+
+      '<div class="lc-badge">'+(rec&&rec.done?"✅":unlocked?"💻":"🔒")+'</div>'+
+      '<div class="lc-t">'+escapeHtml(labTitle(s))+'</div>'+
+      '<div class="lc-m">'+(si+1)+'. '+escapeHtml(s.name)+'</div>'+
+      '<div class="lc-m">'+(rec&&rec.done?"已完成 · +"+s.lab.xp+" XP":unlocked?"已解锁 · 奖励 "+s.lab.xp+" XP":"完成本阶段全部课程解锁")+'</div></div>';
+  }).join("");
+}
+function labTitle(s){return s.lab.t;}
+function openLab(stageId){
+  const s=CURRICULUM.find(x=>x.id===stageId);if(!s||!s.lab)return;
+  const lab=s.lab;
+  if(!data.labs[stageId])data.labs[stageId]={code:"",out:"",stuck:"",done:false,date:null};
+  const rec=data.labs[stageId];
+  labId=stageId;modalLessonId=null;lastPrompt=null;
+  $("modalBox").innerHTML=
+    '<h3>💻 实战：'+escapeHtml(lab.t)+'</h3>'+
+    '<div class="meta">'+escapeHtml(s.name)+' · 完成后 +'+lab.xp+' XP · 先在编译器里独立完成，再把代码粘贴回来</div>'+
+    '<h4>📋 题目要求</h4><ul class="lab-req">'+lab.req.map(r=>'<li>'+escapeHtml(r)+'</li>').join("")+'</ul>'+
+    '<h4>🧱 起步代码</h4><div class="copy-code"><button class="cp" data-act="copy-starter">复制</button><pre><code>'+highlight(lab.starter)+'</code></pre></div>'+
+    '<h4>'+(lab.mode==="text"?"✍️ 我的回答（自动保存）":"✍️ 我的代码（自动保存）")+'</h4><textarea class="code-area" id="labCode" placeholder="'+(lab.mode==="text"?"在下方题目框架里写下你的回答…":"把你在编译器里写好的完整代码粘贴到这里…")+'">'+escapeHtml(rec.code||"")+'</textarea>'+
+    (lab.mode==="text"?"":'<h4>📤 程序运行输出</h4><textarea class="code-area out-area" id="labOut" placeholder="复制程序窗口的输出粘贴到这里（给 AI 老师的关键证据）">'+escapeHtml(rec.out||"")+'</textarea>')+
+    '<h4>🧗 我卡在哪了（可选）</h4><textarea class="code-area out-area" id="labStuck" placeholder="例如：编译报错看不懂 / 结果不对不知道为什么">'+escapeHtml(rec.stuck||"")+'</textarea>'+
+    '<div class="ex-box" style="margin-top:10px"><div class="ex-q">💡 提示（先自己想 10 分钟再看）</div><div class="ex-a" hidden>'+escapeHtml(lab.hint)+'</div><div style="margin-top:8px"><button class="btn small ghost" data-act="reveal">查看提示</button></div></div>'+
+    (function(){const ans=(typeof LAB_ANSWERS!=="undefined"&&LAB_ANSWERS[stageId])?LAB_ANSWERS[stageId]:lab.answer;return ans?'<div class="ex-box" style="margin-top:10px"><div class="ex-q">📘 参考解答（卡住再看，避免形成依赖）</div><div class="ex-a" hidden><pre><code>'+highlight(ans)+'</code></pre></div><div style="margin-top:8px"><button class="btn small ghost" data-act="reveal-answer">查看参考解答</button></div></div>':'';})()+
+    '<div class="modal-actions">'+
+      '<button class="btn amber" data-act="lab-generate">🤖 生成 AI 批改提示词</button>'+
+      (rec.done?'<button class="btn ghost" disabled>✅ 已完成</button>':'<button class="btn green" data-act="lab-done">✅ 我完成了（+'+lab.xp+' XP）</button>')+
+      '<button class="btn ghost" data-act="close">关闭</button></div>'+
+    '<div class="ai-out" id="aiOut"></div>';
+  $("modalMask").classList.add("show");
+  const bind=(id,key)=>{$(id).addEventListener("input",function(){rec[key]=this.value;saveData();});};
+  bind("labCode","code");if(lab.mode!=="text")bind("labOut","out");bind("labStuck","stuck");
+}
+function buildAiPrompt(stageId){
+  const s=CURRICULUM.find(x=>x.id===stageId);
+  const lab=s.lab,rec=data.labs[stageId]||{},li=levelInfo(data.xp);
+  const L=[];
+  L.push("# 🧑‍🏫 编程作业批改请求");
+  L.push("");
+  L.push("请你扮演一名耐心的多语言编程老师（涵盖 C++ 与 Python）。我是零基础学员，请批改下面的编程作业：");
+  L.push("");
+  L.push("**你的任务**");
+  if(lab.mode==="text"){
+    L.push("本次作业是「面试模拟作答」（纯文本，非代码）。请以资深工程师面试官的身份：");
+    L.push("1. 逐题点评我的回答，指出优点与硬伤（错误认知、遗漏的关键点）；");
+    L.push("2. 每题按 0-10 分打分并说明扣分原因；");
+    L.push("3. 像真实面试一样，每题追问 1 个更深的衍生问题，等我下一轮作答；");
+    L.push("4. 最后给我一份「标准满分答案」供对照学习。");
+  }else{
+    L.push("1. 逐条对照「题目要求」，判断每条是否达成；");
+    L.push("2. 指出编译错误、逻辑错误与潜在风险（如有），说明位置和原因；");
+    L.push("3. 按「正确性 40 + 规范性 30 + 代码风格 30」打总分（0-100）；");
+    L.push("4. 用初学者能听懂的话讲清每个问题怎么改；");
+    L.push("5. 最后给出一份带注释的改进版参考代码，并布置 1~2 道同类型延伸小练习。");
+  }
+  L.push("");
+  L.push("## 题目："+lab.t+"（阶段："+s.name+"）");
+  L.push("");
+  L.push("### 题目要求");
+  lab.req.forEach((r,i)=>L.push((i+1)+". "+r));
+  L.push("");
+  L.push("### 官方提示");
+  L.push(lab.hint);
+  if(lab.mode==="text"){
+    L.push("");
+    L.push("## 本次作业说明");
+    L.push("这是面试模拟作答，不是代码题——请按上方「面试官模式」批改。");
+  }
+  L.push("");
+  L.push("## 我的"+(lab.mode==="text"?"回答":"代码"));
+  L.push(lab.mode==="text"?"```":"```cpp");
+  L.push((rec.code||"").trim()||(lab.mode==="text"?"（还没作答）":"（还没写完）"));
+  L.push("```");
+  L.push("");
+  L.push("## 程序运行输出");
+  L.push("```");
+  L.push((rec.out||"").trim()||"（还没运行 / 没有输出）");
+  L.push("```");
+  if(rec.stuck&&rec.stuck.trim()){
+    L.push("");
+    L.push("## 我卡住的地方");
+    L.push(rec.stuck.trim());
+  }
+  L.push("");
+  L.push("## 我的学习状态");
+  L.push("- 进度："+completedCount()+"/"+totalLessons()+" 课 · "+li.title+"（Lv."+li.level+"）· 总 XP "+data.xp+" · 编程实战完成 "+Object.values(data.labs).filter(r=>r.done).length+"/"+CURRICULUM.filter(s=>s.lab).length);
+  L.push("- 若我的代码为空或错误较多，请先给思路提示，不要直接给完整答案。");
+  return L.join("\n");
+}
+function generateAiPrompt(){
+  if(!labId)return;
+  const md=buildAiPrompt(labId);
+  lastPrompt=md;
+  data.aiUsed=1;saveData();checkAchievements();
+  $("aiOut").innerHTML=
+    '<h4>🤖 AI 批改提示词已生成</h4>'+
+    '<pre>'+escapeHtml(md)+'</pre>'+
+    '<div class="modal-actions">'+
+      '<button class="btn green" data-act="lab-copy">复制提示词</button>'+
+      '<button class="btn ghost" data-act="lab-dl">下载 .md 文件</button>'+
+    '</div>'+
+    '<div class="set-hint" style="margin-top:6px">粘贴或发送给任意 AI 助手（ChatGLM / DeepSeek / Kimi / Claude / ChatGPT…）即可获得打分与改进建议。</div>';
+  toast("提示词已生成，复制发给 AI 老师吧 🤖");
+}
+function completeLab(stageId){
+  const s=CURRICULUM.find(x=>x.id===stageId);
+  const rec=data.labs[stageId];
+  if(!s||!s.lab||!rec||rec.done)return;
+  rec.done=true;rec.date=todayStr();
+  gainXp(s.lab.xp);updateStreak();recordDaily(s.lab.xp,10,true);
+  saveData();checkAchievements();
+  confetti(40);
+  toast("＋"+s.lab.xp+" XP · 实战完成！记得生成提示词找 AI 老师批改 🤖","xp");
+  closeModal();renderAll();
+}
+/* ---- 庆祝动画 ---- */
+function confetti(n){
+  const colors=["#f0a020","#2e9e5b","#2f7ed8","#8a63d2","#e2553b","#ffd24a"];
+  for(let i=0;i<n;i++){
+    const c=document.createElement("i");
+    c.className="confetti";
+    c.style.left=(Math.random()*100)+"vw";
+    c.style.background=colors[i%colors.length];
+    const w=6+Math.random()*8;
+    c.style.width=w+"px";
+    c.style.height=(w*(0.6+Math.random()))+"px";
+    c.style.borderRadius=Math.random()<0.5?"50%":"2px";
+    c.style.animationDuration=(2+Math.random()*2)+"s";
+    c.style.animationDelay=(Math.random()*0.6)+"s";
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),5000);
+  }
+}
+function celebratePhase(pi){
+  const p=PHASES[pi];
+  if(!data.phaseSeen[pi]){
+    data.phaseSeen[pi]=todayStr();
+    gainXp(100);
+    toast("🎉 篇章通关奖励 +100 XP","ach");
+  }
+  saveData();
+  confetti(90);
+  const next=PHASES[pi+1];
+  const mask=document.createElement("div");
+  mask.className="cele-mask";
+  mask.innerHTML='<div class="cele-card"><div class="cele-icon">'+p.icon+'</div>'+
+    '<h3>🎉 恭喜通关 '+escapeHtml(p.name)+'</h3>'+
+    '<p>'+escapeHtml(p.desc)+'</p>'+
+    '<p style="margin-top:8px">篇章通关奖励 <b style="color:var(--amber)">+100 XP</b>'+(next?' · 下一站：'+next.icon+' '+escapeHtml(next.name):' · 全部篇章通关，你就是自己的冠军！')+'</p>'+
+    '<button class="btn green" style="margin-top:18px">继续前进 →</button></div>';
+  mask.addEventListener("click",function(e){if(e.target===mask||e.target.closest(".btn"))mask.remove();});
+  document.body.appendChild(mask);
+}
+function checkPhaseDone(stageId){
+  const pi=PHASES.findIndex(p=>{
+    const idx=CURRICULUM.findIndex(s=>s.id===stageId);
+    return idx>=p.range[0]&&idx<=p.range[1];
+  });
+  if(pi<0||data.phaseSeen[pi])return;
+  const all=CURRICULUM.slice(PHASES[pi].range[0],PHASES[pi].range[1]+1)
+    .every(s=>s.lessons.every(l=>data.completed[l.id]));
+  if(all)celebratePhase(pi);
+}
+function goalStreakCount(){
+  const g=data.goal||2;
+  let n=0;const d=new Date();
+  if(((data.daily[todayStr(d)]||{}).lessons||0)<g)d.setDate(d.getDate()-1); // 今天还没达标不打断连击
+  for(let i=0;i<400;i++){
+    const rec=data.daily[todayStr(d)];
+    if(rec&&(rec.lessons||0)>=g){n++;d.setDate(d.getDate()-1);}
+    else break;
+  }
+  return n;
+}
+
+/* ================================================================
+ * 五、提醒（页面内 + 可选浏览器通知）
+ * ================================================================ */
+function fireRemind(){
+  if(data.lastCheckinDate===todayStr())return;
+  toast("⏰ 打卡时间到！今天还没打卡，连续 "+data.streak+" 天别断哦","ach");
+  if(data.settings.notify&&("Notification"in window)&&Notification.permission==="granted"){
+    try{new Notification("编程与 AI 学习打卡提醒",{body:"今天还没打卡哦，保持连续 "+data.streak+" 天 🔥"});}catch(e){}
+  }
+  renderCheckin();
+}
+function scheduleRemind(){
+  if(remindTimer)clearTimeout(remindTimer);
+  const t=data.settings.remind;if(!t)return;
+  const parts=t.split(":");
+  const now=new Date();
+  const target=new Date(now.getFullYear(),now.getMonth(),now.getDate(),parseInt(parts[0],10),parseInt(parts[1],10),0);
+  if(target<=now){ // 已过提醒时间且未打卡 → 尽快提示一次
+    setTimeout(()=>{if(data.lastCheckinDate!==todayStr())fireRemind();},1500);
+    return;
+  }
+  remindTimer=setTimeout(fireRemind,Math.min(target-now,2147483000));
+}
+
+/* ================================================================
+ * 六、主题 / 事件委托 / 初始化
+ * ================================================================ */
+function applyTheme(){
+  const pref=(data.settings&&data.settings.theme)||"auto";
+  const dark=pref==="dark"||(pref==="auto"&&window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches);
+  document.documentElement.dataset.theme=dark?"dark":"light";
+  const btn=$("themeBtn");if(btn){btn.textContent=pref==="auto"?"🌓":pref==="dark"?"🌙":"☀️";btn.title="当前："+({auto:"跟随系统",dark:"深色",light:"浅色"}[pref])+"，点击切换";}
+}
+document.addEventListener("click",function(e){
+  // 按钮水波纹
+  const btn=e.target.closest(".btn");
+  if(btn&&!btn.disabled){
+    const r=document.createElement("span");r.className="ripple";
+    const rect=btn.getBoundingClientRect(),size=Math.max(rect.width,rect.height);
+    r.style.width=r.style.height=size+"px";
+    r.style.left=(e.clientX-rect.left-size/2)+"px";
+    r.style.top=(e.clientY-rect.top-size/2)+"px";
+    btn.appendChild(r);setTimeout(()=>r.remove(),620);
+  }
+  // 热力图明细
+  const cell=e.target.closest(".cell[data-date]");
+  if(cell){ openDayDetail(cell.dataset.date); }
+  const t=e.target.closest("[data-act]");
+  if(!t)return;
+  const act=t.dataset.act,id=t.dataset.id;
+  switch(act){
+    case "theme":{
+      const order=["auto","light","dark"],cur=(data.settings.theme||"auto");
+      data.settings.theme=order[(order.indexOf(cur)+1)%3];
+      saveData();applyTheme();break;}
+    case "checkin":checkIn();break;
+    case "lesson":openLesson(id);break;
+    case "stage":{
+      const el=t.closest(".stage");
+      el.classList.toggle("open");
+      openStage=el.classList.contains("open")?id:null;
+      break;}
+    case "phase":{
+      const el=$("stage-"+id);
+      if(el){openStage=id;el.classList.add("open");el.scrollIntoView({behavior:"smooth",block:"start"});}
+      break;}
+    case "quiz":startQuiz(id);break;
+    case "opt":answerQuiz(parseInt(t.dataset.i,10));break;
+    case "next-q":if(quizState){quizState.idx++;showQuiz();}break;
+    case "finish-quiz":finishQuiz();break;
+    case "review":doReview(id);break;
+    case "reveal":{
+      const box=t.closest(".ex-box"),a=box.querySelector(".ex-a");
+      a.hidden=!a.hidden;t.textContent=a.hidden?"查看参考答案":"收起答案";break;}
+    case "copy-code":{
+      const f=findLesson(modalLessonId);
+      if(f)copyText(f.lesson.code,"代码已复制，快去编译器里运行 🔧");break;}
+    case "copy-starter":{
+      const s=CURRICULUM.find(x=>x.id===labId);
+      if(s&&s.lab)copyText(s.lab.starter,"起步代码已复制 🧱");break;}
+    case "lab":openLab(id);break;
+    case "lab-generate":generateAiPrompt();break;
+    case "lab-copy":if(lastPrompt)copyText(lastPrompt,"提示词已复制，发给 AI 老师吧 🤖");break;
+    case "lab-dl":{
+      if(!lastPrompt)break;
+      const blob=new Blob([lastPrompt],{type:"text/markdown"});
+      const a=document.createElement("a");a.href=URL.createObjectURL(blob);
+      a.download="cpp-lab-"+(labId||"")+"-AI批改请求.md";a.click();
+      toast("已下载 .md 文件 💾");break;}
+    case "lab-done":if(labId)completeLab(labId);break;
+    case "lprev":if(id)openLesson(id);break;
+    case "lnext":if(id)openLesson(id);break;
+    case "done":if(modalLessonId){completeLesson(modalLessonId);closeModal();}break;
+    case "undo":if(modalLessonId){undoLesson(modalLessonId);closeModal();}break;
+    case "close":closeModal();break;
+    case "intro-done":data.introSeen=1;saveData();closeModal();break;
+    case "refresh-report":renderReport();toast("报告已刷新");break;
+    case "copy-report":copyText($("dailyReport").textContent,"日报已复制 📋");break;
+    case "week-report":renderPeriod("week");break;
+    case "month-report":renderPeriod("month");break;
+    case "copy-period":if($("periodReport").textContent)copyText($("periodReport").textContent,"周期报告已复制 📋");else toast("请先生成周报或月报","warn");break;
+    case "dl-period":{
+      const txt=$("periodReport").textContent;if(!txt){toast("请先生成周报或月报","warn");break;}
+      const blob=new Blob([txt],{type:"text/markdown"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="cpp-period-report-"+todayStr()+".md";a.click();toast("已下载 .md 文件 💾");break;
+    }
+    case "export":{
+      const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+      const a=document.createElement("a");a.href=URL.createObjectURL(blob);
+      a.download="cpp-workbench-backup-"+todayStr()+".json";a.click();
+      data.lastExport=todayStr();saveData();renderBackupHint();
+      toast("已导出备份 💾");break;}
+    case "import":$("importFile").click();break;
+    case "reset":
+      if(confirm("确定清空所有学习记录？此操作不可撤销（建议先导出备份）。")){
+        data=defaultData();saveData();openStage=null;renderAll();applyTheme();bindSettings();toast("已重置");
+      }break;
+    case "notify":{
+      if(!("Notification"in window)){toast("当前浏览器不支持桌面通知","warn");break;}
+      Notification.requestPermission().then(function(p){
+        data.settings.notify=p==="granted";saveData();updateNotifyStat();
+        toast(p==="granted"?"桌面通知已开启 🔔":"浏览器拒绝了通知权限，仍可用页面内提醒");
+      }).catch(function(){toast("请求通知权限失败","warn");});
+      break;}
+    case "timer-start":startTimer();break;
+    case "timer-pause":pauseTimer();break;
+    case "timer-stop":stopTimer();break;
+    case "mistake-redo":{const s=CURRICULUM.find(x=>x.id===id);if(s&&s.quiz)startQuiz(id,parseInt(t.dataset.idx,10)||0);else toast("该阶段暂无测评","warn");break;}
+    case "mistake-del":{if(data.mistakes&&data.mistakes[id]){delete data.mistakes[id];saveData();renderMistakes();renderAch();toast("已移除该题");}break;}
+    case "mistake-clear":if(confirm("确定清空错题本？")){data.mistakes={};saveData();renderMistakes();renderAch();toast("错题本已清空");}break;
+    case "stage-filter":{
+      const f=t.dataset.filter;$("stages").dataset.filter=f;
+      document.querySelectorAll("#stageFilter .chip").forEach(c=>c.classList.toggle("active",c.dataset.filter===f));
+      break;
+    }
+    case "reveal-answer":{
+      const box=t.closest(".ex-box"),a=box.querySelector(".ex-a");
+      a.hidden=!a.hidden;t.textContent=a.hidden?"查看参考解答":"收起解答";
+      if(!a.hidden){ if(!data.flags)data.flags={}; if(!data.flags.viewAnswer){data.flags.viewAnswer=1;saveData();checkAchievements();renderAch();} }
+      break;
+    }
+    case "note-tag":{ noteState.tag=t.dataset.tag||""; renderNotes(); break; }
+    case "note-clear-search":{ noteState.q=""; const b=$("noteSearch"); if(b)b.value=""; renderNotes(); break; }
+  }
+});
+
+document.addEventListener("input",function(e){
+  const t=e.target.closest("#noteSearch");
+  if(t){ noteState.q=t.value; if(t.value.trim()){ if(!data.flags)data.flags={}; data.flags.noteSearch=1; saveData(); checkAchievements(); renderAch(); } renderNotes(); }
+});
+
+function updateNotifyStat(){
+  const on=data.settings.notify&&("Notification"in window)&&Notification.permission==="granted";
+  $("notifyStat").textContent=on?"✅ 已开启（页面保持打开时，到点弹桌面通知）":"未开启（页面保持打开时，到点仍会在页面内弹窗提醒）";
+  $("notifyBtn").textContent=on?"✅ 桌面通知已开启":"🔔 开启桌面通知";
+}
+function bindSettings(){
+  $("nameInput").value=data.name||"";
+  $("goalInput").value=data.goal||2;
+  $("remindInput").value=data.settings.remind||"20:00";
+  if(settingsBound)return; // 事件只绑定一次，避免重置/导入时重复绑定导致双份触发
+  settingsBound=true;
+  $("searchInput").addEventListener("input",e=>{searchQ=e.target.value.trim().toLowerCase();renderStages();});
+  $("nameInput").addEventListener("input",e=>{data.name=e.target.value||"学习者";saveData();renderHeader();renderReport();});
+  $("goalInput").addEventListener("change",e=>{
+    let v=parseInt(e.target.value,10)||2;v=Math.max(1,Math.min(10,v));
+    data.goal=v;e.target.value=v;saveData();renderToday();renderReport();});
+  $("remindInput").addEventListener("change",e=>{
+    data.settings.remind=e.target.value||"20:00";saveData();scheduleRemind();renderCheckin();
+    toast("提醒时间已设为 "+data.settings.remind);});
+  $("importFile").addEventListener("change",e=>{
+    const file=e.target.files[0];if(!file)return;
+    const r=new FileReader();
+    r.onload=function(){
+      try{
+        const d=JSON.parse(r.result);
+        if(d&&(d.version===2||d.version===3)){
+          const def=defaultData();
+          data=Object.assign({},def,d,{settings:Object.assign({},def.settings,d.settings||{}),quiz:d.quiz||{}});
+          data.version=3;
+          saveData();renderAll();applyTheme();bindSettings();updateNotifyStat();toast("导入成功 ✅");
+        }else toast("文件格式不正确","warn");
+      }catch(err){toast("解析失败","warn");}
+      e.target.value="";
+    };
+    r.readAsText(file);
+  });
+  $("modalMask").addEventListener("click",e=>{if(e.target===$("modalMask"))closeModal();});
+  document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal();});
+  if(window.matchMedia){
+    try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",function(){if((data.settings.theme||"auto")==="auto")applyTheme();});}catch(e){}
+  }
+}
+/* ================================================================
+ * 六B、学习计时器 & 错题本
+ * ================================================================ */
+function fmtTime(s){const m=Math.floor(s/60),ss=s%60;return String(m).padStart(2,"0")+":"+String(ss).padStart(2,"0");}
+function renderTimer(){
+  $("timerDisplay").textContent=fmtTime(Math.floor(timer.elapsed+(timer.running?(Date.now()-timer.start)/1000:0)));
+  $("timerStartBtn").style.display=timer.running?"none":"";
+  $("timerPauseBtn").style.display=timer.running?"":"none";
+}
+function startTimer(){
+  if(timer.running)return;
+  timer.running=true;timer.start=Date.now();
+  timer.iv=setInterval(renderTimer,1000);
+  $("timerTip").textContent="计时中…专注学习，结束后点「结束并记录」。"+(timer.elapsed>0?"（已累计 "+fmtTime(timer.elapsed)+"）":"");
+  renderTimer();
+}
+function pauseTimer(){
+  if(!timer.running)return;
+  timer.elapsed+=Math.floor((Date.now()-timer.start)/1000);
+  timer.running=false;clearInterval(timer.iv);timer.iv=null;
+  $("timerTip").textContent="已暂停，已累计 "+fmtTime(timer.elapsed)+"。可继续「开始」或「结束并记录」。";
+  renderTimer();
+}
+function stopTimer(){
+  if(timer.running){timer.elapsed+=Math.floor((Date.now()-timer.start)/1000);timer.running=false;clearInterval(timer.iv);timer.iv=null;}
+  const mins=Math.round(timer.elapsed/60);timer.elapsed=0;
+  if(mins<=0){toast("还没到 1 分钟，不记录～");renderTimer();$("timerTip").textContent="点「开始」计时，专注学完一节后点「结束并记录」。";return;}
+  const t=todayStr();
+  if(!data.daily[t])data.daily[t]={lessons:0,xp:0,minutes:0,labs:0};
+  data.daily[t].minutes+=mins;data.focusMinutes=(data.focusMinutes||0)+mins;saveData();
+  checkAchievements();renderAch();
+  renderDash();renderReport();renderHeat();
+  toast("＋"+mins+" 分钟学习时长已记录 ⏱️","xp");
+  $("timerTip").textContent="本次记录 "+mins+" 分钟，已累计到今日学时。";
+  renderTimer();
+}
+function recordMistake(sid,idx,pick){
+  if(!data.mistakes)data.mistakes={};
+  const s=CURRICULUM.find(x=>x.id===sid);if(!s||!s.quiz||!s.quiz[idx])return;
+  data.mistakes[sid+"#"+idx]={sid:sid,idx:idx,pick:pick,when:todayStr()};
+  saveData();checkAchievements();
+}
+function renderMistakes(){
+  const keys=Object.keys(data.mistakes||{});
+  $("mistakeTag").textContent=keys.length+" 题";
+  if(keys.length===0){$("mistakeList").innerHTML='<div class="rev-item"><div class="ti">还没有错题～ 测评答错的题会自动收进来，方便日后集中攻克 💪</div></div>';return;}
+  $("mistakeList").innerHTML=keys.map(k=>{
+    const m=data.mistakes[k];const s=CURRICULUM.find(x=>x.id===m.sid);const q=s.quiz[m.idx];
+    return '<div class="mistake-item">'+
+      '<div class="mi-top"><b>'+escapeHtml(s.name)+'</b> · 第 '+(m.idx+1)+' 题</div>'+
+      '<div class="mi-q">'+escapeHtml(q.q)+'</div>'+
+      '<div class="mi-ans">你的选择：'+("ABCD"[m.pick])+' ｜ 正确答案：'+("ABCD"[q.a])+'</div>'+
+      '<div class="mi-why">'+escapeHtml(q.why||"")+'</div>'+
+      '<div class="mi-actions">'+
+        '<button class="btn small green" data-act="mistake-redo" data-id="'+m.sid+'" data-idx="'+m.idx+'">🔁 从本题开始重练</button>'+
+        '<button class="btn small ghost" data-act="mistake-del" data-id="'+k+'">移除</button>'+
+      '</div></div>';
+  }).join("")+'<div class="mi-clear"><button class="btn small ghost" data-act="mistake-clear">清空错题本</button></div>';
+}
+
+/* ---- 日历明细弹窗 ---- */
+function openDayDetail(ds){
+  const rec=data.daily[ds]||{};
+  const doneNames=Object.keys(data.completed).filter(id=>data.completed[id].date===ds).map(id=>{const f=findLesson(id);return f?f.lesson.title:null;}).filter(Boolean);
+  const reviewed=allLessons().filter(x=>{const r=data.completed[x.lesson.id];return r&&r.lastReview===ds;}).map(x=>x.lesson.title);
+  const labsDone=Object.keys(data.labs).filter(k=>data.labs[k].date===ds&&data.labs[k].done).map(k=>{const s=CURRICULUM.find(x=>x.id===k);return s?s.lab.t:null;}).filter(Boolean);
+  const checkedIn=data.lastCheckinDate===ds;
+  $("modalBox").innerHTML=
+    '<h3>📅 '+ds+' 学习明细</h3>'+
+    '<div class="meta">'+(checkedIn?"✅ 已打卡":"⏳ 未打卡")+' ｜ 课程 '+(rec.lessons||0)+' 节 ｜ 实战 '+(rec.labs||0)+' 个 ｜ +'+(rec.xp||0)+' XP ｜ 约 '+(rec.minutes||0)+' 分钟</div>'+
+    (doneNames.length?'<h4>✅ 完成的课程</h4><ul class="sum">'+doneNames.map(n=>'<li>'+escapeHtml(n)+'</li>').join("")+'</ul>':'<div class="rev-hint">这天没有完成课程记录。</div>')+
+    (labsDone.length?'<h4>💻 完成的实战</h4><ul class="sum">'+labsDone.map(n=>'<li>'+escapeHtml(n)+'</li>').join("")+'</ul>':'')+
+    (reviewed.length?'<h4>🔁 复习的章节</h4><ul class="sum">'+reviewed.map(n=>'<li>'+escapeHtml(n)+'</li>').join("")+'</ul>':'')+
+    '<div class="modal-actions"><button class="btn ghost" data-act="close">关闭</button></div>';
+  $("modalMask").classList.add("show");
+}
+
+/* ---- 周报 / 月报 ---- */
+function buildPeriodReport(kind){
+  const t=new Date();
+  let from;
+  if(kind==="week"){ from=new Date(t); from.setDate(t.getDate()-6); }
+  else { from=new Date(t.getFullYear(),t.getMonth(),1); }
+  const days=[];
+  for(let d=new Date(from); d<=t; d.setDate(d.getDate()+1)){
+    const ds=todayStr(d), rec=data.daily[ds]||{};
+    days.push({ds:ds,xp:rec.xp||0,lessons:rec.lessons||0,labs:rec.labs||0,minutes:rec.minutes||0,checkin:rec.checkin});
+  }
+  const sum=a=>a.reduce((x,y)=>x+y,0);
+  const totXp=sum(days.map(x=>x.xp));
+  const totL=sum(days.map(x=>x.lessons));
+  const totLab=sum(days.map(x=>x.labs));
+  const totMin=sum(days.map(x=>x.minutes));
+  const checked=days.filter(x=>x.checkin).length;
+  const cnt=completedCount(),tot=totalLessons();
+  const L=[];
+  L.push("📅 "+(kind==="week"?"本周":"本月")+"学习报告（"+todayStr(from)+" ~ "+todayStr(t)+"）");
+  L.push("──────────────────────────");
+  L.push("📖 完成课程："+totL+" 节 ｜ 💻 实战："+totLab+" 个");
+  L.push("⏱️ 专注时长：约 "+(totMin/60).toFixed(1)+" 小时 ｜ ✅ 打卡 "+checked+"/"+days.length+" 天");
+  L.push("⚡ 获得 XP："+totXp+" ｜ 🔥 连续 "+data.streak+" 天");
+  L.push("📊 累计总进度："+cnt+"/"+tot+" 节（"+Math.round(cnt/tot*100)+"%）");
+  L.push("──────────────────────────");
+  L.push("💬 "+(kind==="week"?QUOTES[Math.floor(new Date().getTime()/86400000)%QUOTES.length]:"坚持一个月，习惯已成；下个月向更高目标进发。"));
+  return {text:L.join("\n"),days:days};
+}
+function renderPeriod(kind){
+  const r=buildPeriodReport(kind);
+  $("periodReport").textContent=r.text;
+  if(!data.flags)data.flags={};
+  if(kind==="week")data.flags.weekRep=1; else data.flags.monthRep=1;
+  saveData();checkAchievements();renderAch();
+  toast(kind==="week"?"🗓️ 周报已生成":"📆 月报已生成");
+}
+
+/* ---- 笔记中心：搜索 + 标签 ---- */
+let noteState={q:"",tag:""};
+function renderNotes(){
+  const entries=allLessons().map(x=>({stage:x.stage,lesson:x.lesson,note:data.notes[x.lesson.id]||""})).filter(x=>x.note&&x.note.trim());
+  const tagSet=new Set();
+  entries.forEach(e=>{ (e.note.match(/#[一-龥A-Za-z0-9_]+/g)||[]).forEach(t=>tagSet.add(t)); });
+  const tags=[...tagSet];
+  const q=noteState.q.trim().toLowerCase(), tag=noteState.tag;
+  const filtered=entries.filter(e=>{
+    const hitQ=!q || e.lesson.title.toLowerCase().includes(q) || e.note.toLowerCase().includes(q);
+    const hitT=!tag || (e.note.match(/#[一-龥A-Za-z0-9_]+/g)||[]).indexOf(tag)>=0;
+    return hitQ&&hitT;
+  });
+  let tagHtml="";
+  if(tags.length){
+    tagHtml='<div class="tag-cloud">标签：'+
+      (tag?'<button class="chip" data-act="note-tag" data-tag="">全部</button>':'')+
+      tags.map(t=>'<button class="chip '+(noteState.tag===t?"active":"")+'" data-act="note-tag" data-tag="'+escapeHtml(t)+'">'+escapeHtml(t)+'</button>').join("")+
+      '</div>';
+  }
+  let listHtml;
+  if(filtered.length===0){
+    listHtml='<div class="rev-item"><div class="ti">'+(entries.length===0?"还没有笔记～ 在课程里写下理解就能在这里集中管理 📒":"没有匹配的笔记，换个关键词或标签试试")+'</div></div>';
+  }else{
+    listHtml=filtered.map(e=>
+      '<div class="note-item">'+
+        '<div class="ni-top"><b>'+escapeHtml(e.lesson.title)+'</b> · '+escapeHtml(e.stage.name)+'</div>'+
+        '<div class="ni-body">'+escapeHtml(e.note).replace(/#[一-龥A-Za-z0-9_]+/g,m=>'<span class="ntag">'+m+'</span>')+'</div>'+
+        '<div class="mi-actions"><button class="btn small ghost" data-act="lesson" data-id="'+e.lesson.id+'">去学习</button></div>'+
+      '</div>').join("");
+  }
+  $("noteTagCloud").innerHTML=tagHtml;
+  $("noteList").innerHTML=listHtml;
+  const box=$("noteSearch"); if(box&&box.value!==noteState.q)box.value=noteState.q;
+  $("noteCount").textContent=entries.length+" 篇";
+}
+
+function init(){
+  loadData();
+  applyTheme();
+  bindSettings();
+  renderAll();
+  scheduleRemind();
+  updateNotifyStat();
+  // PWA：动态注入 manifest（可安装到桌面）
+  try{
+    const mf={name:"编程与 AI 零基础学习工作台",short_name:"编程与 AI 学习",start_url:".",display:"standalone",background_color:"#0f1626",theme_color:"#2f7ed8"};
+    const lk=document.createElement("link");lk.rel="manifest";lk.href="data:application/manifest+json,"+encodeURIComponent(JSON.stringify(mf));document.head.appendChild(lk);
+  }catch(e){}
+  // PWA：尝试注册 Service Worker 实现离线（需通过 http(s) 托管；file:// 下静默失败）
+  if("serviceWorker" in navigator){ try{ navigator.serviceWorker.register("cpp-sw.js").catch(function(){}); }catch(e){} }
+  setInterval(function(){ // 每分钟刷新打卡横幅的"到点提醒"状态
+    if(data.lastCheckinDate!==todayStr())renderCheckin();
+  },60000);
+  if(!data.introSeen)setTimeout(showIntro,600);
+}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);
+else init();
+</script>
+</body>
+</html>
