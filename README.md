@@ -20,6 +20,15 @@ A zero-basis, long-term interactive learning workbench that walks you from your 
 - 每节含：讲解 + 可运行代码样例 + 「学完你能做到」目标 + 自测题
 - 每个阶段含：阶段测评（3 题）+ 编程实战（lab，附参考解答）
 
+### 两条学习路线（顶部一键切换）
+
+页面右上角提供 **路线切换** 按钮，可在两条路线间自由切换：
+
+- **C++ 路线（默认）**：先打 C++ 地基（语法 / 指针 / 面向对象 / STL / 工程素养），再到 Python 与数学基石，最后进入机器学习 / 深度学习 / AGI 前沿。
+- **🐍 Python 路线**：从零开始学 Python，直奔数学基石 → 科学计算 → 机器学习 → 深度学习 → 通用人工智能前沿；把 C++ 系统纵深（语法 / 算法 / 工程素养 / 求职）作为**可选深造专题**放在 AGI 之后。
+
+两条路线**共用同一套 53 阶段课程内容与全部学习进度**（做题、打卡、成就、笔记、复习均按课程 id 共享），切换路线不会丢失任何记录。
+
 ### 激励与留存
 
 - GitHub 风格**学习日历热力图**、累计学时、连续天数统计
@@ -72,6 +81,15 @@ Built on a C++ foundation, it lays out the full path to AGI engineering: a Pytho
 - **12 chapters · 53 stages · 264 lessons**
 - Each lesson includes: explanation + runnable code sample + a "what you can do after this" target + a self-check quiz
 - Each stage includes: a stage quiz (3 questions) + a coding lab (with reference solution)
+
+### Two learning tracks (switch from the top bar)
+
+The top-right of the page has a **track switcher** so you can move between two tracks freely:
+
+- **C++ track (default)**: build the C++ foundation first (syntax / pointers / OOP / STL / engineering), then Python and the math bedrock, and finally machine learning / deep learning / the AGI frontier.
+- **🐍 Python track**: start learning Python from zero and go straight to the math bedrock → scientific computing → machine learning → deep learning → the AGI frontier; the C++ systems depth (syntax / algorithms / engineering / job prep) is offered as an **optional advanced track after AGI**.
+
+Both tracks **share the same 53-stage curriculum and all of your progress** (exercises, check-ins, achievements, notes, reviews are keyed by lesson id), so switching tracks never loses any of your records.
 
 ### Motivation & retention
 

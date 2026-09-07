@@ -37,6 +37,12 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-o
 .xp-fill{height:100%;width:0;background:#ffd24a;border-radius:6px;transition:width .6s ease;}
 .theme-btn{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.38);border-radius:10px;width:40px;height:40px;font-size:18px;cursor:pointer;color:#fff;transition:background .2s;}
 .theme-btn:hover{background:rgba(255,255,255,.28);}
+/* 路线切换（C++ / Python） */
+.mode-switch{display:inline-flex;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.38);border-radius:12px;padding:3px;gap:3px;}
+.mode-pill{appearance:none;border:none;background:transparent;color:#fff;opacity:.82;cursor:pointer;font-size:13px;font-weight:600;padding:7px 12px;border-radius:9px;transition:background .15s,opacity .15s;white-space:nowrap;}
+.mode-pill:hover{opacity:1;}
+.mode-pill.active{background:#fff;color:var(--blue);opacity:1;box-shadow:0 2px 8px rgba(0,0,0,.18);}
+.mode-pill[data-mode="py"].active{background:linear-gradient(135deg,#2f7ed8,#2e9e5b);color:#fff;}
 
 /* ===== 通用 ===== */
 .section{background:var(--card);border-radius:18px;padding:20px;margin-bottom:16px;box-shadow:var(--shadow);transition:background .3s;}
@@ -303,7 +309,7 @@ html[data-theme=dark] .checkin.urgent .tx b{color:#ff9b7a;}
 .period-actions{display:flex;gap:8px;margin-bottom:8px;}
 
 /* ===== 侧边栏导航 / 返回顶部 ===== */
-.sidebar{position:fixed;top:0;left:0;bottom:0;width:228px;background:var(--card);border-right:1px solid var(--line);
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:264px;background:var(--card);border-right:1px solid var(--line);
   padding:14px 10px;overflow-y:auto;z-index:42;transform:translateX(-100%);transition:transform .25s ease;box-shadow:var(--shadow);}
 .sidebar .sb-title{font-size:12px;color:var(--sub);padding:6px 8px 10px;font-weight:700;letter-spacing:.5px;}
 .sb-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:12px;cursor:pointer;color:var(--ink);transition:background .15s;}
@@ -319,6 +325,13 @@ html[data-theme=dark] .checkin.urgent .tx b{color:#ff9b7a;}
 .sb-overlay.show{opacity:1;visibility:visible;}
 .sidebar.open{transform:none;}
 .sidebar .sb-cur{color:var(--blue);}
+/* 快速导航分组 + 可折叠篇章分组 */
+.sb-sec{display:flex;flex-direction:column;gap:2px;margin-bottom:6px;}
+.sb-group-hd{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 10px 8px;margin:6px 0 4px;
+  font-size:12.5px;font-weight:700;color:var(--sub);cursor:pointer;border-top:1px solid var(--line);letter-spacing:.3px;user-select:none;}
+.sb-group-hd:hover{color:var(--ink);}
+.sb-caret{font-size:12px;transition:transform .2s;flex:none;}
+.sb-chapters{display:flex;flex-direction:column;gap:2px;}
 .sb-toggle{position:fixed;top:14px;left:14px;z-index:43;width:42px;height:42px;border-radius:12px;border:1px solid var(--line);
   background:var(--card);color:var(--ink);font-size:20px;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:var(--shadow);}
 .to-top{position:fixed;right:18px;bottom:18px;z-index:43;width:46px;height:46px;border-radius:50%;border:none;
@@ -327,7 +340,7 @@ html[data-theme=dark] .checkin.urgent .tx b{color:#ff9b7a;}
 .to-top.show{opacity:1;visibility:visible;transform:none;}
 /* 宽屏：侧边栏常驻，内容右移 */
 @media(min-width:980px){
-  body{padding-left:248px;}
+  body{padding-left:284px;}
   .sidebar{transform:none;}
 }
 /* 窄屏：汉堡按钮唤起抽屉式侧边栏 */
@@ -356,13 +369,17 @@ html[data-theme=dark] .checkin.urgent .tx b{color:#ff9b7a;}
           <div class="xp-bar" data-page-node-id="opGlt2r3Kj3AdQJMU5EdDF"><div class="xp-fill" id="xpFill" data-page-node-id="yDdHtSpb5ydUGMf0yRwEC8"></div></div>
         </div>
         <button class="theme-btn" id="themeBtn" data-act="theme" title="切换浅色 / 深色 / 跟随系统" data-page-node-id="H0dTBhzKJkWDgrlQCMD6G1">🌓</button>
+        <div class="mode-switch" id="modeSwitch" role="group" aria-label="学习路线切换" title="切换学习路线：C++ 优先 / Python 优先">
+          <button class="mode-pill" data-act="mode" data-mode="cpp">C++ 路线</button>
+          <button class="mode-pill" data-act="mode" data-mode="py">🐍 Python 路线</button>
+        </div>
       </div>
     </div>
   </div>
 
   <div id="checkinSlot" data-page-node-id="qndhu8uefNa7pKSKdbUr7n"></div>
 
-  <div class="section" data-page-node-id="z8Bsws6kSdAY2gLwNUJzEe">
+  <div class="section" id="dashSec" data-page-node-id="z8Bsws6kSdAY2gLwNUJzEe">
     <h2 data-page-node-id="2UJoOIf84y4LDyoNyhssjb">📊 成长仪表盘</h2>
     <div class="dash" id="dash" data-page-node-id="NBumSYsZaZ65QFTdKQPy1x"></div>
   </div>
@@ -422,13 +439,13 @@ html[data-theme=dark] .checkin.urgent .tx b{color:#ff9b7a;}
     <div id="mistakeList" data-page-node-id="LVGCrqC4S7U0uJzC83Frxz"></div>
   </div>
 
-  <div class="section" data-page-node-id="qMjitgA4CndmF5xx1cVjND">
+  <div class="section" id="heatSec" data-page-node-id="qMjitgA4CndmF5xx1cVjND">
     <h2 data-page-node-id="hnRsgbXJFIuTS2eNBOMO6r">🗓️ 学习日历 <span class="tag" data-page-node-id="ic7zzu8TLmKDzh0jiiCibE">坚持看得见</span></h2>
     <div class="heat" id="heat" data-page-node-id="UEDlBYV3xTbbz8pwY5YXWP"></div>
     <div class="heat-legend" data-page-node-id="UPBl8jFgBKiMnSM6NSN45X"><span data-page-node-id="SQX1MrkOvFMrEXXo1bYRwW">少</span><span class="cell" data-page-node-id="FyXlu9mzBiu3ysxwcHtrcY"></span><span class="cell l1" data-page-node-id="cQkjRmAFqXvpbnPFIxuQie"></span><span class="cell l2" data-page-node-id="TJRSFDsrpXpZzHmTWgVtfP"></span><span class="cell l3" data-page-node-id="BwJLyQ8ycWKPBAjBw2dd4Z"></span><span class="cell l4" data-page-node-id="3xAyWpbCaYd3zsCLuMDbGA"></span><span data-page-node-id="ashacelK7Q5fiALEvn17ou">多</span><span style="margin-left:8px" data-page-node-id="fn8FxxOsfiU48aX9FXU0bP">点击格子查看当天明细</span></div>
   </div>
 
-  <div class="section" data-page-node-id="mqsNRcd82i7sBJXA9R5RFA">
+  <div class="section" id="noteSec" data-page-node-id="mqsNRcd82i7sBJXA9R5RFA">
     <h2 data-page-node-id="uG3ppYNB8MWFjLhKjAKn2e">📒 笔记中心 <span class="tag" id="noteCount" data-page-node-id="TkuKyEpFWitIGUz64sOAQN"></span></h2>
     <div class="note-tools" data-page-node-id="MX0Q3DtvqsdELXlfLWG2ix">
       <input type="text" id="noteSearch" class="note-search" placeholder="🔍 搜索笔记内容或课程名…" data-page-node-id="pu0KMcK3UE8n4coXyuW9Wa">
@@ -438,12 +455,12 @@ html[data-theme=dark] .checkin.urgent .tx b{color:#ff9b7a;}
     <div id="noteList" data-page-node-id="ex5OA8sfTEAFNp36tZtjQT"></div>
   </div>
 
-  <div class="section" data-page-node-id="dc5FHBHHtlo3hohKEBAACg">
+  <div class="section" id="achSec" data-page-node-id="dc5FHBHHtlo3hohKEBAACg">
     <h2 data-page-node-id="3FHfxuL8iEJaYfQME7iRgn">🏆 成就墙 <span class="tag" id="achTag" data-page-node-id="5xyzIpHac4l7cJV3NMaGMs"></span></h2>
     <div class="ach" id="achWall" data-page-node-id="SU2jE3o3GFD0A43OQebdGN"></div>
   </div>
 
-  <div class="section" data-page-node-id="guvkDrP7JbqPhkGXcLsHES">
+  <div class="section" id="reportSec" data-page-node-id="guvkDrP7JbqPhkGXcLsHES">
     <h2 data-page-node-id="q7eM2u39HefPYdWiBl1T7O">📝 每日进度报告 <span class="tag" data-page-node-id="DAGppaTpRPqeUI17jTaZwH">近 7 天 XP 趋势</span></h2>
     <div class="week-bars" id="weekBars" data-page-node-id="YQxVNCyk5iHHj5MpABjBL1"></div>
     <div class="report" id="dailyReport" data-page-node-id="G0k3iHyOgTdP8XVb9KEjW6"></div>
@@ -462,7 +479,7 @@ html[data-theme=dark] .checkin.urgent .tx b{color:#ff9b7a;}
     </div>
   </div>
 
-  <div class="section" data-page-node-id="xzLMMg1SSDWI5vMspLO1JK">
+  <div class="section" id="settingSec" data-page-node-id="xzLMMg1SSDWI5vMspLO1JK">
     <h2 data-page-node-id="tkliNyoolkmjDTiUCX2UaS">⚙️ 设置与数据</h2>
     <div class="set-row" data-page-node-id="cOhJJX6C3p1DHa2Qe931T4"><label data-page-node-id="5X8X3fnBts0Mcwm3IItqyj">学习者昵称</label><input type="text" id="nameInput" placeholder="例如：小明" data-page-node-id="Q7uNJoA5Vq06o2VKPOyawb"><span class="set-hint" data-page-node-id="FK0egXcLn88zpOByOubrxN">会出现在打卡和日报里</span></div>
     <div class="set-row" data-page-node-id="MxuI9GAhLoIjFEivCqE7kP"><label data-page-node-id="wht27bUgacdIF82p0BNzYY">每日目标（节）</label><input type="number" id="goalInput" min="1" max="10" value="2" data-page-node-id="Kzs7irAkCIrdE2y8QdP5jh"><span class="set-hint" data-page-node-id="E46j32z0qapSKewU93a7lU">建议 1~3 节，贵在坚持</span></div>
@@ -740,34 +757,66 @@ quiz:[{q:"独占所有权的智能指针是？",o:["shared_ptr","unique_ptr","we
 quiz:[{q:"让程序退出后数据不丢失，应？",o:["用全局变量","写入文件","多开几个窗口","加大数组"],a:1,why:"持久化到文件（或数据库）才能跨次保存。"},{q:"猜数字游戏生成随机数常用？",o:["rand 旧式","<random> 现代","time()","math.h"],a:1,why:"<random> 的 mt19937 更均匀、更现代。"},{q:"「重构」主要目的是？",o:["让程序变慢","改善结构与可维护性","删功能","换语言"],a:1,why:"在不改变功能的前提下让代码更好维护。"}]}
 ];
 
-/* 注入扩展课程并重新编排为 53 阶段 / 12 篇章 的 AGI 工程型总序
-   基础 C++ + 扩展(调试/拔高) + 求职(算法/工程) + AGI 前沿 全部汇入统一映射，
-   再按 FINAL_ORDER 排成「编程启航 → … → 通用人工智能前沿」的完整成长路径 */
+/* 双路线模式：共用同一套 53 阶段内容（C++ 核心 + Python/数学/AI 前沿），
+   仅「学习顺序」与「篇章结构」不同——
+     cpp：C++ 优先（先打 C++ 地基，再到 Python 与 AI 前沿）
+     py ：Python 优先（从零学 Python，直奔数学/ML/DL/AGI，C++ 作为可选系统纵深）
+   切换路线不会丢失任何进度：所有阶段的完成记录按 id 共享。 */
 const _stageMap={};
 CURRICULUM.forEach(s=>{_stageMap[s.id]=s;});
 if(typeof EXTRA_STAGES!=="undefined")EXTRA_STAGES.forEach(s=>{_stageMap[s.id]=s;});
 if(typeof JOB_STAGES!=="undefined")JOB_STAGES.forEach(s=>{_stageMap[s.id]=s;});
 if(typeof AGI_STAGES!=="undefined")AGI_STAGES.forEach(s=>{_stageMap[s.id]=s;});
-const FINAL_ORDER=["s1","s2","s3","s4","s5","s6","s7","s8","py1","py2","py3","py4","ma1","ma2","ma3","ma4","s9","s10","s11","sdbg","s12","s13","s14","s15","s16","s17","s18","sbw","srec","sdp","dsl","dsk","dst","dsg","dsa","eng","career","sp1","sp2","sp3","ml1","ml2","ml3","ml4","dl1","dl2","dl3","dl4","dl5","agi1","agi2","agi3","agi4"];
-const _missStages=FINAL_ORDER.filter(id=>!_stageMap[id]);
-if(_missStages.length)console.error("AGI 工作台缺失阶段：",_missStages);
-CURRICULUM.length=0;
-FINAL_ORDER.forEach(id=>{ if(_stageMap[id])CURRICULUM.push(_stageMap[id]); });
 
-const PHASES=[
- {icon:"🌱",name:"第一篇章 · 编程启航",range:[0,4],desc:"环境、语法、函数——打牢 C++ 地基",wk:3},
- {icon:"🧱",name:"第二篇章 · 数据与对象",range:[5,7],desc:"数组、指针、面向对象——攻克 C++ 难关",wk:3},
- {icon:"🐍",name:"第三篇章 · Python 入门",range:[8,11],desc:"AI 时代首选语言，先跑起来",wk:3},
- {icon:"📐",name:"第四篇章 · 数学基石",range:[12,15],desc:"线代 / 微积分 / 概率——AI 的语言",wk:5},
- {icon:"⚙️",name:"第五篇章 · C++ 系统深入",range:[16,19],desc:"指针进阶、调试、内存与底层功力",wk:4},
- {icon:"🚀",name:"第六篇章 · C++ 实战与拔高",range:[20,29],desc:"STL、项目、位运算、递归、动态规划",wk:7},
- {icon:"🧮",name:"第七篇章 · 算法修炼",range:[30,34],desc:"数据结构与算法——面试硬实力，求职分水岭",wk:8},
- {icon:"💼",name:"第八篇章 · 工程素养与求职",range:[35,36],desc:"Git/CMake/多线程 + 面试冲刺",wk:5},
- {icon:"🔢",name:"第九篇章 · 科学计算",range:[37,39],desc:"NumPy / Pandas / Jupyter——数据处理利器",wk:3},
- {icon:"🤖",name:"第十篇章 · 机器学习",range:[40,43],desc:"从写规则到学规律：ML 全景",wk:6},
- {icon:"🧠",name:"第十一篇章 · 深度学习",range:[44,48],desc:"神经网络、PyTorch、CNN、Transformer",wk:7},
- {icon:"🌌",name:"第十二篇章 · 通用人工智能前沿",range:[49,52],desc:"RL / LLM / 多模态 / Agent——通往 AGI",wk:7}
-];
+/* 两条路线的阶段顺序（id 列表，均含全部 53 阶段，仅排列不同） */
+const MODE_ORDERS={
+ cpp:["s1","s2","s3","s4","s5","s6","s7","s8","py1","py2","py3","py4","ma1","ma2","ma3","ma4","s9","s10","s11","sdbg","s12","s13","s14","s15","s16","s17","s18","sbw","srec","sdp","dsl","dsk","dst","dsg","dsa","eng","career","sp1","sp2","sp3","ml1","ml2","ml3","ml4","dl1","dl2","dl3","dl4","dl5","agi1","agi2","agi3","agi4"],
+ py:["py1","py2","py3","py4","ma1","ma2","ma3","ma4","sp1","sp2","sp3","ml1","ml2","ml3","ml4","dl1","dl2","dl3","dl4","dl5","agi1","agi2","agi3","agi4","s1","s2","s3","s4","s5","s6","s7","s8","s9","s10","s11","sdbg","s12","s13","s14","s15","s16","s17","s18","sbw","srec","sdp","dsl","dsk","dst","dsg","dsa","eng","career"]
+};
+/* 每条路线的 12 大篇章（range 指向该路线 CURRICULUM 的下标区间） */
+const MODE_PHASES={
+ cpp:[
+  {icon:"🌱",name:"第一篇章 · 编程启航",range:[0,4],desc:"环境、语法、函数——打牢 C++ 地基",wk:3},
+  {icon:"🧱",name:"第二篇章 · 数据与对象",range:[5,7],desc:"数组、指针、面向对象——攻克 C++ 难关",wk:3},
+  {icon:"🐍",name:"第三篇章 · Python 入门",range:[8,11],desc:"AI 时代首选语言，先跑起来",wk:3},
+  {icon:"📐",name:"第四篇章 · 数学基石",range:[12,15],desc:"线代 / 微积分 / 概率——AI 的语言",wk:5},
+  {icon:"⚙️",name:"第五篇章 · C++ 系统深入",range:[16,19],desc:"指针进阶、调试、内存与底层功力",wk:4},
+  {icon:"🚀",name:"第六篇章 · C++ 实战与拔高",range:[20,29],desc:"STL、项目、位运算、递归、动态规划",wk:7},
+  {icon:"🧮",name:"第七篇章 · 算法修炼",range:[30,34],desc:"数据结构与算法——面试硬实力，求职分水岭",wk:8},
+  {icon:"💼",name:"第八篇章 · 工程素养与求职",range:[35,36],desc:"Git/CMake/多线程 + 面试冲刺",wk:5},
+  {icon:"🔢",name:"第九篇章 · 科学计算",range:[37,39],desc:"NumPy / Pandas / Jupyter——数据处理利器",wk:3},
+  {icon:"🤖",name:"第十篇章 · 机器学习",range:[40,43],desc:"从写规则到学规律：ML 全景",wk:6},
+  {icon:"🧠",name:"第十一篇章 · 深度学习",range:[44,48],desc:"神经网络、PyTorch、CNN、Transformer",wk:7},
+  {icon:"🌌",name:"第十二篇章 · 通用人工智能前沿",range:[49,52],desc:"RL / LLM / 多模态 / Agent——通往 AGI",wk:7}
+ ],
+ py:[
+  {icon:"🐍",name:"第一篇章 · Python 启航",range:[0,3],desc:"从零开始学 Python，写出第一个 AI 时代程序",wk:3},
+  {icon:"📐",name:"第二篇章 · 数学基石",range:[4,7],desc:"线代 / 微积分 / 概率——AI 的语言",wk:5},
+  {icon:"🧮",name:"第三篇章 · 科学计算",range:[8,10],desc:"NumPy / Pandas / Jupyter——数据处理利器",wk:3},
+  {icon:"🤖",name:"第四篇章 · 机器学习",range:[11,14],desc:"从写规则到学规律：ML 全景",wk:6},
+  {icon:"🧠",name:"第五篇章 · 深度学习",range:[15,19],desc:"神经网络、PyTorch、CNN、Transformer",wk:7},
+  {icon:"🌌",name:"第六篇章 · 通用人工智能前沿",range:[20,23],desc:"RL / LLM / 多模态 / Agent——通往 AGI",wk:7},
+  {icon:"⚙️",name:"第七篇章 · 系统纵深 · C++ 基础",range:[24,31],desc:"可选深造：C++ 语法与底层功力（性能 / 系统方向加分）",wk:4},
+  {icon:"🏗️",name:"第八篇章 · 系统纵深 · C++ 对象与工程",range:[32,35],desc:"可选深造：类 / 模板 / 调试——面向对象与工程化雏形",wk:3},
+  {icon:"🚀",name:"第九篇章 · 系统纵深 · C++ 标准库与实战",range:[36,42],desc:"可选深造：STL / 文件 / 异常 / 现代特性 / 项目",wk:7},
+  {icon:"🔢",name:"第十篇章 · 系统纵深 · 算法思维",range:[43,45],desc:"可选深造：位运算 / 递归分治 / 动态规划",wk:4},
+  {icon:"🧮",name:"第十一篇章 · 系统纵深 · 数据结构与算法",range:[46,50],desc:"可选深造：链表 / 栈队列 / 树 / 图 / 排序——面试硬实力",wk:8},
+  {icon:"💼",name:"第十二篇章 · 系统纵深 · 工程素养与求职",range:[51,52],desc:"可选深造：Git/CMake/多线程/面试冲刺",wk:5}
+ ]
+};
+let PHASES=MODE_PHASES.cpp;            // 当前路线篇章（随模式切换重赋值）
+let CURRICULUM_MODE="cpp";             // 当前路线：cpp / py
+function applyMode(mode, doRender){
+  if(!MODE_ORDERS[mode])mode="cpp";
+  CURRICULUM_MODE=mode;
+  PHASES=MODE_PHASES[mode];
+  CURRICULUM.length=0;
+  MODE_ORDERS[mode].forEach(id=>{ if(_stageMap[id])CURRICULUM.push(_stageMap[id]); });
+  const miss=MODE_ORDERS[mode].filter(id=>!_stageMap[id]);
+  if(miss.length)console.error("AGI 工作台缺失阶段：",miss);
+  if(doRender&&typeof renderAll==="function")renderAll();
+}
+applyMode("cpp", false);
 const TITLES=["萌新学徒","代码新手","语法行者","函数旅人","双语言者","对象学徒","算法新星","数据匠人","现代行者","项目匠人","进阶工程师","AI 工程学徒","ML 实践者","DL 探索者","AGI 行者"];
 const ACHIEVEMENTS=[
  {id:"first",icon:"🥇",t:"第一步",d:"完成第 1 节课"},
@@ -824,7 +873,7 @@ let timer={running:false,start:0,elapsed:0,iv:null};
 function defaultData(){return{version:3,name:"学习者",goal:2,xp:0,
  completed:{},daily:{},notes:{},quiz:{},achievements:{},labs:{},mistakes:{},phaseSeen:{},aiUsed:0,focusMinutes:0,flags:{},lastExport:null,
  streak:0,longestStreak:0,lastStudyDate:null,lastCheckinDate:null,
- settings:{theme:"auto",remind:"20:00",notify:false},
+ settings:{theme:"auto",remind:"20:00",notify:false,mode:"cpp"},
  startedDate:todayStr(),introSeen:0};}
 function loadData(){
   try{const raw=localStorage.getItem(STORAGE_KEY);if(raw)data=JSON.parse(raw);}catch(e){}
@@ -991,7 +1040,7 @@ function renderHeader(){
   $("xpText").textContent=data.xp+" XP";
   $("xpFill").style.width=Math.min(100,Math.round(li.into/li.need*100))+"%";
   $("streakChip").textContent="🔥 连续 "+data.streak+" 天";
-  $("learnerLine").textContent=(data.name||"学习者")+" 的编程与 AI 成长之旅 · "+CURRICULUM.length+" 阶段 "+totalLessons()+" 节 · 每天一小步";
+  $("learnerLine").textContent=(data.name||"学习者")+" 的编程与 AI 成长之旅 · "+CURRICULUM.length+" 阶段 "+totalLessons()+" 节 · "+((CURRICULUM_MODE==="py")?"Python 优先路线":"C++ 优先路线")+" · 每天一小步";
 }
 function renderDash(){
   const cnt=completedCount(),tot=totalLessons();
@@ -1066,24 +1115,42 @@ function renderPhases(){
   const tag=$("phaseTag");
   if(tag){const tw=PHASES.reduce((a,p)=>a+(p.wk||0),0);tag.textContent=PHASES.length+" 大篇章 · 全程约 "+tw+" 周（≈ 半年）";}
 }
-/* 侧边栏：12 大篇章一键直达，含"当前篇章"高亮 */
+/* 侧边栏：功能快捷区 + 可折叠的篇章导航 */
 function renderSidebar(){
   const sb=$("sidebar");if(!sb)return;
   const cur=allLessons().find(x=>!data.completed[x.lesson.id]);
   const curIdx=cur?CURRICULUM.findIndex(s=>s.id===cur.stage.id):-1;
-  sb.innerHTML='<div class="sb-title">📚 篇章导航 · 点击直达</div>'+PHASES.map((p,pi)=>{
-    const st=CURRICULUM.slice(p.range[0],p.range[1]+1);
-    const firstId=st[0].id;
-    const done=st.reduce((a,s)=>a+s.lessons.filter(l=>data.completed[l.id]).length,0);
-    const tot=st.reduce((a,s)=>a+s.lessons.length,0);
-    const isCur=curIdx>=p.range[0]&&curIdx<=p.range[1];
-    const fin=done===tot&&tot>0;
-    return '<div class="sb-item'+(isCur?" cur":"")+'" data-act="sb" data-id="'+firstId+'" title="'+escapeHtml(p.desc)+'">'+
-      '<div class="sb-ic">'+p.icon+'</div>'+
-      '<div class="sb-tx"><div class="sb-nm">'+escapeHtml(p.name)+'</div>'+
-      '<div class="sb-pg">'+done+'/'+tot+' 节'+(fin?' · 已完成 🏆':'')+'</div></div>'+
-      (isCur?'<div class="sb-cur">📍</div>':'')+'</div>';
-  }).join("");
+  const collapsed=!!(data.flags&&data.flags.sbChaptersCollapsed);
+  const nav=[
+    ["📊","成长仪表盘","dashSec"],["🎯","今日任务","todaySec"],["⏱️","学习计时","timerSec"],
+    ["💻","编程实战","labSec"],["🔁","间隔复习","reviewSec"],["📕","错题本","mistakeSec"],
+    ["🗓️","学习日历","heatSec"],["🏆","成就墙","achSec"],["📒","笔记中心","noteSec"],
+    ["📝","每日报告","reportSec"],["⚙️","设置与数据","settingSec"]
+  ];
+  let html='<div class="sb-title">🧭 快速导航</div>';
+  html+='<div class="sb-sec">'+nav.map(function(n){
+    return '<div class="sb-item" data-act="sb-nav" data-target="'+n[2]+'" title="'+n[1]+'">'+
+      '<div class="sb-ic">'+n[0]+'</div>'+
+      '<div class="sb-tx"><div class="sb-nm">'+n[1]+'</div></div></div>';
+  }).join("")+'</div>';
+  html+='<div class="sb-group-hd" data-act="sb-toggle-chapters" title="展开 / 收起篇章导航">'+
+        '<span>🗺️ 篇章导航</span><span class="sb-caret">'+(collapsed?"▸":"▾")+'</span></div>';
+  if(!collapsed){
+    html+='<div class="sb-chapters">'+PHASES.map((p,pi)=>{
+      const st=CURRICULUM.slice(p.range[0],p.range[1]+1);
+      const firstId=st[0].id;
+      const done=st.reduce((a,s)=>a+s.lessons.filter(l=>data.completed[l.id]).length,0);
+      const tot=st.reduce((a,s)=>a+s.lessons.length,0);
+      const isCur=curIdx>=p.range[0]&&curIdx<=p.range[1];
+      const fin=done===tot&&tot>0;
+      return '<div class="sb-item'+(isCur?" cur":"")+'" data-act="sb" data-id="'+firstId+'" title="'+escapeHtml(p.desc)+'">'+
+        '<div class="sb-ic">'+p.icon+'</div>'+
+        '<div class="sb-tx"><div class="sb-nm">'+escapeHtml(p.name)+'</div>'+
+        '<div class="sb-pg">'+done+'/'+tot+' 节'+(fin?' · 已完成 🏆':'')+'</div></div>'+
+        (isCur?'<div class="sb-cur">📍</div>':'')+'</div>';
+    }).join("")+'</div>';
+  }
+  sb.innerHTML=html;
 }
 function openSidebar(){const sb=$("sidebar"),ov=$("sbOverlay");if(sb)sb.classList.add("open");if(ov)ov.classList.add("show");}
 function closeSidebar(){const sb=$("sidebar"),ov=$("sbOverlay");if(sb)sb.classList.remove("open");if(ov)ov.classList.remove("show");}
@@ -1353,7 +1420,9 @@ function showIntro(){
     '<div class="intro-step"><div class="n">4</div><div>学完一个阶段的全部课程即可参加<b>阶段测评</b>（拿 ⭐），并解锁一道<b>编程实战</b>：写完代码一键生成「AI 批改提示词」，发给任意大模型就能获得打分与建议。</div></div>'+
     '<div class="intro-step"><div class="n">5</div><div>通关整座篇章有<b>庆祝动画 +100 XP</b> 通关奖励。</div></div>'+
     '<div class="intro-step"><div class="n">6</div><div>隔几天回到「间隔复习」巩固记忆，防遗忘。</div></div>'+
-    '<div class="intro-step"><div class="n">7</div><div>课程按 <b>约 60 周</b>规划为 12 大篇章：从 C++ 与 Python 双语言、数学基石，到 <b>机器学习 / 深度学习</b>，再到 <b>强化学习 / 大语言模型 / 多模态 / Agent</b> 等通用人工智能前沿，陪你一路走到 AGI 工程岗。</div></div>'+
+    '<div class="intro-step"><div class="n">7</div><div>'+((CURRICULUM_MODE==="py")
+      ?'课程按 <b>约 60 周</b>规划为 12 大篇章：从 <b>Python 从零起步</b>、数学基石、科学计算，到 <b>机器学习 / 深度学习</b>，再到 <b>强化学习 / 大语言模型 / 多模态 / Agent</b> 等通用人工智能前沿——主线路一路直达 AGI；想做性能 / 系统方向的同学，可在之后选修 C++ 系统纵深专题。'
+      :'课程按 <b>约 60 周</b>规划为 12 大篇章：从 C++ 与 Python 双语言、数学基石，到 <b>机器学习 / 深度学习</b>，再到 <b>强化学习 / 大语言模型 / 多模态 / Agent</b> 等通用人工智能前沿，陪你一路走到 AGI 工程岗。')+'</div></div>'+
     '<div class="modal-actions"><button class="btn green" data-act="intro-done">🚀 开始学习之旅</button></div>';
   $("modalMask").classList.add("show");
 }
@@ -1575,6 +1644,34 @@ function applyTheme(){
   document.documentElement.dataset.theme=dark?"dark":"light";
   const btn=$("themeBtn");if(btn){btn.textContent=pref==="auto"?"🌓":pref==="dark"?"🌙":"☀️";btn.title="当前："+({auto:"跟随系统",dark:"深色",light:"浅色"}[pref])+"，点击切换";}
 }
+/* 路线切换：高亮当前模式按钮 */
+function updateModeUI(){
+  const cur=(data.settings&&data.settings.mode)||"cpp";
+  document.querySelectorAll(".mode-pill").forEach(p=>{
+    p.classList.toggle("active", p.dataset.mode===cur);
+  });
+}
+function setMode(m){
+  if(m!=="cpp"&&m!=="py")return;
+  const cur=(data.settings&&data.settings.mode)||"cpp";
+  if(cur===m)return;
+  data.settings.mode=m;saveData();
+  applyMode(m,true);
+  updateModeUI();
+  renderHeader();
+  toast("已切换到「"+(m==="py"?"Python → AGI":"C++ → AGI")+"」路线 · 进度已自动保留", m==="py"?"#2e9e5b":"#2f7ed8");
+}
+/* 轻量提示条 */
+let _toastTimer=null;
+function toast(msg,color){
+  let el=$("toast");
+  if(!el){el=document.createElement("div");el.id="toast";el.className="toast";document.body.appendChild(el);}
+  el.textContent=msg;
+  el.style.background=color||"var(--blue)";
+  el.classList.add("show");
+  if(_toastTimer)clearTimeout(_toastTimer);
+  _toastTimer=setTimeout(()=>{el.classList.remove("show");},2600);
+}
 document.addEventListener("click",function(e){
   // 按钮水波纹
   const btn=e.target.closest(".btn");
@@ -1597,6 +1694,7 @@ document.addEventListener("click",function(e){
       const order=["auto","light","dark"],cur=(data.settings.theme||"auto");
       data.settings.theme=order[(order.indexOf(cur)+1)%3];
       saveData();applyTheme();break;}
+    case "mode":setMode(t.dataset.mode);break;
     case "checkin":checkIn();break;
     case "lesson":openLesson(id);break;
     case "stage":{
@@ -1612,6 +1710,16 @@ document.addEventListener("click",function(e){
       const el=$("stage-"+id);
       if(el){openStage=id;el.classList.add("open");el.scrollIntoView({behavior:"smooth",block:"start"});}
       closeSidebar();
+      break;}
+    case "sb-nav":{
+      const el=$(t.dataset.target);
+      if(el)el.scrollIntoView({behavior:"smooth",block:"start"});
+      closeSidebar();
+      break;}
+    case "sb-toggle-chapters":{
+      data.flags=data.flags||{};
+      data.flags.sbChaptersCollapsed=!data.flags.sbChaptersCollapsed;
+      saveData();renderSidebar();
       break;}
     case "quiz":startQuiz(id);break;
     case "opt":answerQuiz(parseInt(t.dataset.i,10));break;
@@ -1893,8 +2001,10 @@ function renderNotes(){
 
 function init(){
   loadData();
+  applyMode((data.settings&&data.settings.mode)||"cpp", false);
   applyTheme();
   bindSettings();
+  updateModeUI();
   renderAll();
   // 侧边栏抽屉（窄屏汉堡）/ 返回顶部
   try{
