@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="zh-CN" data-page-node-id="FW6dSPCCRHLdNmPf7OCwEE">
+<head data-page-node-id="LeDMxtfHD2fPTa6itYEdm5">
+<meta charset="UTF-8" data-page-node-id="ocAcrZPK5q2BSTDoK24fOL">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="qvtykQy25Wiam3QkKDefrQ">
 <title>编程与 AI 零基础学习工作台</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;}
@@ -301,151 +301,188 @@ html[data-theme=dark] .checkin.urgent .tx b{color:#ff9b7a;}
 .ex-box .ex-a pre{background:var(--soft);border:1px dashed var(--line);border-radius:10px;padding:12px;overflow:auto;margin-top:8px;}
 .period-box{margin-top:14px;border-top:1px dashed var(--line);padding-top:12px;}
 .period-actions{display:flex;gap:8px;margin-bottom:8px;}
+
+/* ===== 侧边栏导航 / 返回顶部 ===== */
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:228px;background:var(--card);border-right:1px solid var(--line);
+  padding:14px 10px;overflow-y:auto;z-index:42;transform:translateX(-100%);transition:transform .25s ease;box-shadow:var(--shadow);}
+.sidebar .sb-title{font-size:12px;color:var(--sub);padding:6px 8px 10px;font-weight:700;letter-spacing:.5px;}
+.sb-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:12px;cursor:pointer;color:var(--ink);transition:background .15s;}
+.sb-item:hover{background:var(--soft);}
+.sb-item.cur{background:linear-gradient(135deg,rgba(47,126,216,.12),rgba(46,158,91,.12));}
+.sb-item.cur .sb-nm{color:var(--blue);font-weight:700;}
+.sb-ic{font-size:18px;width:24px;text-align:center;flex:none;}
+.sb-tx{display:flex;flex-direction:column;flex:1;min-width:0;}
+.sb-nm{font-size:13.5px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-pg{font-size:11px;color:var(--sub);margin-top:2px;}
+.sb-cur{font-size:12px;flex:none;}
+.sb-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:41;opacity:0;visibility:hidden;transition:opacity .2s;}
+.sb-overlay.show{opacity:1;visibility:visible;}
+.sidebar.open{transform:none;}
+.sidebar .sb-cur{color:var(--blue);}
+.sb-toggle{position:fixed;top:14px;left:14px;z-index:43;width:42px;height:42px;border-radius:12px;border:1px solid var(--line);
+  background:var(--card);color:var(--ink);font-size:20px;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:var(--shadow);}
+.to-top{position:fixed;right:18px;bottom:18px;z-index:43;width:46px;height:46px;border-radius:50%;border:none;
+  background:linear-gradient(135deg,#2f7ed8,#2e9e5b);color:#fff;font-size:22px;cursor:pointer;box-shadow:0 8px 24px rgba(47,126,216,.35);
+  opacity:0;visibility:hidden;transform:translateY(12px);transition:opacity .2s,transform .2s;align-items:center;justify-content:center;}
+.to-top.show{opacity:1;visibility:visible;transform:none;}
+/* 宽屏：侧边栏常驻，内容右移 */
+@media(min-width:980px){
+  body{padding-left:248px;}
+  .sidebar{transform:none;}
+}
+/* 窄屏：汉堡按钮唤起抽屉式侧边栏 */
+@media(max-width:979px){
+  .sb-toggle{display:flex;}
+}
 </style>
 </head>
-<body>
-<div class="container">
-  <div class="header">
-    <div class="header-top">
-      <div>
-        <h1>🚀 编程与 AI · 长期学习工作台</h1>
-        <div class="sub" id="learnerLine"></div>
+<body data-page-node-id="CnoajvZvVSqtIzuhRp3ukH">
+<button class="sb-toggle" id="sbToggle" aria-label="打开课程篇章导航" data-page-node-id="5FuD2aqj6dmiYYuohEyDT9">☰</button>
+<aside class="sidebar" id="sidebar" aria-label="课程篇章导航" data-page-node-id="aKHL1nvJkWaZW0q3UrmxmX"></aside>
+<div class="sb-overlay" id="sbOverlay" data-page-node-id="Sq8OrxRHqeFGdil8yNtSIz"></div>
+<button class="to-top" id="toTop" aria-label="返回顶部" title="返回顶部" data-page-node-id="0dDo3driMnOAQbdaf3HHAG">↑</button>
+<div class="container" data-page-node-id="ua6b8T5i1gKxth9sKDXiFB">
+  <div class="header" data-page-node-id="8oCRw3VxrrBgQaMXZMpSAb">
+    <div class="header-top" data-page-node-id="BYNHZktu1a0A82iLW81esz">
+      <div data-page-node-id="FB8ZH10t6M9BYGN0mFpIEp">
+        <h1 data-page-node-id="OWo85q1bW9s5IrdaVvx9Dn">🚀 编程与 AI · 长期学习工作台</h1>
+        <div class="sub" id="learnerLine" data-page-node-id="I2ZYjaDe24OqvQzIbSLH4D"></div>
       </div>
-      <div class="right">
-        <div class="streak-chip" id="streakChip">🔥 连续 0 天</div>
-        <div class="level-badge"><div class="lv">等级</div><div class="tt" id="lvTitle">萌新学徒</div></div>
-        <div class="xp-wrap">
-          <div class="xp-top"><span id="xpText">0 XP</span><span id="lvText">Lv.1</span></div>
-          <div class="xp-bar"><div class="xp-fill" id="xpFill"></div></div>
+      <div class="right" data-page-node-id="ChL4tGA1pFMZOVOgHrwm3L">
+        <div class="streak-chip" id="streakChip" data-page-node-id="qWusBqepvBGf8lhXtzN5sP">🔥 连续 0 天</div>
+        <div class="level-badge" data-page-node-id="FSG2Ulzc2cetcOQqCZLYAE"><div class="lv" data-page-node-id="VdYoiwBEMhW5HKrgFJEwBo">等级</div><div class="tt" id="lvTitle" data-page-node-id="AhYv0BIteiQJ99MXDx5Tvz">萌新学徒</div></div>
+        <div class="xp-wrap" data-page-node-id="E3GjJkLNQKhrT3h9Czal0p">
+          <div class="xp-top" data-page-node-id="YEvXFGCxh1cRK8Ow481RGt"><span id="xpText" data-page-node-id="IU33bdc14QttPkc2eQSKe4">0 XP</span><span id="lvText" data-page-node-id="ADCbEYkCgJA7JXAgKS4siP">Lv.1</span></div>
+          <div class="xp-bar" data-page-node-id="opGlt2r3Kj3AdQJMU5EdDF"><div class="xp-fill" id="xpFill" data-page-node-id="yDdHtSpb5ydUGMf0yRwEC8"></div></div>
         </div>
-        <button class="theme-btn" id="themeBtn" data-act="theme" title="切换浅色 / 深色 / 跟随系统">🌓</button>
+        <button class="theme-btn" id="themeBtn" data-act="theme" title="切换浅色 / 深色 / 跟随系统" data-page-node-id="H0dTBhzKJkWDgrlQCMD6G1">🌓</button>
       </div>
     </div>
   </div>
 
-  <div id="checkinSlot"></div>
+  <div id="checkinSlot" data-page-node-id="qndhu8uefNa7pKSKdbUr7n"></div>
 
-  <div class="section">
-    <h2>📊 成长仪表盘</h2>
-    <div class="dash" id="dash"></div>
+  <div class="section" data-page-node-id="z8Bsws6kSdAY2gLwNUJzEe">
+    <h2 data-page-node-id="2UJoOIf84y4LDyoNyhssjb">📊 成长仪表盘</h2>
+    <div class="dash" id="dash" data-page-node-id="NBumSYsZaZ65QFTdKQPy1x"></div>
   </div>
 
-  <div class="section" id="timerSec">
-    <h2>⏱️ 学习计时 <span class="tag">专注当下</span></h2>
-    <div class="timer-wrap">
-      <div class="timer-display" id="timerDisplay">00:00</div>
-      <div class="timer-actions">
-        <button class="btn green" data-act="timer-start" id="timerStartBtn">▶ 开始</button>
-        <button class="btn amber" data-act="timer-pause" id="timerPauseBtn" style="display:none">⏸ 暂停</button>
-        <button class="btn ghost" data-act="timer-stop">⏹ 结束并记录</button>
+  <div class="section" id="timerSec" data-page-node-id="flgCZARqeokjQHPVGSx5GO">
+    <h2 data-page-node-id="V1tG5BAp0tAJPuYTutJgZP">⏱️ 学习计时 <span class="tag" data-page-node-id="ojCKdtDVYFQW44cS8uVrLo">专注当下</span></h2>
+    <div class="timer-wrap" data-page-node-id="zP0AlO2fA62RRIkObSjwA7">
+      <div class="timer-display" id="timerDisplay" data-page-node-id="H0MywmoZBOn3xqQ5ASNm9j">00:00</div>
+      <div class="timer-actions" data-page-node-id="Fj7aNZeEB8687oEG5DF5lG">
+        <button class="btn green" data-act="timer-start" id="timerStartBtn" data-page-node-id="J0s4q80efLXnf0I1by4vVo">▶ 开始</button>
+        <button class="btn amber" data-act="timer-pause" id="timerPauseBtn" style="display:none" data-page-node-id="PtWAX3XlBDbWLixZ0P2DLW">⏸ 暂停</button>
+        <button class="btn ghost" data-act="timer-stop" data-page-node-id="UfCFlpYX6QgL6vTBDd0v01">⏹ 结束并记录</button>
       </div>
-      <div class="timer-tip" id="timerTip">点「开始」计时，专注学完一节后点「结束并记录」，时长会累计进今日学时。</div>
+      <div class="timer-tip" id="timerTip" data-page-node-id="agAWlVzC0m2ZGKxqaU2GZN">点「开始」计时，专注学完一节后点「结束并记录」，时长会累计进今日学时。</div>
     </div>
   </div>
 
-  <div class="section" id="todaySec">
-    <h2>🎯 今日任务 <span class="tag">今日事今日毕</span></h2>
-    <div class="today-wrap">
-      <div class="goal-ring" id="goalRing"></div>
-      <div class="today-main"><div id="todayList"></div></div>
+  <div class="section" id="todaySec" data-page-node-id="PGcGAuz3n0lY8rFsxksCsg">
+    <h2 data-page-node-id="xBlAbOYJcKrFDIIQ03rKM2">🎯 今日任务 <span class="tag" data-page-node-id="msxBErY0prbW06JmVXsa0X">今日事今日毕</span></h2>
+    <div class="today-wrap" data-page-node-id="mKeUGKF4swxYE4zaMLFZsz">
+      <div class="goal-ring" id="goalRing" data-page-node-id="WMlspUBtan92A70tXoceg1"></div>
+      <div class="today-main" data-page-node-id="AmBmSXVIZpziT7UiorTlOb"><div id="todayList" data-page-node-id="I2eFKCx4OJ127XCjKNkt9R"></div></div>
     </div>
   </div>
 
-  <div class="section">
-    <h2>🗺️ 学习路线 <span class="tag" id="phaseTag"></span></h2>
-    <div class="phases" id="phases"></div>
+  <div class="section" data-page-node-id="HGG4lqqAG9f799QvzBEDF4">
+    <h2 data-page-node-id="xZiDxbBEtSSCI5NW35SJOz">🗺️ 学习路线 <span class="tag" id="phaseTag" data-page-node-id="Lj7s8Et3uUAEocT6WJeVuT"></span></h2>
+    <div class="phases" id="phases" data-page-node-id="GjT235cVZEDLC3uMiKOlng"></div>
   </div>
 
-  <div class="section">
-    <h2>📚 课程全景 <span class="tag" id="curTag"></span></h2>
-    <div class="filter-bar" id="stageFilter">
-      <span class="fb-label">难度筛选：</span>
-      <button class="chip active" data-act="stage-filter" data-filter="all">全部</button>
-      <button class="chip" data-act="stage-filter" data-filter="basic">🟢 基础</button>
-      <button class="chip" data-act="stage-filter" data-filter="adv">🟡 进阶</button>
-      <button class="chip" data-act="stage-filter" data-filter="hard">🔴 挑战</button>
-      <input type="text" id="searchInput" placeholder="🔍 搜索课程关键词（如：指针 / lambda / 构造）" style="margin-left:auto;flex:1;min-width:200px;max-width:300px;padding:7px 14px;border:1px solid var(--line);border-radius:20px;background:var(--card);color:var(--ink);">
+  <div class="section" data-page-node-id="PT1ahG8jt4FgpV05EfR81l">
+    <h2 data-page-node-id="ipnMEQoxocHIuCQEMvw3hV">📚 课程全景 <span class="tag" id="curTag" data-page-node-id="1KWYDM2OJYXR8PSvIAC8FL"></span></h2>
+    <div class="filter-bar" id="stageFilter" data-page-node-id="NNeOGAJxE4HkcYxIUP4pIk">
+      <span class="fb-label" data-page-node-id="GNCeAzbTcYq8OfZqyPpciG">难度筛选：</span>
+      <button class="chip active" data-act="stage-filter" data-filter="all" data-page-node-id="WV0xYIyagb13uvjvvXKI5A">全部</button>
+      <button class="chip" data-act="stage-filter" data-filter="basic" data-page-node-id="pAbr3lCGK3s12Thrwajwf6">🟢 基础</button>
+      <button class="chip" data-act="stage-filter" data-filter="adv" data-page-node-id="wcEKRpKf6rz9LFK0AMazvQ">🟡 进阶</button>
+      <button class="chip" data-act="stage-filter" data-filter="hard" data-page-node-id="GYqz6vewnWSYeinJofV4sk">🔴 挑战</button>
+      <input type="text" id="searchInput" placeholder="🔍 搜索课程关键词（如：指针 / lambda / 构造）" style="margin-left:auto;flex:1;min-width:200px;max-width:300px;padding:7px 14px;border:1px solid var(--line);border-radius:20px;background:var(--card);color:var(--ink);" data-page-node-id="5fvuZujqkXfjLYrOv9u4XB">
     </div>
-    <div id="stages"></div>
+    <div id="stages" data-page-node-id="2YvvdWhCrAyjomr0rYeIn5"></div>
   </div>
 
-  <div class="section" id="labSec">
-    <h2>💻 编程实战 <span class="tag">多道编译题 · AI 批改</span></h2>
-    <div class="rev-hint" style="margin-bottom:10px">每学完一个阶段即解锁对应实战题：在编译器里独立完成 → 把「代码 + 运行输出」粘贴回来 → 一键生成 AI 批改提示词，发给任意大模型（ChatGLM / DeepSeek / Kimi / Claude…）就能获得打分、纠错与改进建议。</div>
-    <div class="lab-grid" id="labGrid"></div>
+  <div class="section" id="labSec" data-page-node-id="UJsWceD3YG6FhNQoAkj1Wn">
+    <h2 data-page-node-id="WLaV7SEk4HUuum0X8XbTD3">💻 编程实战 <span class="tag" data-page-node-id="Q6R4KnKm3uvrLoJ4M5sReo">多道编译题 · AI 批改</span></h2>
+    <div class="rev-hint" style="margin-bottom:10px" data-page-node-id="NhEJdX9u0UAxk4YDLCRLEo">每学完一个阶段即解锁对应实战题：在编译器里独立完成 → 把「代码 + 运行输出」粘贴回来 → 一键生成 AI 批改提示词，发给任意大模型（ChatGLM / DeepSeek / Kimi / Claude…）就能获得打分、纠错与改进建议。</div>
+    <div class="lab-grid" id="labGrid" data-page-node-id="423MNuWigBio4LDsPGtKRk"></div>
   </div>
 
-  <div class="section" id="reviewSec">
-    <h2>🔁 间隔复习 <span class="tag">科学防遗忘</span></h2>
-    <div id="reviewList"></div>
+  <div class="section" id="reviewSec" data-page-node-id="UZNiPQgXotva5ucHtvezUc">
+    <h2 data-page-node-id="f6CYjDXIwtbDO0Nt2ms0Bt">🔁 间隔复习 <span class="tag" data-page-node-id="ajGeltHNjCqWhqEtHpIs5P">科学防遗忘</span></h2>
+    <div id="reviewList" data-page-node-id="6C7CLqndiukD8Diqo3iImh"></div>
   </div>
 
-  <div class="section" id="mistakeSec">
-    <h2>📕 错题本 <span class="tag" id="mistakeTag">0 题</span></h2>
-    <div id="mistakeList"></div>
+  <div class="section" id="mistakeSec" data-page-node-id="4VZcnJni6SO98UxNtCPaWG">
+    <h2 data-page-node-id="o0B2KvhJCKzCDKgY8HYzgL">📕 错题本 <span class="tag" id="mistakeTag" data-page-node-id="XVvHRKTjCFmNY50WjgHhPx">0 题</span></h2>
+    <div id="mistakeList" data-page-node-id="LVGCrqC4S7U0uJzC83Frxz"></div>
   </div>
 
-  <div class="section">
-    <h2>🗓️ 学习日历 <span class="tag">坚持看得见</span></h2>
-    <div class="heat" id="heat"></div>
-    <div class="heat-legend"><span>少</span><span class="cell"></span><span class="cell l1"></span><span class="cell l2"></span><span class="cell l3"></span><span class="cell l4"></span><span>多</span><span style="margin-left:8px">点击格子查看当天明细</span></div>
+  <div class="section" data-page-node-id="qMjitgA4CndmF5xx1cVjND">
+    <h2 data-page-node-id="hnRsgbXJFIuTS2eNBOMO6r">🗓️ 学习日历 <span class="tag" data-page-node-id="ic7zzu8TLmKDzh0jiiCibE">坚持看得见</span></h2>
+    <div class="heat" id="heat" data-page-node-id="UEDlBYV3xTbbz8pwY5YXWP"></div>
+    <div class="heat-legend" data-page-node-id="UPBl8jFgBKiMnSM6NSN45X"><span data-page-node-id="SQX1MrkOvFMrEXXo1bYRwW">少</span><span class="cell" data-page-node-id="FyXlu9mzBiu3ysxwcHtrcY"></span><span class="cell l1" data-page-node-id="cQkjRmAFqXvpbnPFIxuQie"></span><span class="cell l2" data-page-node-id="TJRSFDsrpXpZzHmTWgVtfP"></span><span class="cell l3" data-page-node-id="BwJLyQ8ycWKPBAjBw2dd4Z"></span><span class="cell l4" data-page-node-id="3xAyWpbCaYd3zsCLuMDbGA"></span><span data-page-node-id="ashacelK7Q5fiALEvn17ou">多</span><span style="margin-left:8px" data-page-node-id="fn8FxxOsfiU48aX9FXU0bP">点击格子查看当天明细</span></div>
   </div>
 
-  <div class="section">
-    <h2>📒 笔记中心 <span class="tag" id="noteCount"></span></h2>
-    <div class="note-tools">
-      <input type="text" id="noteSearch" class="note-search" placeholder="🔍 搜索笔记内容或课程名…">
-      <button class="btn small ghost" data-act="note-clear-search">清空</button>
+  <div class="section" data-page-node-id="mqsNRcd82i7sBJXA9R5RFA">
+    <h2 data-page-node-id="uG3ppYNB8MWFjLhKjAKn2e">📒 笔记中心 <span class="tag" id="noteCount" data-page-node-id="TkuKyEpFWitIGUz64sOAQN"></span></h2>
+    <div class="note-tools" data-page-node-id="MX0Q3DtvqsdELXlfLWG2ix">
+      <input type="text" id="noteSearch" class="note-search" placeholder="🔍 搜索笔记内容或课程名…" data-page-node-id="pu0KMcK3UE8n4coXyuW9Wa">
+      <button class="btn small ghost" data-act="note-clear-search" data-page-node-id="tDPwFOmZTK2w8Bb4RrYQ1M">清空</button>
     </div>
-    <div id="noteTagCloud" class="tag-cloud"></div>
-    <div id="noteList"></div>
+    <div id="noteTagCloud" class="tag-cloud" data-page-node-id="BeijrjksUA7HBb50JdgNjM"></div>
+    <div id="noteList" data-page-node-id="ex5OA8sfTEAFNp36tZtjQT"></div>
   </div>
 
-  <div class="section">
-    <h2>🏆 成就墙 <span class="tag" id="achTag"></span></h2>
-    <div class="ach" id="achWall"></div>
+  <div class="section" data-page-node-id="dc5FHBHHtlo3hohKEBAACg">
+    <h2 data-page-node-id="3FHfxuL8iEJaYfQME7iRgn">🏆 成就墙 <span class="tag" id="achTag" data-page-node-id="5xyzIpHac4l7cJV3NMaGMs"></span></h2>
+    <div class="ach" id="achWall" data-page-node-id="SU2jE3o3GFD0A43OQebdGN"></div>
   </div>
 
-  <div class="section">
-    <h2>📝 每日进度报告 <span class="tag">近 7 天 XP 趋势</span></h2>
-    <div class="week-bars" id="weekBars"></div>
-    <div class="report" id="dailyReport"></div>
-    <div class="report-actions">
-      <button class="btn small green" data-act="refresh-report">刷新报告</button>
-      <button class="btn small ghost" data-act="copy-report">复制报告</button>
-      <button class="btn small amber" data-act="week-report">🗓️ 本周报告</button>
-      <button class="btn small amber" data-act="month-report">📆 本月报告</button>
+  <div class="section" data-page-node-id="guvkDrP7JbqPhkGXcLsHES">
+    <h2 data-page-node-id="q7eM2u39HefPYdWiBl1T7O">📝 每日进度报告 <span class="tag" data-page-node-id="DAGppaTpRPqeUI17jTaZwH">近 7 天 XP 趋势</span></h2>
+    <div class="week-bars" id="weekBars" data-page-node-id="YQxVNCyk5iHHj5MpABjBL1"></div>
+    <div class="report" id="dailyReport" data-page-node-id="G0k3iHyOgTdP8XVb9KEjW6"></div>
+    <div class="report-actions" data-page-node-id="yDvefhXfQ6wrcMfOMeKPyf">
+      <button class="btn small green" data-act="refresh-report" data-page-node-id="gjjXzHcgm5Yp57Cs4BT6Fw">刷新报告</button>
+      <button class="btn small ghost" data-act="copy-report" data-page-node-id="T9qLyFStQyvaCIAZArlOn8">复制报告</button>
+      <button class="btn small amber" data-act="week-report" data-page-node-id="aGPX3xwtAD66H4hJX50W47">🗓️ 本周报告</button>
+      <button class="btn small amber" data-act="month-report" data-page-node-id="tcGBdtqdoCS2TTLYkJHjRL">📆 本月报告</button>
     </div>
-    <div class="period-box">
-      <div class="period-actions">
-        <button class="btn small ghost" data-act="copy-period">复制周期报告</button>
-        <button class="btn small ghost" data-act="dl-period">下载 .md</button>
+    <div class="period-box" data-page-node-id="Iwkwp2Uk8V8CdJb0Gj1UF1">
+      <div class="period-actions" data-page-node-id="4z3gt6shGdPR8kJIDtbM1a">
+        <button class="btn small ghost" data-act="copy-period" data-page-node-id="mmIQZsn2KnOzziF1UVt70m">复制周期报告</button>
+        <button class="btn small ghost" data-act="dl-period" data-page-node-id="OxCYNlFSqtUtFfFZXhQN5U">下载 .md</button>
       </div>
-      <div class="report" id="periodReport" style="margin-top:10px"></div>
+      <div class="report" id="periodReport" style="margin-top:10px" data-page-node-id="jx7rTOybeeGGygiZxe6qNu"></div>
     </div>
   </div>
 
-  <div class="section">
-    <h2>⚙️ 设置与数据</h2>
-    <div class="set-row"><label>学习者昵称</label><input type="text" id="nameInput" placeholder="例如：小明"><span class="set-hint">会出现在打卡和日报里</span></div>
-    <div class="set-row"><label>每日目标（节）</label><input type="number" id="goalInput" min="1" max="10" value="2"><span class="set-hint">建议 1~3 节，贵在坚持</span></div>
-    <div class="set-row"><label>打卡提醒时间</label><input type="time" id="remindInput" value="20:00"><span class="set-hint">到点未打卡时页面会高亮提醒</span></div>
-    <div class="set-row"><label>浏览器通知</label><button class="btn small ghost" data-act="notify" id="notifyBtn">🔔 开启桌面通知</button><span class="set-hint" id="notifyStat">未开启（页面保持打开时，到点也会弹窗提醒）</span></div>
-    <div class="controls">
-      <button class="btn ghost" data-act="export">导出备份</button>
-      <button class="btn ghost" data-act="import">导入恢复</button>
-      <button class="btn ghost" data-act="reset" style="color:var(--red)">清空重置</button>
-      <input type="file" id="importFile" accept=".json" style="display:none">
+  <div class="section" data-page-node-id="xzLMMg1SSDWI5vMspLO1JK">
+    <h2 data-page-node-id="tkliNyoolkmjDTiUCX2UaS">⚙️ 设置与数据</h2>
+    <div class="set-row" data-page-node-id="cOhJJX6C3p1DHa2Qe931T4"><label data-page-node-id="5X8X3fnBts0Mcwm3IItqyj">学习者昵称</label><input type="text" id="nameInput" placeholder="例如：小明" data-page-node-id="Q7uNJoA5Vq06o2VKPOyawb"><span class="set-hint" data-page-node-id="FK0egXcLn88zpOByOubrxN">会出现在打卡和日报里</span></div>
+    <div class="set-row" data-page-node-id="MxuI9GAhLoIjFEivCqE7kP"><label data-page-node-id="wht27bUgacdIF82p0BNzYY">每日目标（节）</label><input type="number" id="goalInput" min="1" max="10" value="2" data-page-node-id="Kzs7irAkCIrdE2y8QdP5jh"><span class="set-hint" data-page-node-id="E46j32z0qapSKewU93a7lU">建议 1~3 节，贵在坚持</span></div>
+    <div class="set-row" data-page-node-id="FNpSfEeGmU48uiPJJC1PN0"><label data-page-node-id="f394OhTA3ffcqAVBbX8AKG">打卡提醒时间</label><input type="time" id="remindInput" value="20:00" data-page-node-id="wpAbDqgjNqBEKKh3DNLUfd"><span class="set-hint" data-page-node-id="EuYD58YDQgITzZmaoOegu2">到点未打卡时页面会高亮提醒</span></div>
+    <div class="set-row" data-page-node-id="BYgbnaIrehNAbWSNd5zWMG"><label data-page-node-id="dx9vT3OWnguvx4Z74M63Si">浏览器通知</label><button class="btn small ghost" data-act="notify" id="notifyBtn" data-page-node-id="gldtYcPngrMIPvPg6G4hhm">🔔 开启桌面通知</button><span class="set-hint" id="notifyStat" data-page-node-id="PtNuADgtBvoBkCfLNT7DDf">未开启（页面保持打开时，到点也会弹窗提醒）</span></div>
+    <div class="controls" data-page-node-id="mQ3FAAzMeIGbLXuyfyqpmS">
+      <button class="btn ghost" data-act="export" data-page-node-id="4Lavy00jXNV67agMPoJ8xY">导出备份</button>
+      <button class="btn ghost" data-act="import" data-page-node-id="ea5oqj4ToGMGttaZ8Eg49E">导入恢复</button>
+      <button class="btn ghost" data-act="reset" style="color:var(--red)" data-page-node-id="4cA87oa51Cdj2zbgFiw2Ey">清空重置</button>
+      <input type="file" id="importFile" accept=".json" style="display:none" data-page-node-id="omaG95AD3juT1R0dD1VP4y">
     </div>
-    <div class="set-hint" id="backupHint" style="display:none;margin-top:8px;color:var(--amber)">💾 你已有学习记录但超过 14 天没导出备份了，建议点上方「导出备份」保存一份，防止浏览器清理缓存丢失进度。</div>
-    <div class="foot">所有数据仅保存在你本机浏览器中；定期「导出备份」可防止换设备或清理缓存后丢失。</div>
+    <div class="set-hint" id="backupHint" style="display:none;margin-top:8px;color:var(--amber)" data-page-node-id="aE8gEyVLOip9vFv0J2jYM3">💾 你已有学习记录但超过 14 天没导出备份了，建议点上方「导出备份」保存一份，防止浏览器清理缓存丢失进度。</div>
+    <div class="foot" data-page-node-id="0NdZPgABQCCyBDEMZS9X8K">所有数据仅保存在你本机浏览器中；定期「导出备份」可防止换设备或清理缓存后丢失。</div>
   </div>
 
-  <div class="foot">编程与 AI 学习工作台 · 完成一节、打卡一天，时间会给你答案。 · 🤖 由 AI 辅助搭建</div>
+  <div class="foot" data-page-node-id="QgL3eshJhdTXdLtSOezUS3">编程与 AI 学习工作台 · 完成一节、打卡一天，时间会给你答案。 · 🤖 由 AI 辅助搭建</div>
 </div>
 
-<div class="modal-mask" id="modalMask"><div class="modal" id="modalBox"></div></div>
-<div class="toast-wrap" id="toastWrap"></div>
+<div class="modal-mask" id="modalMask" data-page-node-id="nurqXgQuzCkGRP4IVTTUl8"><div class="modal" id="modalBox" data-page-node-id="X6WPpJaj8ORm3PHkrDvXcF"></div></div>
+<div class="toast-wrap" id="toastWrap" data-page-node-id="nOuGGFPhnIrFZzj8DWOza2"></div>
 
 <script src="cpp-extra-data.js"></script>
 <script>
@@ -1029,6 +1066,27 @@ function renderPhases(){
   const tag=$("phaseTag");
   if(tag){const tw=PHASES.reduce((a,p)=>a+(p.wk||0),0);tag.textContent=PHASES.length+" 大篇章 · 全程约 "+tw+" 周（≈ 半年）";}
 }
+/* 侧边栏：12 大篇章一键直达，含"当前篇章"高亮 */
+function renderSidebar(){
+  const sb=$("sidebar");if(!sb)return;
+  const cur=allLessons().find(x=>!data.completed[x.lesson.id]);
+  const curIdx=cur?CURRICULUM.findIndex(s=>s.id===cur.stage.id):-1;
+  sb.innerHTML='<div class="sb-title">📚 篇章导航 · 点击直达</div>'+PHASES.map((p,pi)=>{
+    const st=CURRICULUM.slice(p.range[0],p.range[1]+1);
+    const firstId=st[0].id;
+    const done=st.reduce((a,s)=>a+s.lessons.filter(l=>data.completed[l.id]).length,0);
+    const tot=st.reduce((a,s)=>a+s.lessons.length,0);
+    const isCur=curIdx>=p.range[0]&&curIdx<=p.range[1];
+    const fin=done===tot&&tot>0;
+    return '<div class="sb-item'+(isCur?" cur":"")+'" data-act="sb" data-id="'+firstId+'" title="'+escapeHtml(p.desc)+'">'+
+      '<div class="sb-ic">'+p.icon+'</div>'+
+      '<div class="sb-tx"><div class="sb-nm">'+escapeHtml(p.name)+'</div>'+
+      '<div class="sb-pg">'+done+'/'+tot+' 节'+(fin?' · 已完成 🏆':'')+'</div></div>'+
+      (isCur?'<div class="sb-cur">📍</div>':'')+'</div>';
+  }).join("");
+}
+function openSidebar(){const sb=$("sidebar"),ov=$("sbOverlay");if(sb)sb.classList.add("open");if(ov)ov.classList.add("show");}
+function closeSidebar(){const sb=$("sidebar"),ov=$("sbOverlay");if(sb)sb.classList.remove("open");if(ov)ov.classList.remove("show");}
 function renderStages(){
   if(!openStage){
     const nx=allLessons().find(x=>!data.completed[x.lesson.id]);
@@ -1148,7 +1206,7 @@ function renderReport(){
   $("weekBars").innerHTML=days7.map(x=>'<div class="wb '+(x.today?"today":"")+'" title="'+x.ds+' · '+x.xp+' XP"><div class="bar" style="height:'+Math.max(3,Math.round(x.xp/max*52))+'px"></div><div class="wl">'+x.lab+'</div></div>').join("");
 }
 function renderAll(){
-  renderHeader();renderDash();renderCheckin();renderToday();renderPhases();
+  renderHeader();renderDash();renderCheckin();renderToday();renderPhases();renderSidebar();
   renderStages();renderLabs();renderReview();renderHeat();renderAch();renderReport();
   renderMistakes();renderTimer();renderNotes();renderBackupHint();
 }
@@ -1550,6 +1608,11 @@ document.addEventListener("click",function(e){
       const el=$("stage-"+id);
       if(el){openStage=id;el.classList.add("open");el.scrollIntoView({behavior:"smooth",block:"start"});}
       break;}
+    case "sb":{
+      const el=$("stage-"+id);
+      if(el){openStage=id;el.classList.add("open");el.scrollIntoView({behavior:"smooth",block:"start"});}
+      closeSidebar();
+      break;}
     case "quiz":startQuiz(id);break;
     case "opt":answerQuiz(parseInt(t.dataset.i,10));break;
     case "next-q":if(quizState){quizState.idx++;showQuiz();}break;
@@ -1833,6 +1896,16 @@ function init(){
   applyTheme();
   bindSettings();
   renderAll();
+  // 侧边栏抽屉（窄屏汉堡）/ 返回顶部
+  try{
+    const sbToggle=$("sbToggle");if(sbToggle)sbToggle.addEventListener("click",openSidebar);
+    const sbOverlay=$("sbOverlay");if(sbOverlay)sbOverlay.addEventListener("click",closeSidebar);
+    const toTop=$("toTop");
+    if(toTop)toTop.addEventListener("click",function(){window.scrollTo({top:0,behavior:"smooth"});});
+    window.addEventListener("scroll",function(){
+      if(toTop){if((window.scrollY||document.documentElement.scrollTop)>400)toTop.classList.add("show");else toTop.classList.remove("show");}
+    },{passive:true});
+  }catch(e){}
   scheduleRemind();
   updateNotifyStat();
   // PWA：动态注入 manifest（可安装到桌面）
