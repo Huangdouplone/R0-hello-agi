@@ -34,6 +34,10 @@ A zero-basis, long-term interactive learning workbench that walks you from your 
 - GitHub 风格**学习日历热力图**、累计学时、连续天数统计
 - **成就墙**（40+ 枚成就，含 9 枚 AGI 里程碑）与 15 级称号
 - **间隔复习队列**、个性化每日目标、**可复制的每日 / 周 / 月进度报告**
+- **记忆续学**：自动记住「最后观看」的课程（即使已标记完成），在「今日任务」顶部高光「继续上次」、在「课程全景」对应课程与阶段打上 📍 标记，次日/下次打开即可一键接着学
+- **智能侧边栏**：篇章导航按页面实际位置穿插在功能键之间；支持一键**收纳到屏幕左侧**、**当前区块高亮**（滚动联动）、**宽度拖拽调节**（记忆宽度），均可本地持久化
+- **🪙 星币经济 · 主页风格商店**：学习 (+5)、复习 (+2)、打卡 (+3)、通关阶段测评 (+10)、完成实战 (+15) 均可赚取星币；星币**仅可用于解锁主页配色风格**（纯外观，5 套内置风格：晨曦蓝/暗夜霓虹/樱粉温柔/极简纸感/赛博青），绝不 pay-to-win 跳过学习
+- **🔒 科学防过载保护**：每日新学节数默认上限 4（可在设置中调整 1–10），保护学习效果；待复习课程积压超过阈值（默认 8）时锁定新学、强制先巩固记忆。被锁时首页展示醒目横幅、课程弹窗按钮禁用并说明原因
 - 数据本机 `localStorage` 保存，支持**导出 / 导入 / 重置**
 
 ### 技术特点
@@ -96,6 +100,10 @@ Both tracks **share the same 53-stage curriculum and all of your progress** (exe
 - GitHub-style **learning heatmap**, cumulative study time, and streak tracking
 - An **achievement wall** (40+ badges, including 9 AGI milestones) and 15 title levels
 - **Spaced-repetition review queue**, personalized daily goals, and **copyable daily / weekly / monthly progress reports**
+- **Resume-where-you-left-off**: the app remembers the **last lesson you viewed** (even if marked done), highlights a "Continue" card at the top of *Today's Tasks* and marks the exact lesson & stage with a 📍 in the *Course Panorama* — reopen the next day and pick up with one click
+- **Smart sidebar**: the chapter nav is interleaved at its real page position; it can **collapse to the left screen edge**, **highlight the section you're viewing** (scroll-synced), and be **drag-resized** (width is remembered) — all persisted locally
+- **🪙 Coin economy · Homepage style shop**: earn coins by learning (+5), reviewing (+2), check-ins (+3), passing stage quizzes (+10), and finishing labs (+15); coins can **only be spent unlocking cosmetic homepage color themes** (5 built-in: Dawn Blue / Neon Night / Sakura / Paper / Cyber) — never pay-to-win
+- **🔒 Science-based anti-overload guard**: by default caps new lessons at **4/day** (adjustable 1–10 in settings) to protect learning quality; when the review backlog exceeds a threshold (default 8), new lessons are **locked** until reviews are done. A prominent banner appears on the dashboard and the lesson-modal button is disabled with the reason
 - Progress is saved in the browser via `localStorage`, with **export / import / reset** support
 
 ### Technical notes
