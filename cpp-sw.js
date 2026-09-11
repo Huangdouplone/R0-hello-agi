@@ -1,7 +1,7 @@
-/* C++ 学习工作台 Service Worker —— 提供离线缓存
+/* R0:hello agi Service Worker —— 提供离线缓存
  * 通过 http(s) 托管本目录时自动生效；file:// 直接打开时浏览器会拒绝注册，属正常现象。
  */
-const CACHE = "cpp-workbench-v1";
+const CACHE = "r0-hello-agi-v1";
 const ASSETS = ["./", "index.html", "cpp-extra-data.js", "cpp-sw.js"];
 self.addEventListener("install", function (e) {
   e.waitUntil(

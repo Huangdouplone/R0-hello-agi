@@ -1,8 +1,14 @@
-# agi-learning-workbench
+# R0:hello agi
+
+**R0：从零开始的agi之路**
 
 > 🤖 **Built with AI assistance** · 本仓库由 AI 辅助搭建
+>
+> © **制作者 / Creator: Bilibili 黄豆666 (huangdouplone)** · 版权所有 / All rights reserved.
 
-A zero-basis, long-term interactive learning workbench that walks you from your very first line of code all the way to the AGI engineering frontier.
+**从第一行代码，到 AGI 工程岗。** 一门零基础起步、C++ / Python 双路线的长期编程课：中英双语界面、打开即用、离线可用。
+
+*A zero-basis, long-form programming course that takes you from your very first line of code all the way to AGI engineering — C++ / Python tracks, bilingual UI, opens instantly, works offline.*
 
 ---
 
@@ -10,9 +16,13 @@ A zero-basis, long-term interactive learning workbench that walks you from your 
 
 ### 这是什么
 
-`agi-learning-workbench` 是一个为零基础、每天 1–2 小时、目标是成为 **AGI（通用人工智能）工程师** 的学习者设计的**长期交互式学习工作台**。
+`R0:hello agi`（中文名 **R0：从零开始的agi之路**）是一门**零基础、长期、系统**的编程课，目标只有一个：把一个从没写过代码的人，一路带到 **AGI（通用人工智能）工程岗**。每天投入 1–2 小时即可按节奏走完全程。
 
-它在原有 C++ 课程地基上，补齐了通往 AGI 工程的完整路径：Python 工程工具链 → 数学基石（线代 / 微积分 / 概率）→ 机器学习 → 深度学习 → 强化学习 / 大语言模型 / 多模态 / Agent 前沿。
+它从 **C++ 与 Python 两门基础语言**起手，沿一条完整路线推进：
+
+> Python 工程工具链 → 数学基石（线代 / 微积分 / 概率）→ 机器学习 → 深度学习 → 强化学习 / 大语言模型 / 多模态 / Agent 前沿
+
+课程是纯静态单页：**打开即用、可离线**；自带每日打卡、间隔复习、阶段测评、编程实战与 AI 批改提示词；学习数据只保存在你自己的浏览器里。
 
 ### 内容规模
 
@@ -39,6 +49,10 @@ A zero-basis, long-term interactive learning workbench that walks you from your 
 - **🪙 星币经济 · 主页风格商店**：学习 (+5)、复习 (+2)、打卡 (+3)、通关阶段测评 (+10)、完成实战 (+15) 均可赚取星币；星币**仅可用于解锁主页配色风格**（纯外观，5 套内置风格：晨曦蓝/暗夜霓虹/樱粉温柔/极简纸感/赛博青），绝不 pay-to-win 跳过学习
 - **🔒 科学防过载保护**：每日新学节数默认上限 4（可在设置中调整 1–10），保护学习效果；待复习课程积压超过阈值（默认 8）时锁定新学、强制先巩固记忆。被锁时首页展示醒目横幅、课程弹窗按钮禁用并说明原因
 - 数据本机 `localStorage` 保存，支持**导出 / 导入 / 重置**
+
+### 中英双语界面
+
+页面右上角可一键切换 **中文 / English**。课程正文（讲解、示例、题目、成就描述等）为中文，界面与导航骨架随语言整体切换。
 
 ### 技术特点
 
@@ -76,9 +90,13 @@ A zero-basis, long-term interactive learning workbench that walks you from your 
 
 ### What is this
 
-`agi-learning-workbench` is a long-term, interactive learning workbench for absolute beginners studying ~1–2 hours a day with the goal of becoming an **AGI (Artificial General Intelligence) engineer**.
+`R0:hello agi` (Chinese name **R0：从零开始的agi之路**) is a long-form, systematic programming course for absolute beginners, with a single goal: take someone who has never written a line of code all the way to an **AGI (Artificial General Intelligence) engineering role**. At ~1–2 hours a day, you can walk the whole path at a steady pace.
 
-Built on a C++ foundation, it lays out the full path to AGI engineering: a Python toolchain → the math bedrock (linear algebra / calculus / probability) → machine learning → deep learning → the frontier of reinforcement learning / large language models / multimodality / Agents.
+It starts from **two foundational languages, C++ and Python**, and moves along one continuous route:
+
+> Python toolchain → the math bedrock (linear algebra / calculus / probability) → machine learning → deep learning → the frontier of reinforcement learning / large language models / multimodality / Agents
+
+It is a purely static single page: **opens instantly, works offline**, and ships with daily check-ins, spaced repetition, stage quizzes, coding labs and AI grading prompts. All learning data stays in your own browser.
 
 ### Scope
 
@@ -105,6 +123,10 @@ Both tracks **share the same 53-stage curriculum and all of your progress** (exe
 - **🪙 Coin economy · Homepage style shop**: earn coins by learning (+5), reviewing (+2), check-ins (+3), passing stage quizzes (+10), and finishing labs (+15); coins can **only be spent unlocking cosmetic homepage color themes** (5 built-in: Dawn Blue / Neon Night / Sakura / Paper / Cyber) — never pay-to-win
 - **🔒 Science-based anti-overload guard**: by default caps new lessons at **4/day** (adjustable 1–10 in settings) to protect learning quality; when the review backlog exceeds a threshold (default 8), new lessons are **locked** until reviews are done. A prominent banner appears on the dashboard and the lesson-modal button is disabled with the reason
 - Progress is saved in the browser via `localStorage`, with **export / import / reset** support
+
+### Bilingual UI
+
+Switch **中文 / English** from the top-right corner. Course content (explanations, examples, questions, achievement descriptions) stays in Chinese; the interface and navigation shell switch as a whole.
 
 ### Technical notes
 
@@ -142,7 +164,7 @@ This repository — including all curriculum content, UI, and code — was **gen
 
 | File | Purpose |
 | --- | --- |
-| `index.html` | The workbench app (entry point) |
+| `index.html` | The course app (entry point) |
 | `cpp-extra-data.js` | External course data (stages, lessons, labs, quizzes) |
 | `cpp-sw.js` | Service Worker for offline caching |
 

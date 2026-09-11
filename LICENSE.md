@@ -1,6 +1,8 @@
 # MIT License
 
-Copyright (c) 2026 黄豆666
+Copyright (c) 2026 黄豆666 (Bilibili 黄豆666 / huangdouplone)
+
+制作者 / Creator: Bilibili 黄豆666 (huangdouplone) · 版权所有 / All rights reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
