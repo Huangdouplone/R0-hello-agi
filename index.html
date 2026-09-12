@@ -436,6 +436,51 @@ body{background:var(--bg);color:#2b3440;line-height:1.65;padding:18px;padding-bo
 .backup-hint{font-size:12px;color:var(--sub);margin-top:8px;line-height:1.6;}
 .style-shop{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-top:10px;}
 
+/* ---- Theme Shop Drawer ---- */
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;opacity:0;pointer-events:none;transition:opacity .25s;}
+.drawer-overlay.open{opacity:1;pointer-events:auto;}
+.theme-drawer{position:fixed;top:0;right:-420px;width:400px;max-width:92vw;height:100vh;background:var(--card);z-index:201;box-shadow:-8px 0 32px rgba(0,0,0,.18);transition:right .3s cubic-bezier(.4,0,.2,1);overflow-y:auto;padding:20px;box-sizing:border-box;}
+.theme-drawer.open{right:0;}
+.td-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--line);}
+.td-title{font-size:18px;font-weight:700;color:var(--ink);}
+.td-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--sub);padding:4px 8px;border-radius:8px;transition:.15s;}
+.td-close:hover{background:var(--soft);color:var(--ink);}
+.td-coins{display:flex;align-items:center;gap:8px;background:var(--soft);padding:8px 14px;border-radius:12px;font-weight:700;color:var(--amber);margin-bottom:16px;font-size:15px;}
+.td-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.td-card{border:2px solid var(--line);border-radius:14px;padding:12px;cursor:pointer;transition:all .2s;background:var(--bg);position:relative;}
+.td-card:hover{border-color:var(--blue);transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.1);}
+.td-card.active{border-color:var(--blue);background:var(--soft);}
+.td-preview{width:100%;height:56px;border-radius:10px;margin-bottom:8px;position:relative;overflow:hidden;}
+.td-preview .pv-top{position:absolute;top:0;left:0;right:0;height:16px;background:var(--pv-top,#3b82f6);}
+.td-preview .pv-body{position:absolute;top:20px;left:8px;right:8px;bottom:8px;border-radius:6px;background:var(--pv-body,#fff);border:1px solid var(--pv-line,#e5e7eb);}
+.td-name{font-size:13px;font-weight:700;color:var(--ink);}
+.td-desc{font-size:11px;color:var(--sub);margin-top:2px;}
+.td-badge{position:absolute;top:8px;right:8px;font-size:11px;padding:2px 8px;border-radius:999px;font-weight:700;}
+.td-badge.owned{background:#10b981;color:#fff;}
+.td-badge.locked{background:var(--soft);color:var(--amber);}
+.td-badge.using{background:var(--blue);color:#fff;}
+.td-price{margin-top:8px;display:inline-block;padding:4px 12px;border-radius:999px;background:var(--amber);color:#fff;font-size:12px;font-weight:700;}
+.td-card.locked-card{opacity:.85;}
+.td-card.locked-card:hover{opacity:1;}
+.td-coin-progress{margin:12px 0;padding:10px 14px;background:var(--soft);border-radius:10px;font-size:12px;color:var(--sub);}
+.td-coin-progress b{color:var(--amber);}
+
+/* ---- UI Polish ---- */
+.card,.stat-card,.lab-card,.ach-item,.lesson-item,.stage-card{transition:box-shadow .2s,transform .2s,border-color .2s;}
+.btn{transition:all .15s;}
+.btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.12);}
+.btn:active{transform:translateY(0);}
+.icon-btn{transition:all .15s;}
+.icon-btn:hover{background:rgba(255,255,252,.2);transform:scale(1.08);}
+.sb-item{transition:background .15s;}
+.sb-item:hover{background:var(--soft);}
+.coin-chip{transition:transform .15s;cursor:pointer;}
+.coin-chip:hover{transform:scale(1.08);}
+.stat-card{border-radius:16px;}
+.stat-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.08);}
+input.inp,select.inp{transition:border-color .15s,box-shadow .15s;}
+input.inp:focus,select.inp:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,130,246,.15);}
+
 /* ---- 模式切换 / 标签 ---- */
 .mode-pill{
   border:1px solid var(--line);background:var(--bg2);color:var(--sub);
@@ -527,7 +572,7 @@ body{background:var(--bg);color:#2b3440;line-height:1.65;padding:18px;padding-bo
   <div class="xpbar" data-page-node-id="sqxs94iPOb2hdhqq6a227p"><div id="xpFill" class="xp-fill" data-page-node-id="sZzVgwzqrvUMgFef8EAU68"></div></div>
   <span id="xpText" class="xp-text" data-page-node-id="lDt8HnWYmvPd9DjISQn7ht"></span>
   <span id="streakChip" class="streak-chip" data-page-node-id="aZEh2E7JJWwSv8759U606R"></span>
-  <span id="coinChip" class="coin-chip" title="" data-page-node-id="h66lefR4IYfdrlFN8FOj0Y"></span>
+  <span id="coinChip" class="coin-chip" data-act="shop" title="" data-page-node-id="h66lefR4IYfdrlFN8FOj0Y"></span>
   <button id="modeSwitch" class="icon-btn mode-btn" data-act="mode" title="切换学习路线" data-page-node-id="TAbzDBsLAAEKavVzd1qa6P">C++</button>
   <button id="themeBtn" class="icon-btn" data-act="theme" title="" data-page-node-id="GqIJW4Fl8tvSCRF8oRfGr6"></button>
   <button id="langBtn" class="icon-btn" data-act="lang" data-page-node-id="G9JpPG3F43ZgxrbY383JHf">中文</button>
@@ -535,6 +580,16 @@ body{background:var(--bg);color:#2b3440;line-height:1.65;padding:18px;padding-bo
 
 <div id="sbOverlay" class="sb-overlay" data-page-node-id="c3teW4BI9sAoEevV3SvtsU"></div>
 <nav id="sidebar" class="sidebar" data-page-node-id="j2QX94DdwZmlXbA3IrPPgg"></nav>
+<div id="drawerOverlay" class="drawer-overlay" onclick="closeThemeDrawer()"></div>
+<aside id="themeDrawer" class="theme-drawer">
+  <div class="td-header">
+    <div class="td-title">🎨 <span data-i18n="主页风格商店">🎨 Theme Shop</span></div>
+    <button class="td-close" onclick="closeThemeDrawer()">✕</button>
+  </div>
+  <div class="td-coins">🪙 <span id="drawerCoins">0</span></div>
+  <div class="td-grid" id="drawerGrid"></div>
+  <div class="set-hint" id="tdHint" style="margin-top:16px"></div>
+</aside>
 
 <main class="content" data-page-node-id="5IumzZOMPr80ML82CYEyFV">
   <div id="checkinSlot" data-page-node-id="rVwtaSblVRRwp55DO6YDfc"></div>
@@ -948,24 +1003,23 @@ if(typeof AGI_STAGES!=="undefined")AGI_STAGES.forEach(s=>{_stageMap[s.id]=s;});
 
 /* 两条路线的阶段顺序（id 列表，均含全部 53 阶段，仅排列不同） */
 const MODE_ORDERS={
- cpp:["s1","s2","s3","s4","s5","s6","s7","s8","py1","py2","py3","py4","ma1","ma2","ma3","ma4","s9","s10","s11","sdbg","s12","s13","s14","s15","s16","s17","s18","sbw","srec","sdp","dsl","dsk","dst","dsg","dsa","eng","career","sp1","sp2","sp3","ml1","ml2","ml3","ml4","dl1","dl2","dl3","dl4","dl5","agi1","agi2","agi3","agi4"],
- py:["py1","py2","py3","py4","ma1","ma2","ma3","ma4","sp1","sp2","sp3","ml1","ml2","ml3","ml4","dl1","dl2","dl3","dl4","dl5","agi1","agi2","agi3","agi4","s1","s2","s3","s4","s5","s6","s7","s8","s9","s10","s11","sdbg","s12","s13","s14","s15","s16","s17","s18","sbw","srec","sdp","dsl","dsk","dst","dsg","dsa","eng","career"]
+ cpp:["s1","s2","s3","s4","s5","s6","s7","s8","ma1","ma2","ma3","ma4","s9","s10","s11","sdbg","s12","s13","s14","s15","s16","s17","s18","sbw","srec","sdp","dsl","dsk","dst","dsg","dsa","eng","career","sp1","sp2","sp3","ml1","ml2","ml3","ml4","dl1","dl2","dl3","dl4","dl5","agi1","agi2","agi3","agi4"],
+ py:["py1","py2","py3","py4","ma1","ma2","ma3","ma4","sp1","sp2","sp3","ml1","ml2","ml3","ml4","dl1","dl2","dl3","dl4","dl5","agi1","agi2","agi3","agi4"]
 };
 /* 每条路线的 12 大篇章（range 指向该路线 CURRICULUM 的下标区间） */
 const MODE_PHASES={
  cpp:[
   {icon:"🌱",name:"第一篇章 · 编程启航",name_en:"Ch.1 · Programming Start",range:[0,4],desc:"环境、语法、函数——打牢 C++ 地基",desc_en:"Setup, syntax, functions — solid C++ foundations",wk:3},
   {icon:"🧱",name:"第二篇章 · 数据与对象",name_en:"Ch.2 · Data & Objects",range:[5,7],desc:"数组、指针、面向对象——攻克 C++ 难关",desc_en:"Arrays, pointers, OOP — conquer the C++ hurdles",wk:3},
-  {icon:"🐍",name:"第三篇章 · Python 入门",name_en:"Ch.3 · Python Intro",range:[8,11],desc:"AI 时代首选语言，先跑起来",desc_en:"The AI-era language; get running fast",wk:3},
-  {icon:"📐",name:"第四篇章 · 数学基石",name_en:"Ch.4 · Math Foundations",range:[12,15],desc:"线代 / 微积分 / 概率——AI 的语言",desc_en:"Linear algebra / calculus / probability — the language of AI",wk:5},
-  {icon:"⚙️",name:"第五篇章 · C++ 系统深入",name_en:"Ch.5 · C++ Systems Deep Dive",range:[16,19],desc:"指针进阶、调试、内存与底层功力",desc_en:"Advanced pointers, debugging, memory & low-level mastery",wk:4},
-  {icon:"🚀",name:"第六篇章 · C++ 实战与拔高",name_en:"Ch.6 · C++ Projects & Depth",range:[20,29],desc:"STL、项目、位运算、递归、动态规划",desc_en:"STL, projects, bitwise ops, recursion, DP",wk:7},
-  {icon:"🧮",name:"第七篇章 · 算法修炼",name_en:"Ch.7 · Algorithms",range:[30,34],desc:"数据结构与算法——面试硬实力，求职分水岭",desc_en:"Data structures & algorithms — interview strength",wk:8},
-  {icon:"💼",name:"第八篇章 · 工程素养与求职",name_en:"Ch.8 · Engineering & Career",range:[35,36],desc:"Git/CMake/多线程 + 面试冲刺",desc_en:"Git/CMake/threads + interview prep",wk:5},
-  {icon:"🔢",name:"第九篇章 · 科学计算",name_en:"Ch.9 · Scientific Computing",range:[37,39],desc:"NumPy / Pandas / Jupyter——数据处理利器",desc_en:"NumPy / Pandas / Jupyter — data tools",wk:3},
-  {icon:"🤖",name:"第十篇章 · 机器学习",name_en:"Ch.10 · Machine Learning",range:[40,43],desc:"从写规则到学规律：ML 全景",desc_en:"From rules to learning: ML overview",wk:6},
-  {icon:"🧠",name:"第十一篇章 · 深度学习",name_en:"Ch.11 · Deep Learning",range:[44,48],desc:"神经网络、PyTorch、CNN、Transformer",desc_en:"Neural nets, PyTorch, CNN, Transformer",wk:7},
-  {icon:"🌌",name:"第十二篇章 · 通用人工智能前沿",name_en:"Ch.12 · AGI Frontier",range:[49,52],desc:"RL / LLM / 多模态 / Agent——通往 AGI",desc_en:"RL / LLM / multimodal / Agent — toward AGI",wk:7}
+  {icon:"📐",name:"第三篇章 · 数学基石",name_en:"Ch.3 · Math Foundations",range:[8,11],desc:"线代 / 微积分 / 概率——AI 的语言",desc_en:"Linear algebra / calculus / probability — the language of AI",wk:5},
+  {icon:"⚙️",name:"第四篇章 · C++ 系统深入",name_en:"Ch.4 · C++ Systems Deep Dive",range:[12,15],desc:"OOP、调试、模板——C++ 核心内功",desc_en:"OOP, debugging, templates — C++ core mastery",wk:4},
+  {icon:"🚀",name:"第五篇章 · C++ 实战与拔高",name_en:"Ch.5 · C++ Projects & Depth",range:[16,22],desc:"STL、文件、异常、现代 C++——工程化",desc_en:"STL, files, exceptions, modern C++ — engineering",wk:7},
+  {icon:"🧮",name:"第六篇章 · 算法修炼",name_en:"Ch.6 · Algorithms",range:[23,30],desc:"位运算、递归、DP、数据结构——面试硬实力",desc_en:"Bitwise, recursion, DP, DSA — interview strength",wk:8},
+  {icon:"💼",name:"第七篇章 · 工程素养与求职",name_en:"Ch.7 · Engineering & Career",range:[31,32],desc:"Git/CMake/多线程 + 面试冲刺",desc_en:"Git/CMake/threads + interview prep",wk:5},
+  {icon:"🔢",name:"第八篇章 · 科学计算",name_en:"Ch.8 · Scientific Computing",range:[33,35],desc:"NumPy / Pandas / Jupyter——数据处理利器",desc_en:"NumPy / Pandas / Jupyter — data tools",wk:3},
+  {icon:"🤖",name:"第九篇章 · 机器学习",name_en:"Ch.9 · Machine Learning",range:[36,39],desc:"从写规则到学规律：ML 全景",desc_en:"From rules to learning: ML overview",wk:6},
+  {icon:"🧠",name:"第十篇章 · 深度学习",name_en:"Ch.10 · Deep Learning",range:[40,44],desc:"神经网络、PyTorch、CNN、Transformer",desc_en:"Neural nets, PyTorch, CNN, Transformer",wk:7},
+  {icon:"🌌",name:"第十一篇章 · 通用人工智能前沿",name_en:"Ch.11 · AGI Frontier",range:[45,48],desc:"RL / LLM / 多模态 / Agent——通往 AGI",desc_en:"RL / LLM / multimodal / Agent — toward AGI",wk:7}
  ],
  py:[
   {icon:"🐍",name:"第一篇章 · Python 启航",name_en:"Ch.1 · Python Start",range:[0,3],desc:"从零开始学 Python，写出第一个 AI 时代程序",desc_en:"Learn Python from zero; write your first AI-era program",wk:3},
@@ -973,13 +1027,7 @@ const MODE_PHASES={
   {icon:"🧮",name:"第三篇章 · 科学计算",name_en:"Ch.3 · Scientific Computing",range:[8,10],desc:"NumPy / Pandas / Jupyter——数据处理利器",desc_en:"NumPy / Pandas / Jupyter — data tools",wk:3},
   {icon:"🤖",name:"第四篇章 · 机器学习",name_en:"Ch.4 · Machine Learning",range:[11,14],desc:"从写规则到学规律：ML 全景",desc_en:"From rules to learning: ML overview",wk:6},
   {icon:"🧠",name:"第五篇章 · 深度学习",name_en:"Ch.5 · Deep Learning",range:[15,19],desc:"神经网络、PyTorch、CNN、Transformer",desc_en:"Neural nets, PyTorch, CNN, Transformer",wk:7},
-  {icon:"🌌",name:"第六篇章 · 通用人工智能前沿",name_en:"Ch.6 · AGI Frontier",range:[20,23],desc:"RL / LLM / 多模态 / Agent——通往 AGI",desc_en:"RL / LLM / multimodal / Agent — toward AGI",wk:7},
-  {icon:"⚙️",name:"第七篇章 · 系统纵深 · C++ 基础",name_en:"Ch.7 · Systems · C++ Basics",range:[24,31],desc:"可选深造：C++ 语法与底层功力（性能 / 系统方向加分）",desc_en:"Elective: C++ syntax & low-level mastery (systems/perf track)",wk:4},
-  {icon:"🏗️",name:"第八篇章 · 系统纵深 · C++ 对象与工程",name_en:"Ch.8 · Systems · C++ OOP & Engineering",range:[32,35],desc:"可选深造：类 / 模板 / 调试——面向对象与工程化雏形",desc_en:"Elective: classes / templates / debugging — OOP & engineering",wk:3},
-  {icon:"🚀",name:"第九篇章 · 系统纵深 · C++ 标准库与实战",name_en:"Ch.9 · Systems · C++ STL & Practice",range:[36,42],desc:"可选深造：STL / 文件 / 异常 / 现代特性 / 项目",desc_en:"Elective: STL / files / exceptions / modern features / projects",wk:7},
-  {icon:"🔢",name:"第十篇章 · 系统纵深 · 算法思维",name_en:"Ch.10 · Systems · Algorithmic Thinking",range:[43,45],desc:"可选深造：位运算 / 递归分治 / 动态规划",desc_en:"Elective: bitwise / recursion divide-conquer / DP",wk:4},
-  {icon:"🧮",name:"第十一篇章 · 系统纵深 · 数据结构与算法",name_en:"Ch.11 · Systems · DSA",range:[46,50],desc:"可选深造：链表 / 栈队列 / 树 / 图 / 排序——面试硬实力",desc_en:"Elective: linked lists / stacks / trees / graphs / sorting",wk:8},
-  {icon:"💼",name:"第十二篇章 · 系统纵深 · 工程素养与求职",name_en:"Ch.12 · Systems · Engineering & Career",range:[51,52],desc:"可选深造：Git/CMake/多线程/面试冲刺",desc_en:"Elective: Git/CMake/threads/interview prep",wk:5}
+  {icon:"🌌",name:"第六篇章 · 通用人工智能前沿",name_en:"Ch.6 · AGI Frontier",range:[20,23],desc:"RL / LLM / 多模态 / Agent——通往 AGI",desc_en:"RL / LLM / multimodal / Agent — toward AGI",wk:7}
  ]
 };
 let PHASES=MODE_PHASES.cpp;            // 当前路线篇章（随模式切换重赋值）
@@ -1355,7 +1403,13 @@ const HOMEPAGE_STYLES=[
   {id:"forest",name:"森之夜",name_en:"Forest Night",icon:"🌲",cost:60,desc:"薄荷绿 + 深林青",desc_en:"Mint green + deep forest",vars:{"--bg":"#f3fbf7","--card":"#ffffff","--line":"#d2ebdf","--ink":"#15372a","--sub":"#6d9983","--blue":"#2e9e5b","--amber":"#c8a01e","--soft":"#e8f6ef","--shadow":"0 6px 18px rgba(46,158,91,.15)","--red":"#d94f4f"}},
   {id:"violet",name:"紫罗兰",name_en:"Violet",icon:"🔮",cost:90,desc:"雾紫底 + 罗兰紫",desc_en:"Misty violet + iris purple",vars:{"--bg":"#f8f6ff","--card":"#ffffff","--line":"#e0dcf6","--ink":"#2f2a44","--sub":"#8b86a8","--blue":"#8a63d2","--amber":"#e0a12d","--soft":"#efeafc","--shadow":"0 6px 18px rgba(138,99,210,.16)","--red":"#d94f7a"}},
   {id:"ocean",name:"深海蓝",name_en:"Deep Sea",icon:"🌊",cost:90,desc:"浅海蓝 + 深海军蓝",desc_en:"Shallow sea + navy blue",vars:{"--bg":"#f2f8fc","--card":"#ffffff","--line":"#d3e5f0","--ink":"#12303f","--sub":"#6b8b9c","--blue":"#00599c","--amber":"#e0a12d","--soft":"#e7f2f9","--shadow":"0 6px 18px rgba(0,89,156,.16)","--red":"#d9534f"}},
-  {id:"cherry",name:"樱之粉",name_en:"Cherry Pink",icon:"🌺",cost:120,desc:"奶油粉底 + 樱红",desc_en:"Cream pink + cherry red",vars:{"--bg":"#fff5f9","--card":"#ffffff","--line":"#f7d6e4","--ink":"#4a2436","--sub":"#a87b91","--blue":"#e2557b","--amber":"#d9a13a","--soft":"#fdeaf2","--shadow":"0 6px 18px rgba(226,85,123,.15)","--red":"#d63b6b"}}
+  {id:"cherry",name:"樱之粉",name_en:"Cherry Pink",icon:"🌺",cost:120,desc:"奶油粉底 + 樱红",desc_en:"Cream pink + cherry red",vars:{"--bg":"#fff5f9","--card":"#ffffff","--line":"#f7d6e4","--ink":"#4a2436","--sub":"#a87b91","--blue":"#e2557b","--amber":"#d9a13a","--soft":"#fdeaf2","--shadow":"0 6px 18px rgba(226,85,123,.15)","--red":"#d63b6b"}},
+  {id:"midnight",name:"午夜蓝",name_en:"Midnight Blue",icon:"🌌",cost:120,desc:"深夜蓝黑 + 冰蓝高亮",desc_en:"Midnight navy + ice blue glow",vars:{"--bg":"#0a0f1e","--card":"#121a2e","--line":"#1e2a45","--ink":"#dce8ff","--sub":"#7a8db5","--blue":"#4a9eff","--amber":"#ffc857","--soft":"#162038","--shadow":"0 6px 24px rgba(0,0,0,.5)","--red":"#ff5c7a"}},
+  {id:"mono",name:"极简黑白",name_en:"Mono Noir",icon:"⬛",cost:100,desc:"纯黑白灰 · 无彩色干扰",desc_en:"Pure monochrome · distraction-free",vars:{"--bg":"#fafafa","--card":"#ffffff","--line":"#e0e0e0","--ink":"#1a1a1a","--sub":"#888888","--blue":"#333333","--amber":"#666666","--soft":"#f0f0f0","--shadow":"0 2px 10px rgba(0,0,0,.08)","--red":"#cc0000"}},
+  {id:"mint",name:"薄荷绿",name_en:"Fresh Mint",icon:"🍃",cost:80,desc:"清凉薄荷 + 白色",desc_en:"Cool mint + clean white",vars:{"--bg":"#f0fdf6","--card":"#ffffff","--line":"#c8eed9","--ink":"#1a3a2a","--sub":"#5a8a70","--blue":"#10b981","--amber":"#f59e0b","--soft":"#e0f9ec","--shadow":"0 6px 18px rgba(16,185,129,.14)","--red":"#ef4444"}},
+  {id:"cafe",name:"咖啡时光",name_en:"Coffee Time",icon:"☕",cost:110,desc:"暖棕底 + 奶油卡其",desc_en:"Warm brown + cream khaki",vars:{"--bg":"#faf6f0","--card":"#fffdf8","--line":"#e8dcc8","--ink":"#3d2b1f","--sub":"#8a7560","--blue":"#8b5e3c","--amber":"#c8963e","--soft":"#f0e6d6","--shadow":"0 4px 14px rgba(139,94,60,.12)","--red":"#b84a2a"}},
+  {id:"sunset_dark",name:"暮光暗调",name_en:"Dusk Dark",icon:"🌆",cost:140,desc:"深紫暮色 + 暖橙余晖",desc_en:"Deep dusk purple + warm orange glow",vars:{"--bg":"#1a1025","--card":"#251835","--line":"#3d2a52","--ink":"#f0e0ff","--sub":"#9e85b8","--blue":"#c084fc","--amber":"#fb923c","--soft":"#2d1f40","--shadow":"0 6px 24px rgba(0,0,0,.5)","--red":"#f87171"}},
+  {id:"ocean_dark",name:"深海幽暗",name_en:"Abyss Blue",icon:"🐋",cost:130,desc:"深海蓝黑 + 幽绿荧光",desc_en:"Deep ocean black + bioluminescent teal",vars:{"--bg":"#050e1a","--card":"#0a1a2e","--line":"#14304a","--ink":"#c8e8f8","--sub":"#5a8aaa","--blue":"#06b6d4","--amber":"#fbbf24","--soft":"#0c2438","--shadow":"0 6px 24px rgba(0,0,0,.5)","--red":"#f87171"}}
 ];
 function applyStyle(){
   const st=HOMEPAGE_STYLES.find(s=>s.id===(data.activeStyle||"default"))||HOMEPAGE_STYLES[0];
@@ -1401,7 +1455,52 @@ function buyStyle(id){
 }
 function setStyle(id){
   const s=HOMEPAGE_STYLES.find(x=>x.id===id);if(!s)return;
-  data.activeStyle=id;applyStyle();saveData();renderStyleShop();
+  data.activeStyle=id;applyStyle();saveData();renderStyleShop();renderDrawer();
+}
+/* ---- Theme Shop Drawer ---- */
+function openThemeDrawer(){
+  renderDrawer();
+  document.getElementById('themeDrawer').classList.add('open');
+  document.getElementById('drawerOverlay').classList.add('open');
+}
+function closeThemeDrawer(){
+  document.getElementById('themeDrawer').classList.remove('open');
+  document.getElementById('drawerOverlay').classList.remove('open');
+}
+function renderDrawer(){
+  var g=document.getElementById('drawerGrid');if(!g)return;
+  var coins=data.coins||0;
+  document.getElementById('drawerCoins').textContent=coins;
+  document.querySelector('.td-title').innerHTML='🎨 '+(LANG==="en"?"Theme Shop":"主页风格商店");
+  document.getElementById('tdHint').textContent=LANG==="en"?"Earn 🪙 by learning/reviewing/checking-in/quizzes; coins only unlock themes, never pay-to-win.":"学习/复习/打卡/测评均赚取 🪙 星币；星币仅用于解锁主页配色风格，绝不 pay-to-win 跳过学习。";
+  g.innerHTML=HOMEPAGE_STYLES.map(function(s){
+    var owned=(data.unlockedStyles||[]).includes(s.id);
+    var active=(data.activeStyle||"default")===s.id;
+    var can=coins>=s.cost;
+    var topC=s.vars["--blue"]||"#3b82f6";
+    var bodyC=s.vars["--card"]||"#fff";
+    var lineC=s.vars["--line"]||"#e5e7eb";
+    var badge=active?'<div class="td-badge using">'+(LANG==="en"?"Using":"使用中")+'</div>'
+      :owned?'<div class="td-badge owned">✓ '+(LANG==="en"?"Owned":"已拥有")+'</div>'
+      :'<div class="td-badge locked">🪙 '+s.cost+'</div>';
+    var priceBtn=active?'':(owned?'':('<div class="td-price">🪙 '+s.cost+'</div>'));
+    return '<div class="td-card'+(active?' active':'')+(owned?'':' locked-card')+'" onclick="drawerPick(\''+s.id+'\')">'+
+      badge+
+      '<div class="td-preview" style="--pv-top:'+topC+';--pv-body:'+bodyC+';--pv-line:'+lineC+'">'+
+      '<div class="pv-top"></div><div class="pv-body"></div></div>'+
+      '<div class="td-name">'+s.icon+' '+escapeHtml(pick(s,"name"))+'</div>'+
+      '<div class="td-desc">'+escapeHtml(pick(s,"desc"))+'</div>'+
+      priceBtn+'</div>';
+  }).join("");
+}
+function drawerPick(id){
+  var s=HOMEPAGE_STYLES.find(function(x){return x.id===id});if(!s)return;
+  var owned=(data.unlockedStyles||[]).includes(id);
+  var active=(data.activeStyle||"default")===id;
+  if(active)return;
+  if(owned){setStyle(id);return;}
+  if((data.coins||0)<s.cost){toast(t("星币不足，还差 ")+(s.cost-(data.coins||0))+t(" 🪙"),"warn");return;}
+  buyStyle(id);
 }
 
 /* ================= 学习行为 ================= */
@@ -1430,10 +1529,10 @@ function completeLesson(id){
   const f=findLesson(id);if(!f)return;
   data.completed[id]={date:todayStr(),minutes:f.lesson.min,xp:f.lesson.min,box:0,lastReview:null};
   gainXp(f.lesson.min);
-  gainCoins(5);
+  gainCoins(6);
   updateStreak();recordDaily(f.lesson.min,f.lesson.min,false,false);
   saveData();checkAchievements();checkPhaseDone(f.stage.id);
-  toast(t("＋")+f.lesson.min+t(" XP · ＋5 🪙 · 已掌握：")+escapeHtml(f.lesson.title),"xp");
+  toast(t("＋")+f.lesson.min+t(" XP · ＋6 🪙 · 已掌握：")+escapeHtml(f.lesson.title),"xp");
   renderAll();
 }
 function undoLesson(id){
@@ -1892,6 +1991,30 @@ function openLesson(id){
   const lExQ=(LANG==="en"&&l.ex&&l.ex.q_en)?l.ex.q_en:(l.ex?l.ex.q:"");
   const lExA=(LANG==="en"&&l.ex&&l.ex.a_en)?l.ex.a_en:(l.ex?l.ex.a:"");
   const lTarget=pick(l,"target");
+  // Cross-track comparison
+  const CROSS_REF={
+    "1-3":["p1-2","第一个程序与 print","First Program & print","Python 的 print 更简洁，无需 include/main"],
+    "1-4":["p1-3","变量与基本类型","Variables & Basic Types","Python 用动态类型，无需声明"],
+    "1-5":["p2-1","数字与运算","Numbers & Arithmetic","Python 除法自然得小数"],
+    "2-1":["p1-3","变量与类型","Variables & Types","Python 不需要类型声明"],
+    "3-2":["p2-5","条件与循环","Conditionals & Loops","Python 用缩进代替花括号"],
+    "4-1":["p3-1","函数定义","Function Definition","Python def 更简洁"],
+    "4-3":["p3-2","作用域与 lambda","Scope & lambda","Python 闭包规则类似"],
+    "5-1":["p3-3","模块与包","Modules & Packages","Python import 用法一致"],
+    "6-1":["p2-3","列表","Lists","Python list 更灵活，无需指定大小"],
+    "7-1":["p2-3","列表/数组","Lists/Arrays","Python list 自带动态扩容"],
+    "8-1":["p4-1","类与 self","class & self","Python 类同样用 self 代替 this"],
+    "9-1":["p4-1","类与对象","Classes & Objects","Python 继承语法类似"],
+    "12-1":["sp1-1","NumPy ndarray","NumPy Array","NumPy 数组类似 C++ vector 但更强大"],
+    "13-1":["sp2-1","Pandas DataFrame","Pandas DataFrame","map/unordered_map 对应 dict/DataFrame"],
+    "15-1":["p3-4","文件读写","File Read/Write","Python with open() 更安全"],
+    "16-1":["p3-5","异常处理","Exception Handling","Python try/except 几乎一样"]
+  };
+  const cref=CROSS_REF[id];
+  const crefHtml=cref?'<div class="cross-ref" style="margin:12px 0;padding:10px 14px;background:var(--soft);border-radius:10px;border-left:3px solid var(--blue);font-size:13px">'+
+    '<div style="font-weight:700;color:var(--blue);margin-bottom:4px">🔄 '+(LANG==="en"?"Cross-track reference":"跨语言对照")+'</div>'+
+    '<div>'+(LANG==="en"?"In Python, this is:":"在 Python 中对应：")+' <b>'+cref[1]+'</b></div>'+
+    '<div style="color:var(--sub);margin-top:2px">'+cref[3]+'</div></div>':'';
   $("modalBox").innerHTML=
     '<h3>'+escapeHtml(lTitle)+'</h3>'+
     '<div class="meta">'+escapeHtml(pick(f.stage,"name"))+t(" · 建议 ")+l.min+t(" 分钟")+(c?' · '+t("✅ 已完成")+(c.lastReview?" · "+t("记忆等级 L")+((c.box||0)+1):""):' · '+t("未学"))+'</div>'+
@@ -1902,11 +2025,12 @@ function openLesson(id){
       '<div class="ex-a" hidden>'+escapeHtml(lExA)+'</div>'+
       '<div style="margin-top:8px"><button class="btn small ghost" data-act="reveal">'+t("查看参考答案")+'</button></div></div>':'')+
     '<div class="target">'+t("🎯 学完你能做到：")+escapeHtml(lTarget)+'</div>'+
+    crefHtml+
     '<textarea class="notes" id="noteArea" placeholder="'+t("✍️ 在这里写下你的理解、疑问或代码练习（自动保存，写笔记可解锁成就）")+'">'+escapeHtml(data.notes[id]||"")+'</textarea>'+
     '<div class="modal-actions">'+
       (c?'<button class="btn ghost" data-act="undo">'+t("撤销完成")+'</button>':
         (lock?'<button class="btn green" disabled title="'+escapeHtml(lock)+'">'+t("🔒 新学已锁定")+'</button><div class="lock-note">'+escapeHtml(lock)+'</div>'
-              :'<button class="btn green" data-act="done">'+t("✅ 我学会了（+")+l.min+t(" XP · +5 🪙）")+'</button>'))+
+              :'<button class="btn green" data-act="done">'+t("✅ 我学会了（+")+l.min+t(" XP · +6 🪙）")+'</button>'))+
       '<button class="btn ghost" data-act="close">'+t("关闭")+'</button></div>'+
     '<div class="nav-lesson">'+
       (pv?'<button class="btn small ghost" data-act="lprev" data-id="'+pv.lesson.id+'">'+t("← 上一课：")+escapeHtml(pick(pv.lesson,"title"))+'</button>':'')+
@@ -1969,7 +2093,7 @@ function finishQuiz(){
   let xpGot=0;
   if(full){
     const prev=data.quiz[s.id]||{best:0,total:total,tries:0,passed:false};
-    if(passed&&!prev.passed){xpGot=50;gainCoins(10);}          // 首次通关 +50 XP / +10 星币
+    if(passed&&!prev.passed){xpGot=50;gainCoins(15);}          // 首次通关 +50 XP / +15 星币
     else if(st.correct>prev.best)xpGot=10;     // 刷新最佳 +10 XP
     if(xpGot>0)gainXp(xpGot);
     if(passed&&!prev.passed)confetti(40);
@@ -2122,7 +2246,7 @@ function completeLab(stageId){
   const rec=data.labs[stageId];
   if(!s||!s.lab||!rec||rec.done)return;
   rec.done=true;rec.date=todayStr();
-  gainXp(s.lab.xp);gainCoins(15);updateStreak();recordDaily(s.lab.xp,10,true);
+  gainXp(s.lab.xp);gainCoins(20);updateStreak();recordDaily(s.lab.xp,10,true);
   saveData();checkAchievements();
   confetti(40);
   toast(t("＋")+s.lab.xp+t(" XP · ＋15 🪙 · ")+t("实战完成！记得生成提示词找 AI 老师批改 🤖"),"xp");
@@ -2274,6 +2398,7 @@ document.addEventListener("click",function(e){
   const act=tar.dataset.act,id=tar.dataset.id;
   switch(act){
     case "lang":setLang(LANG==="en"?"zh":"en");break;
+    case "shop":openThemeDrawer();break;
     case "theme":{
       const order=["auto","light","dark"],cur=(data.settings.theme||"auto");
       data.settings.theme=order[(order.indexOf(cur)+1)%3];
