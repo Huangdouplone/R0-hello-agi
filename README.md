@@ -166,7 +166,9 @@ This repository — including all curriculum content, UI, and code — was **gen
 | --- | --- |
 | `index.html` | The course app (entry point) |
 | `cpp-extra-data.js` | External course data (stages, lessons, labs, quizzes) |
+| `lang-en.js` | English translation data (`STAGE_EN` / `LESSON_EN` / `LAB_EN`) |
 | `cpp-sw.js` | Service Worker for offline caching |
+| `verify/` | Local test/verification scripts — **not part of the deployed site** |
 
 ## 🏷️ Topics
 
