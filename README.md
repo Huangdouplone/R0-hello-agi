@@ -28,7 +28,8 @@
 
 - **12 大篇章 · 53 个阶段 · 264 节**
 - 每节含：讲解 + 可运行代码样例 + 「学完你能做到」目标 + 自测题
-- 每个阶段含：阶段测评（3 题）+ 编程实战（lab，附参考解答）
+- 每个阶段含：阶段测评（**5 题库随机抽 3 题**，选项顺序打乱）+ **3 道编程实战**（附参考解答与 AI 批改提示词）
+- 题库规模：**265 道阶段测评题**（53 阶段 × 5）+ **159 道编程实战**（53 阶段 × 3），全部中英双语
 
 ### 两条学习路线（顶部一键切换）
 
@@ -76,7 +77,7 @@
 
 ### 部署到 GitHub Pages
 
-1. 把本仓库三个文件推送到 GitHub：`index.html`、`cpp-extra-data.js`、`cpp-sw.js`
+1. 把本仓库这些文件推送到 GitHub：`index.html`、`cpp-extra-data.js`、`lang-en.js`、`agi-quiz-extra.js`、`agi-lab-extra.js`、`cpp-sw.js`
 2. 仓库 **Settings → Pages → Build and deployment → Source** 选 `Deploy from a branch`，分支选 `main`、目录选 `/ (root)`
 3. 等待发布完成后，访问分配的 `https://<user>.github.io/<repo>/` 即可
 
@@ -102,7 +103,8 @@ It is a purely static single page: **opens instantly, works offline**, and ships
 
 - **12 chapters · 53 stages · 264 lessons**
 - Each lesson includes: explanation + runnable code sample + a "what you can do after this" target + a self-check quiz
-- Each stage includes: a stage quiz (3 questions) + a coding lab (with reference solution)
+- Each stage includes: a stage quiz (**3 questions randomly drawn from a 5-question bank**, options shuffled) + **3 coding labs** (with reference solution and AI grading prompt)
+- Bank size: **265 stage-quiz questions** (53 stages × 5) + **159 coding labs** (53 stages × 3), all bilingual
 
 ### Two learning tracks (switch from the top bar)
 
@@ -150,7 +152,7 @@ Just open `index.html` in a browser.
 
 ### Deploy to GitHub Pages
 
-1. Push the three files to GitHub: `index.html`, `cpp-extra-data.js`, `cpp-sw.js`
+1. Push these files to GitHub: `index.html`, `cpp-extra-data.js`, `lang-en.js`, `agi-quiz-extra.js`, `agi-lab-extra.js`, `cpp-sw.js`
 2. **Settings → Pages → Build and deployment → Source**: `Deploy from a branch`, branch `main`, directory `/ (root)`
 3. Once published, visit `https://<user>.github.io/<repo>/`
 
@@ -167,6 +169,8 @@ This repository — including all curriculum content, UI, and code — was **gen
 | `index.html` | The course app (entry point) |
 | `cpp-extra-data.js` | External course data (stages, lessons, labs, quizzes) |
 | `lang-en.js` | English translation data (`STAGE_EN` / `LESSON_EN` / `LAB_EN`) |
+| `agi-quiz-extra.js` | Extra stage-quiz questions (`window.AGI_QUIZ_EXTRA`), 2 per stage × 53 = **106**, merged at startup to widen each bank to 5 (3 are drawn) |
+| `agi-lab-extra.js` | Extra coding labs (`window.AGI_LAB_EXTRA`), 2 per stage × 53 = **106**, merged into `stage.labs` at startup (zh + en) |
 | `cpp-sw.js` | Service Worker for offline caching |
 | `verify/` | Local test/verification scripts — **not part of the deployed site** |
 

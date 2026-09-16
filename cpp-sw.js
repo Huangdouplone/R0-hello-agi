@@ -1,8 +1,8 @@
 /* R0:hello agi Service Worker —— 提供离线缓存
  * 通过 http(s) 托管本目录时自动生效；file:// 直接打开时浏览器会拒绝注册，属正常现象。
  */
-const CACHE = "r0-hello-agi-v1";
-const ASSETS = ["./", "index.html", "cpp-extra-data.js", "cpp-sw.js"];
+const CACHE = "r0-hello-agi-v2";
+const ASSETS = ["./", "index.html", "cpp-extra-data.js", "lang-en.js", "agi-quiz-extra.js", "agi-lab-extra.js", "cpp-sw.js"];
 self.addEventListener("install", function (e) {
   e.waitUntil(
     caches.open(CACHE).then(function (c) {

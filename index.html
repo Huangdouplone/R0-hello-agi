@@ -147,8 +147,8 @@ body{background:var(--bg);color:#2b3440;line-height:1.65;padding:18px;padding-bo
 .modal-box .modal-actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
 .modal-box .nav-lesson{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
 .modal-box .stage-links{margin:12px 0 4px;font-size:12.5px;color:var(--sub);}
-.modal-box .stage-links a{margin-right:14px;text-decoration:none;border-bottom:1px dashed var(--blue);}
-.modal-box .stage-links a:hover{opacity:.8;}
+.modal-box .stage-links a{margin-right:14px;color:var(--accent,#5aa9e6);text-decoration:none;border-bottom:1px dashed var(--accent,#5aa9e6);}
+.modal-box .stage-links a:hover{opacity:.85;}
 .modal-box .intro-step{display:flex;gap:10px;align-items:flex-start;margin:10px 0;font-size:14px;}
 .modal-box .intro-step .n{flex:none;width:24px;height:24px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;}
 .copy-code{position:relative;}
@@ -345,6 +345,7 @@ body{background:var(--bg);color:#2b3440;line-height:1.65;padding:18px;padding-bo
 .stage-goal{font-size:13px;color:var(--ink);margin:4px 0;}
 .stage-pre{font-size:12px;color:var(--sub);margin:2px 0;}
 .stage-links{font-size:12px;color:var(--sub);margin-top:4px;}
+.stage-links a{color:var(--accent,#5aa9e6);text-decoration:none;border-bottom:1px dashed var(--accent,#5aa9e6);margin-right:10px;}
 .star{display:inline-block;margin-left:6px;vertical-align:middle;}
 .last-badge,.last-flag{
   display:inline-block;margin-left:6px;font-size:11px;color:#fff;
@@ -729,6 +730,8 @@ input.inp:focus,select.inp:focus{outline:none;border-color:var(--blue);box-shado
 <button id="toTop" class="to-top" aria-label="返回顶部" data-page-node-id="DrskNYLug9A3BgyWsIXrZP">&#8593;</button>
 <script src="cpp-extra-data.js"></script>
 <script src="lang-en.js?v=15"></script>
+<script src="agi-quiz-extra.js?v=1"></script>
+<script src="agi-lab-extra.js?v=1"></script>
 <script>
 
 /*
@@ -1001,6 +1004,26 @@ if(typeof EXTRA_STAGES!=="undefined")EXTRA_STAGES.forEach(s=>{_stageMap[s.id]=s;
 if(typeof JOB_STAGES!=="undefined")JOB_STAGES.forEach(s=>{_stageMap[s.id]=s;});
 if(typeof AGI_STAGES!=="undefined")AGI_STAGES.forEach(s=>{_stageMap[s.id]=s;});
 
+/* ================================================================
+ * 题库 / 实战题「叠加层」合并（不改动 cpp-extra-data.js 原始数据）
+ *   agi-quiz-extra.js → window.AGI_QUIZ_EXTRA  每阶段 +2 道测评题
+ *   agi-lab-extra.js  → window.AGI_LAB_EXTRA   每阶段 +2 道编程实战
+ * 合并后：stage.quiz 变长（抽题仍只显示 3 道），stage.labs 为实战数组
+ * （labs[0] 即原 stage.lab，其余为新增实战；显示数量不变，题库变宽）
+ * ================================================================ */
+(function(){
+  var qe=window.AGI_QUIZ_EXTRA, le=window.AGI_LAB_EXTRA;
+  if(qe)Object.keys(qe).forEach(function(id){
+    var s=_stageMap[id];
+    if(s&&Array.isArray(qe[id])&&qe[id].length) s.quiz=(s.quiz||[]).concat(qe[id]);
+  });
+  if(le)Object.keys(le).forEach(function(id){
+    var s=_stageMap[id];
+    if(!s||!Array.isArray(le[id])||!le[id].length) return;
+    s.labs=(s.lab?[s.lab]:[]).concat(le[id]);   // labs[0] 保持为原 s.lab（旧进度不丢）
+  });
+})();
+
 /* 两条路线的阶段顺序（id 列表，均含全部 53 阶段，仅排列不同） */
 const MODE_ORDERS={
  cpp:["s1","s2","s3","s4","s5","s6","s7","s8","ma1","ma2","ma3","ma4","s9","s10","s11","sdbg","s12","s13","s14","s15","s16","s17","s18","sbw","srec","sdp","dsl","dsk","dst","dsg","dsa","eng","career","sp1","sp2","sp3","ml1","ml2","ml3","ml4","dl1","dl2","dl3","dl4","dl5","agi1","agi2","agi3","agi4"],
@@ -1187,7 +1210,7 @@ const QUOTES=["种一棵树最好的时间是十年前，其次是现在。","�
 const STORAGE_KEY="wb_r0_hello_agi_v2";
 const LEGACY_STORAGE_KEY="wb_cpp_workbench_v2"; // 旧版键名：首次读取时自动迁移，避免用户学习进度丢失
 const RIV=[2,4,7,15,30,60]; // 复习间隔（天）
-let data=null, openStage=null, quizState=null, remindTimer=null, labId=null, lastPrompt=null;
+let data=null, openStage=null, quizState=null, remindTimer=null, labId=null, labK=0, lastPrompt=null;
 let settingsBound=false;
 let timer={running:false,start:0,elapsed:0,iv:null};
 
@@ -1603,7 +1626,7 @@ function checkAchievements(){
   const labDone=Object.values(data.labs||{}).filter(r=>r.done).length;
   if(labDone>=1)unlock("labFirst");
   if(labDone>=5)unlock("lab5");
-  if(labDone>=CURRICULUM.filter(s=>s.lab).length)unlock("labAll");
+  if(labDone>=totalLabs())unlock("labAll");
   if(data.aiUsed)unlock("aiFirst");
   if(goalStreakCount()>=7)unlock("goal7");
   if(data.xp>=5000)unlock("xp5000");
@@ -1925,7 +1948,7 @@ function renderReport(){
   L.push(t("🎯 今日目标（新学）：")+d.lessons+t("/")+goal+t(" 节 —— ")+(d.lessons>=goal?t("已达成 🎉"):t("还差 ")+(goal-d.lessons)+t(" 节，加油")));
   L.push(t("📊 累计进度：")+cnt+t("/")+tot+t(" 节（")+Math.round(cnt/tot*100)+t("%）｜ ")+li.title+t("（Lv.")+li.level+t("）｜ 总 XP ")+data.xp);
   L.push(t("🏁 ")+etaText());
-  L.push(t("🏅 成就：")+Object.keys(data.achievements).length+t("/")+ACHIEVEMENTS.length+t(" ｜ ⭐ 测评通过：")+quizN+t(" 个阶段 ｜ 💻 实战：")+Object.values(data.labs).filter(r=>r.done).length+t("/")+CURRICULUM.filter(s=>s.lab).length+t(" ｜ 🔁 待复习：")+dueN+t(" 节"));
+  L.push(t("🏅 成就：")+Object.keys(data.achievements).length+t("/")+ACHIEVEMENTS.length+t(" ｜ ⭐ 测评通过：")+quizN+t(" 个阶段 ｜ 💻 实战：")+labsDone()+t("/")+totalLabs()+t(" ｜ 🔁 待复习：")+dueN+t(" 节"));
   L.push("──────────────────────────");
   L.push(next?t("➡️ 下一步建议：「")+escapeHtml(pick(next.lesson,"title"))+t("」(")+escapeHtml(pick(next.stage,"name"))+t(" · 约 ")+next.lesson.min+t(" 分钟")+")":t("➡️ 课程已全部完成，可复习巩固或拓展自己的项目！"));
   L.push(t("💬 ")+quote);
@@ -2048,34 +2071,52 @@ function openLesson(id){
     if(!had&&data.achievements.scribe){saveData();renderAch();}
   });
 }
+/* ===== 阶段测评：题库 + 随机抽题 + 选项乱序 =====
+   AGI_QUIZ_COUNT 是「展示给用户的题量」——固定不变；题库可以持续扩充，
+   每次从中随机抽 N 题并打乱选项，重复测评不会总是同一组题。
+   rec.ai 保留题库中的原始下标，错题本与跳转都按原始下标记录，不受乱序影响。 */
+var AGI_QUIZ_COUNT=3;
+function agiShuffle(a){var r=a.slice();for(var i=r.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var tmp=r[i];r[i]=r[j];r[j]=tmp;}return r;}
+function agiIota(n){var a=[];for(var i=0;i<n;i++)a.push(i);return a;}
+function agiBuildQuiz(s,forceAi){
+  var idxs=agiShuffle(agiIota(s.quiz.length));
+  if(typeof forceAi==="number"&&forceAi>=0&&forceAi<s.quiz.length){
+    idxs=idxs.filter(function(x){return x!==forceAi;});   // 错题重练：把目标题放到首位
+    idxs.unshift(forceAi);
+  }
+  return idxs.slice(0,Math.min(AGI_QUIZ_COUNT,s.quiz.length)).map(function(ai){
+    var perm=agiShuffle(agiIota(s.quiz[ai].o.length));
+    return {ai:ai,perm:perm,ca:perm.indexOf(s.quiz[ai].a)};
+  });
+}
 function startQuiz(stageId,startIdx){
   const s=CURRICULUM.find(x=>x.id===stageId);if(!s||!s.quiz)return;
   const doneN=s.lessons.filter(l=>data.completed[l.id]).length;
   if(doneN<s.lessons.length){toast(t("先完成本阶段全部课程再测评（")+doneN+"/"+s.lessons.length+t("）📚"),"warn");return;}
-  const jump=typeof startIdx==="number"&&startIdx>0;
-  quizState={stage:s,idx:jump?startIdx:0,correct:0,answers:[],jump:jump};
+  const jump=typeof startIdx==="number"&&startIdx>=0&&startIdx<s.quiz.length;
+  quizState={stage:s,idx:0,correct:0,answers:[],jump:jump,qs:agiBuildQuiz(s,jump?startIdx:null)};
   showQuiz();
 }
 function showQuiz(){
-  const st=quizState,q=st.stage.quiz[st.idx];
-  const dots=st.stage.quiz.map((_,i)=>'<i class="'+(i===st.idx?"on":st.answers[i]===undefined?"":(st.answers[i].ok?"ok":"no"))+'"></i>').join("");
+  const st=quizState,rec=st.qs[st.idx],q=st.stage.quiz[rec.ai];
+  const dots=st.qs.map((_,i)=>'<i class="'+(i===st.idx?"on":st.answers[i]===undefined?"":(st.answers[i].ok?"ok":"no"))+'"></i>').join("");
   $("modalBox").innerHTML=
     '<h3>'+t("📝 ")+escapeHtml(pick(st.stage,"name"))+' · '+t("阶段测评")+'</h3>'+
-    '<div class="meta">'+(st.jump?t("🔁 错题重练 · 从第 ")+(st.idx+1)+t(" 题开始 · 答对自动移出错题本，不计入正式成绩"):t("第 ")+(st.idx+1)+t(" / ")+st.stage.quiz.length+t(" 题 · 答对一半即通关"))+'</div>'+
+    '<div class="meta">'+(st.jump?t("🔁 错题重练 · 从第 ")+(st.idx+1)+t(" 题开始 · 答对自动移出错题本，不计入正式成绩"):t("第 ")+(st.idx+1)+t(" / ")+st.qs.length+t(" 题 · 答对一半即通关"))+'</div>'+
     '<div class="q-dots">'+dots+'</div>'+
     '<div style="font-size:16px;font-weight:600;margin:10px 0">'+escapeHtml(q.q)+'</div>'+
-    '<div id="opts">'+q.o.map((o,i)=>'<div class="q-opt" data-act="opt" data-i="'+i+'"><div class="abc">'+"ABCD"[i]+'</div><div>'+escapeHtml(o)+'</div></div>').join("")+'</div>'+
+    '<div id="opts">'+rec.perm.map(function(ai2,disp){return '<div class="q-opt" data-act="opt" data-i="'+disp+'"><div class="abc">'+"ABCD"[disp]+'</div><div>'+escapeHtml(q.o[ai2])+'</div></div>';}).join("")+'</div>'+
     '<div id="qWhy"></div>'+
     '<div class="modal-actions"><button class="btn ghost" data-act="close">'+t("退出测评")+'</button></div>';
   $("modalMask").classList.add("show");
 }
 function answerQuiz(i){
   const st=quizState;if(!st||st.answers[st.idx]!==undefined)return;
-  const q=st.stage.quiz[st.idx];
-  const ok=q.a===i;
+  const rec=st.qs[st.idx],q=st.stage.quiz[rec.ai];
+  const ok=rec.ca===i;
   st.answers[st.idx]={pick:i,ok:ok};
-  if(ok)st.correct++; else recordMistake(st.stage.id,st.idx,i);
-  const mk=st.stage.id+"#"+st.idx;
+  if(ok)st.correct++; else recordMistake(st.stage.id,rec.ai,rec.perm[i]);
+  const mk=st.stage.id+"#"+rec.ai;
   if(ok&&data.mistakes&&data.mistakes[mk]){ // 重做答对 → 自动移出错题本
     delete data.mistakes[mk];saveData();renderMistakes();renderAch();
     toast(t("✅ 答对了，这题已自动移出错题本"));
@@ -2083,13 +2124,13 @@ function answerQuiz(i){
   const opts=$("opts").querySelectorAll(".q-opt");
   opts[i].classList.add(ok?"right":"wrong");
   if(!ok)opts[q.a].classList.add("right");
-  $("qWhy").innerHTML='<div class="q-why">'+(ok?t("✅ 正确！"):t("❌ 正确答案是 ")+"ABCD"[q.a]+t("。"))+' '+escapeHtml(q.why||"")+'</div>'+
-    (st.idx<st.stage.quiz.length-1
+  $("qWhy").innerHTML='<div class="q-why">'+(ok?t("✅ 正确！"):t("❌ 正确答案是 ")+"ABCD"[rec.ca]+t("。"))+' '+escapeHtml(q.why||"")+'</div>'+
+    (st.idx<st.qs.length-1
       ?'<div class="modal-actions"><button class="btn green" data-act="next-q">'+t("下一题 →")+'</button></div>'
       :'<div class="modal-actions"><button class="btn green" data-act="finish-quiz">'+t("查看成绩 🏁")+'</button></div>');
 }
 function finishQuiz(){
-  const st=quizState,s=st.stage,total=st.stage.quiz.length;
+  const st=quizState,s=st.stage,total=st.qs.length;
   const answered=st.answers.filter(Boolean).length;
   const full=answered===total;                 // 错题重练（从中间开始）不计正式成绩
   const passed=full&&st.correct>=Math.ceil(total/2);
@@ -2130,40 +2171,55 @@ function showIntro(){
     '<div class="modal-actions"><button class="btn green" data-act="intro-done">'+t("🚀 开始学习之旅")+'</button></div>';
   $("modalMask").classList.add("show");
 }
-function closeModal(){$("modalMask").classList.remove("show");modalLessonId=null;quizState=null;labId=null;lastPrompt=null;}
+function closeModal(){$("modalMask").classList.remove("show");modalLessonId=null;quizState=null;labId=null;labK=0;lastPrompt=null;}
 
 /* ================================================================
  * 四B、编程实战 + AI 批改提示词 + 篇章庆祝
  * ================================================================ */
+/* ---- 多实战支持：每阶段 labs[]（labs[0] 为原 s.lab，其余来自叠加层） ---- */
+function labList(s){ return (s.labs&&s.labs.length)?s.labs:(s.lab?[s.lab]:[]); }
+function labKey(sid,k){ return (k>0)?(sid+"#"+k):sid; }          // k=0 沿用旧键，旧进度不丢
+function labRec(sid,k){ return data.labs[labKey(sid,k)]; }
+function totalLabs(){ var n=0;CURRICULUM.forEach(function(s){n+=labList(s).length;});return n; }
+function labsDone(){ return Object.values(data.labs||{}).filter(function(r){return r&&r.done;}).length; }
+function labReqOf(l){ return (LANG==="en"&&l.req_en&&l.req_en.length)?l.req_en:l.req; }
+function labHintOf(l){ return (LANG==="en"&&l.hint_en)?l.hint_en:l.hint; }
+function labTitle(s,k){ var l=labList(s)[k||0]; return l?pick(l,"t"):pick(s,"name"); }
 function renderLabs(){
-  $("labGrid").innerHTML=CURRICULUM.map((s,si)=>{
+  var html="";
+  CURRICULUM.forEach(function(s,si){
     const unlocked=s.lessons.every(l=>data.completed[l.id]);
-    const rec=data.labs[s.id];
-    const cls="lab-card "+(rec&&rec.done?"done":unlocked?"":"locked");
-    return '<div class="'+cls+'" '+(unlocked?'data-act="lab"':'')+' data-id="'+s.id+'">'+
-      '<div class="lc-badge">'+(rec&&rec.done?"✅":unlocked?"💻":"🔒")+'</div>'+
-      '<div class="lc-t">'+escapeHtml(labTitle(s))+'</div>'+
-      '<div class="lc-m">'+(si+1)+'. '+escapeHtml(pick(s,"name"))+'</div>'+
-      '<div class="lc-m">'+(rec&&rec.done?t("已完成 · +")+s.lab.xp+t(" XP"):unlocked?t("已解锁 · 奖励 ")+s.lab.xp+t(" XP"):t("完成本阶段全部课程解锁"))+'</div></div>';
-  }).join("");
+    var list=labList(s),multi=list.length>1;
+    list.forEach(function(lab,k){
+      const rec=data.labs[labKey(s.id,k)];
+      const cls="lab-card "+(rec&&rec.done?"done":unlocked?"":"locked");
+      html+='<div class="'+cls+'" '+(unlocked?'data-act="lab"':'')+' data-id="'+s.id+'" data-k="'+k+'">'+
+        '<div class="lc-badge">'+(rec&&rec.done?"✅":unlocked?"💻":"🔒")+'</div>'+
+        '<div class="lc-t">'+escapeHtml(pick(lab,"t"))+'</div>'+
+        '<div class="lc-m">'+(si+1)+'. '+escapeHtml(pick(s,"name"))+(multi?' · 💻 '+(k+1)+'/'+list.length:'')+'</div>'+
+        '<div class="lc-m">'+(rec&&rec.done?t("已完成 · +")+lab.xp+t(" XP"):unlocked?t("已解锁 · 奖励 ")+lab.xp+t(" XP"):t("完成本阶段全部课程解锁"))+'</div></div>';
+    });
+  });
+  $("labGrid").innerHTML=html;
 }
-function labTitle(s){return pick(s.lab,"t");}
-function openLab(stageId){
-  const s=CURRICULUM.find(x=>x.id===stageId);if(!s||!s.lab)return;
-  const lab=s.lab;
-  if(!data.labs[stageId])data.labs[stageId]={code:"",out:"",stuck:"",done:false,date:null};
-  const rec=data.labs[stageId];
-  labId=stageId;modalLessonId=null;lastPrompt=null;
+function openLab(stageId,k){
+  k=k||0;
+  const s=CURRICULUM.find(x=>x.id===stageId);if(!s)return;
+  const lab=labList(s)[k];if(!lab)return;
+  const key=labKey(stageId,k);
+  if(!data.labs[key])data.labs[key]={code:"",out:"",stuck:"",done:false,date:null};
+  const rec=data.labs[key];
+  labId=stageId;labK=k;modalLessonId=null;lastPrompt=null;
   $("modalBox").innerHTML=
     '<h3>💻 '+t("实战：")+escapeHtml(pick(lab,"t"))+'</h3>'+
-    '<div class="meta">'+escapeHtml(pick(s,"name"))+' · '+t("完成后 +")+lab.xp+t(" XP · 先在编译器里独立完成，再把代码粘贴回来")+'</div>'+
-    '<h4>📋 题目要求</h4><ul class="lab-req">'+lab.req.map(r=>'<li>'+escapeHtml(r)+'</li>').join("")+'</ul>'+
+    '<div class="meta">'+escapeHtml(pick(s,"name"))+(labList(s).length>1?' · 💻 '+(k+1)+'/'+labList(s).length:'')+' · '+t("完成后 +")+lab.xp+t(" XP · 先在编译器里独立完成，再把代码粘贴回来")+'</div>'+
+    '<h4>📋 题目要求</h4><ul class="lab-req">'+labReqOf(lab).map(r=>'<li>'+escapeHtml(r)+'</li>').join("")+'</ul>'+
     '<h4>🧱 起步代码</h4><div class="copy-code"><button class="cp" data-act="copy-starter">复制</button><pre><code>'+highlight(lab.starter)+'</code></pre></div>'+
     '<h4>'+(lab.mode==="text"?"✍️ 我的回答（自动保存）":"✍️ 我的代码（自动保存）")+'</h4><textarea class="code-area" id="labCode" placeholder="'+(lab.mode==="text"?"在下方题目框架里写下你的回答…":"把你在编译器里写好的完整代码粘贴到这里…")+'">'+escapeHtml(rec.code||"")+'</textarea>'+
     (lab.mode==="text"?"":'<h4>📤 程序运行输出</h4><textarea class="code-area out-area" id="labOut" placeholder="复制程序窗口的输出粘贴到这里（给 AI 老师的关键证据）">'+escapeHtml(rec.out||"")+'</textarea>')+
     '<h4>🧗 我卡在哪了（可选）</h4><textarea class="code-area out-area" id="labStuck" placeholder="例如：编译报错看不懂 / 结果不对不知道为什么">'+escapeHtml(rec.stuck||"")+'</textarea>'+
-    '<div class="ex-box" style="margin-top:10px"><div class="ex-q">💡 提示（先自己想 10 分钟再看）</div><div class="ex-a" hidden>'+escapeHtml(lab.hint)+'</div><div style="margin-top:8px"><button class="btn small ghost" data-act="reveal">查看提示</button></div></div>'+
-    (function(){const ans=(typeof LAB_ANSWERS!=="undefined"&&LAB_ANSWERS[stageId])?LAB_ANSWERS[stageId]:lab.answer;return ans?'<div class="ex-box" style="margin-top:10px"><div class="ex-q">📘 参考解答（卡住再看，避免形成依赖）</div><div class="ex-a" hidden><pre><code>'+highlight(ans)+'</code></pre></div><div style="margin-top:8px"><button class="btn small ghost" data-act="reveal-answer">查看参考解答</button></div></div>':'';})()+
+    '<div class="ex-box" style="margin-top:10px"><div class="ex-q">💡 提示（先自己想 10 分钟再看）</div><div class="ex-a" hidden>'+escapeHtml(labHintOf(lab))+'</div><div style="margin-top:8px"><button class="btn small ghost" data-act="reveal">查看提示</button></div></div>'+
+    (function(){const ans=(typeof LAB_ANSWERS!=="undefined"&&(LAB_ANSWERS[labKey(stageId,k)]||(k===0&&LAB_ANSWERS[stageId])))?(LAB_ANSWERS[labKey(stageId,k)]||LAB_ANSWERS[stageId]):lab.answer;return ans?'<div class="ex-box" style="margin-top:10px"><div class="ex-q">📘 参考解答（卡住再看，避免形成依赖）</div><div class="ex-a" hidden><pre><code>'+highlight(ans)+'</code></pre></div><div style="margin-top:8px"><button class="btn small ghost" data-act="reveal-answer">查看参考解答</button></div></div>':'';})()+
     '<div class="modal-actions">'+
       '<button class="btn amber" data-act="lab-generate">🤖 生成 AI 批改提示词</button>'+
       (rec.done?'<button class="btn ghost" disabled>✅ 已完成</button>':'<button class="btn green" data-act="lab-done">✅ 我完成了（+'+lab.xp+' XP）</button>')+
@@ -2173,9 +2229,11 @@ function openLab(stageId){
   const bind=(id,key)=>{$(id).addEventListener("input",function(){rec[key]=this.value;saveData();});};
   bind("labCode","code");if(lab.mode!=="text")bind("labOut","out");bind("labStuck","stuck");
 }
-function buildAiPrompt(stageId){
+function buildAiPrompt(stageId,k){
+  k=k||0;
   const s=CURRICULUM.find(x=>x.id===stageId);
-  const lab=s.lab,rec=data.labs[stageId]||{},li=levelInfo(data.xp);
+  const lab=labList(s)[k],rec=data.labs[labKey(stageId,k)]||{},li=levelInfo(data.xp);
+  if(!lab)return "";
   const L=[];
   L.push("# 🧑‍🏫 编程作业批改请求");
   L.push("");
@@ -2225,13 +2283,13 @@ function buildAiPrompt(stageId){
   }
   L.push("");
   L.push("## 我的学习状态");
-  L.push("- 进度："+completedCount()+"/"+totalLessons()+" 课 · "+li.title+"（Lv."+li.level+"）· 总 XP "+data.xp+" · 编程实战完成 "+Object.values(data.labs).filter(r=>r.done).length+"/"+CURRICULUM.filter(s=>s.lab).length);
+  L.push("- 进度："+completedCount()+"/"+totalLessons()+" 课 · "+li.title+"（Lv."+li.level+"）· 总 XP "+data.xp+" · 编程实战完成 "+labsDone()+"/"+totalLabs());
   L.push("- 若我的代码为空或错误较多，请先给思路提示，不要直接给完整答案。");
   return L.join("\n");
 }
 function generateAiPrompt(){
   if(!labId)return;
-  const md=buildAiPrompt(labId);
+  const md=buildAiPrompt(labId,labK);
   lastPrompt=md;
   data.aiUsed=1;saveData();checkAchievements();
   $("aiOut").innerHTML=
@@ -2244,15 +2302,17 @@ function generateAiPrompt(){
     '<div class="set-hint" style="margin-top:6px">'+t("粘贴或发送给任意 AI 助手（ChatGLM / DeepSeek / Kimi / Claude / ChatGPT…）即可获得打分与改进建议。")+'</div>';
   toast(t("提示词已生成，复制发给 AI 老师吧 🤖"));
 }
-function completeLab(stageId){
+function completeLab(stageId,k){
+  k=k||0;
   const s=CURRICULUM.find(x=>x.id===stageId);
-  const rec=data.labs[stageId];
-  if(!s||!s.lab||!rec||rec.done)return;
+  const lab=s?labList(s)[k]:null;
+  const rec=data.labs[labKey(stageId,k)];
+  if(!s||!lab||!rec||rec.done)return;
   rec.done=true;rec.date=todayStr();
-  gainXp(s.lab.xp);gainCoins(20);updateStreak();recordDaily(s.lab.xp,10,true);
+  gainXp(lab.xp);gainCoins(20);updateStreak();recordDaily(lab.xp,10,true);
   saveData();checkAchievements();
   confetti(40);
-  toast(t("＋")+s.lab.xp+t(" XP · ＋15 🪙 · ")+t("实战完成！记得生成提示词找 AI 老师批改 🤖"),"xp");
+  toast(t("＋")+lab.xp+t(" XP · ＋15 🪙 · ")+t("实战完成！记得生成提示词找 AI 老师批改 🤖"),"xp");
   closeModal();renderAll();
 }
 /* ---- 庆祝动画 ---- */
@@ -2399,6 +2459,7 @@ document.addEventListener("click",function(e){
   const tar=e.target.closest("[data-act]");
   if(!tar)return;
   const act=tar.dataset.act,id=tar.dataset.id;
+  const kk=+(tar.dataset.k||0);            // 实战序号（多实战：labs[kk]）
   switch(act){
     case "lang":setLang(LANG==="en"?"zh":"en");break;
     case "shop":openThemeDrawer();break;
@@ -2454,17 +2515,18 @@ document.addEventListener("click",function(e){
       if(f)copyText(f.lesson.code,t("代码已复制，快去编译器里运行 🔧"));break;}
     case "copy-starter":{
       const s=CURRICULUM.find(x=>x.id===labId);
-      if(s&&s.lab)copyText(s.lab.starter,t("起步代码已复制 🧱"));break;}
-    case "lab":openLab(id);break;
+      const _lb=s?labList(s)[labK]:null;
+      if(_lb)copyText(_lb.starter,t("起步代码已复制 🧱"));break;}
+    case "lab":openLab(id,kk);break;
     case "lab-generate":generateAiPrompt();break;
     case "lab-copy":if(lastPrompt)copyText(lastPrompt,t("提示词已复制，发给 AI 老师吧 🤖"));break;
     case "lab-dl":{
       if(!lastPrompt)break;
       const blob=new Blob([lastPrompt],{type:"text/markdown"});
       const a=document.createElement("a");a.href=URL.createObjectURL(blob);
-      a.download="cpp-lab-"+(labId||"")+"-AI批改请求.md";a.click();
+      a.download="cpp-lab-"+(labId||"")+(labK>1?"-"+labK:"")+"-AI批改请求.md";a.click();
       toast(t("已下载 .md 文件 💾"));break;}
-    case "lab-done":if(labId)completeLab(labId);break;
+    case "lab-done":if(labId)completeLab(labId,labK);break;
     case "lprev":if(id)openLesson(id);break;
     case "lnext":if(id)openLesson(id);break;
     case "done":if(modalLessonId){completeLesson(modalLessonId);closeModal();}break;
@@ -2640,7 +2702,9 @@ function openDayDetail(ds){
   const rec=data.daily[ds]||{};
   const doneNames=Object.keys(data.completed).filter(id=>data.completed[id].date===ds).map(id=>{const f=findLesson(id);return f?f.lesson.title:null;}).filter(Boolean);
   const reviewed=allLessons().filter(x=>{const r=data.completed[x.lesson.id];return r&&r.lastReview===ds;}).map(x=>x.lesson.title);
-  const labsDone=Object.keys(data.labs).filter(k=>data.labs[k].date===ds&&data.labs[k].done).map(k=>{const s=CURRICULUM.find(x=>x.id===k);return s?s.lab.t:null;}).filter(Boolean);
+  const labsDone=Object.keys(data.labs).filter(k=>data.labs[k]&&data.labs[k].date===ds&&data.labs[k].done).map(k=>{
+    const p=k.split("#"),s=CURRICULUM.find(x=>x.id===p[0]);
+    if(!s)return null;const l=labList(s)[+(p[1]||0)];return l?pick(l,"t"):null;}).filter(Boolean);
   const checkedIn=data.lastCheckinDate===ds;
   $("modalBox").innerHTML=
     '<h3>📅 '+ds+t(" 学习明细")+'</h3>'+
