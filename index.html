@@ -533,6 +533,17 @@ input.inp:focus,select.inp:focus{outline:none;border-color:var(--blue);box-shado
 .q-dots{display:flex;gap:6px;justify-content:center;margin-top:10px;}
 .q-dots > i{width:8px;height:8px;border-radius:50%;background:var(--line);}
 .q-dots > i.on{background:var(--blue);}
+/* 答题后着色：answerQuiz 用的是 .right/.wrong（历史上 CSS 只定义了 .ok/.no，导致答完不变色） */
+.q-opt.right{border-color:var(--green);background:rgba(46,158,91,.1);}
+.q-opt.wrong{border-color:var(--red);background:rgba(226,85,59,.1);}
+/* 题型标识：选择题 / 判断题 / 填空题 */
+.q-type{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;background:color-mix(in srgb,var(--blue) 14%,transparent);color:var(--blue);border:1px solid color-mix(in srgb,var(--blue) 30%,transparent);vertical-align:middle;}
+.q-fill{display:flex;gap:8px;align-items:stretch;margin:6px 0 2px;}
+.fill-input{flex:1;min-width:0;font-size:16px;padding:11px 13px;border:1px solid var(--line);border-radius:10px;background:var(--bg2);color:var(--ink);font-family:inherit;}
+.fill-input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px color-mix(in srgb,var(--blue) 16%,transparent);}
+.fill-input:disabled{opacity:.72;}
+.fill-hint{font-size:12px;color:var(--sub);margin-top:6px;line-height:1.6;}
+@media(max-width:520px){.q-fill{flex-direction:column;}.q-fill .btn{min-height:44px;}}
 
 /* ---- 杂项状态类 ---- */
 .active{color:var(--blue);}
@@ -728,10 +739,13 @@ input.inp:focus,select.inp:focus{outline:none;border-color:var(--blue);box-shado
 <div id="modalMask" class="modal-mask" data-page-node-id="Qs0Rkde6SShmPDleD33BGW"><div id="modalBox" class="modal-box" data-page-node-id="fHlEg8uJUk8GRqt3twbFbj"></div></div>
 <div id="toastWrap" class="toast-wrap" data-page-node-id="BMemSGCgtVEensRBjhfF2x"></div>
 <button id="toTop" class="to-top" aria-label="返回顶部" data-page-node-id="DrskNYLug9A3BgyWsIXrZP">&#8593;</button>
-<script src="cpp-extra-data.js"></script>
-<script src="lang-en.js?v=15"></script>
+<script src="cpp-extra-data.js?v=2"></script>
+<script src="lang-en.js?v=16"></script>
 <script src="agi-quiz-extra.js?v=1"></script>
-<script src="agi-lab-extra.js?v=1"></script>
+<script src="agi-lab-extra.js?v=2"></script>
+<script src="agi-extra2.js?v=1"></script>
+<script src="agi-lab-extra2.js?v=1"></script>
+<script src="agi-lab-en.js?v=1"></script>
 <script>
 
 /*
@@ -815,7 +829,7 @@ quiz:[{q:"先执行一次再判断的循环是？",o:["for","while","do-while","
  {id:"5-8",title:"inline 内联函数",min:6,summary:["inline 建议编译器把函数体直接展开，减少调用开销。","适合短小、频繁调用的函数。","只是「建议」，最终由编译器决定。"],code:`inline int square(int x){ return x*x; }`,pit:"别为性能盲目手写 inline，现代编译器会自己决定。",ex:{q:"现在还有必要到处写 inline 吗？",a:"多数不需要；它更常见的作用是允许头文件中安全地定义函数。"},target:"知道内联的适用场景即可。"},
  {id:"5-9",title:"头文件与分文件编写",min:10,summary:["项目变大后，标准做法：.h 头文件放函数声明，.cpp 放函数实现。","main.cpp 通过 #include \"xxx.h\" 引入声明，链接器自动拼装实现。","#pragma once 防止同一个头文件被重复包含。"],code:`// mySwap.h\n#pragma once\nvoid mySwap(int &a, int &b);\n\n// mySwap.cpp\n#include "mySwap.h"\nvoid mySwap(int &a, int &b) { int t=a; a=b; b=t; }\n\n// main.cpp\n#include "mySwap.h"\nint main() { int x=1,y=2; mySwap(x,y); }`,pit:"尖括号 <> 找系统头文件；双引号 \"\" 先在当前目录找你自己写的头文件。",ex:{q:"为什么模板不适合这样分文件编写？",a:"编译器要在使用处看到模板的完整定义才能生成代码（呼应 11-3），所以模板通常整体放头文件。"},target:"会把一个函数拆成 .h 声明 + .cpp 实现并编译运行通过。"}
 ],
-quiz:[{q:"要修改函数外部的变量，参数应？",o:["值传递","引用传递","不用参数","用 static"],a:1,why:"引用传递让函数直接操作原变量。"},{q:"递归必须有的部分是？",o:["循环","终止条件","数组","return 0"],a:1,why:"没有终止条件的递归会无限调用直到栈溢出。"},{q:"void 函数表示？",o:["返回整数","不返回值","返回布尔","返回字符串"],a:1,why:"void 即无返回值。"}]},
+quiz:[{q:"要修改函数外部的变量，参数应？",o:["值传递","引用传递","不用参数","用 static"],a:1,why:"引用传递让函数直接操作原变量。"},{q:"发生函数重载时，编译器根据什么区分同名函数？",o:["返回类型","参数列表的个数与类型","函数名的长度","调用的先后顺序"],a:1,why:"重载决议只看参数列表，返回类型不参与，仅返回类型不同会直接报重复定义。"},{q:"void 函数表示？",o:["返回整数","不返回值","返回布尔","返回字符串"],a:1,why:"void 即无返回值。"}]},
 
 {id:"s6",icon:"📦",name:"数组与字符串",desc:"批量管理数据与文本",
  goal:"能批量处理数据与文本，熟练使用 string 常用操作。",
@@ -1008,6 +1022,9 @@ if(typeof AGI_STAGES!=="undefined")AGI_STAGES.forEach(s=>{_stageMap[s.id]=s;});
  * 题库 / 实战题「叠加层」合并（不改动 cpp-extra-data.js 原始数据）
  *   agi-quiz-extra.js → window.AGI_QUIZ_EXTRA  每阶段 +2 道测评题
  *   agi-lab-extra.js  → window.AGI_LAB_EXTRA   每阶段 +2 道编程实战
+ *   agi-extra2.js     → window.AGI_QUIZ_EXTRA  每阶段 +2 判断 +2 填空
+ *   agi-lab-extra2.js → window.AGI_LAB_EXTRA   每阶段 +2 道编程实战
+ *   合并后每阶段：测评 9 题（随机抽 3）、实战 5 道
  * 合并后：stage.quiz 变长（抽题仍只显示 3 道），stage.labs 为实战数组
  * （labs[0] 即原 stage.lab，其余为新增实战；显示数量不变，题库变宽）
  * ================================================================ */
@@ -1021,6 +1038,15 @@ if(typeof AGI_STAGES!=="undefined")AGI_STAGES.forEach(s=>{_stageMap[s.id]=s;});
     var s=_stageMap[id];
     if(!s||!Array.isArray(le[id])||!le[id].length) return;
     s.labs=(s.lab?[s.lab]:[]).concat(le[id]);   // labs[0] 保持为原 s.lab（旧进度不丢）
+  });
+  /* 原始实战（labs[0]）的英文对照：只补缺，不覆盖已有英文 */
+  var le2=window.AGI_LAB_EN;
+  if(le2)Object.keys(le2).forEach(function(id){
+    var s=_stageMap[id]; if(!s||!s.lab) return;
+    var e=le2[id]||{};
+    if(e.t&&!s.lab.t_en) s.lab.t_en=e.t;
+    if(e.req&&!s.lab.req_en) s.lab.req_en=e.req;
+    if(e.hint&&!s.lab.hint_en) s.lab.hint_en=e.hint;
   });
 })();
 
@@ -1304,7 +1330,7 @@ const I18N_EN={
 "每天打开先<b>打卡</b>，连续坚持可获得 XP 加成与成就（可在设置里设定提醒时间）。":"Open with a <b>check-in</b> each day — streaks earn XP bonuses & achievements (set a reminder in Settings).",
 "按「今日任务」学 1~2 节：先读<b>讲解</b>，把<b>示例代码</b>抄进编译器跑一遍。":"Study 1–2 lessons from <b>Today</b>: read the <b>explanation</b>, then type the <b>sample code</b> into a compiler and run it.",
 "做每课的<b>随堂思考</b>，写下<b>笔记</b>；留意「易错点」能少走弯路。":"Do each lesson's <b>think-about-it</b>, write <b>notes</b>; the <b>common pitfalls</b> save you detours.",
-"学完一个阶段的全部课程即可参加<b>阶段测评</b>（拿 ⭐），并解锁一道<b>编程实战</b>：写完代码一键生成「AI 批改提示词」，发给任意大模型就能获得打分与建议。":"Finish all lessons in a stage to take its <b>Stage Quiz</b> (earn ⭐) and unlock a <b>lab</b>: write code, generate an AI grading prompt, send it to any LLM for scoring & tips.",
+"学完一个阶段的全部课程即可参加<b>阶段测评</b>（拿 ⭐），并解锁<b>编程实战</b>（每阶段 5 道）：写完代码一键生成「AI 批改提示词」，发给任意大模型就能获得打分与建议。":"Finish all lessons in a stage to take its <b>Stage Quiz</b> (earn ⭐) and unlock <b>labs</b> (5 per stage): write code, generate an AI grading prompt, send it to any LLM for scoring & tips.",
 "通关整座篇章有<b>庆祝动画 +100 XP</b> 通关奖励。":"Clear a whole chapter for a <b>celebration +100 XP</b> reward.",
 "隔几天回到「间隔复习」巩固记忆，防遗忘。":"Come back every few days for <b>spaced review</b> to beat forgetting.",
 "课程按 <b>约 60 周</b>规划为 11 大篇章：从 <b>Python 从零起步</b>、数学基石、科学计算，到 <b>机器学习 / 深度学习</b>，再到 <b>强化学习 / 大语言模型 / 多模态 / Agent</b> 等通用人工智能前沿——主线路一路直达 AGI；想做性能 / 系统方向的同学，可在之后选修 C++ 系统纵深专题。":"The path is ~60 weeks across 11 chapters: from <b>Python from zero</b>, math foundations, scientific computing, to <b>ML / DL</b>, then <b>RL / LLMs / multimodal / Agents</b> toward AGI; for systems/performance, later take the C++ depth elective.",
@@ -1377,10 +1403,269 @@ const I18N_EN={
 "EDU系列其他项目：":"More in the EDU series: ",
 "🌱 R0:hello world · 从零开始的编程之路":"🌱 R0:hello world · From Zero to Programming",
 "R0:hello world · 从零开始的编程之路":"R0:hello world · From Zero to Programming",
-"隶属于拾色造梦企划EDU系列":"Part of the 「Shise Zaomeng」EDU series"
+"隶属于拾色造梦企划EDU系列":"Part of the 「Shise Zaomeng」EDU series",
+"cppreference · 范围 for":"cppreference · range-for",
+"cppreference · 函数":"cppreference · functions",
+"cppreference · 基本类型":"cppreference · fundamental types",
+"cppreference · 容器库":"cppreference · containers",
+"cppreference · 算法库":"cppreference · algorithms",
+"cppreference · 异常":"cppreference · exceptions",
+"cppreference · 指针":"cppreference · pointers",
+"Git Pro 中文版":"Pro Git (Chinese)",
+"Google C++ 风格指南":"Google C++ Style Guide",
+"LeetCode · 栈专题":"LeetCode · Stack problems",
+"OI Wiki · 图论":"OI Wiki · Graph theory",
+"Visual Studio 调试入门":"VS Debugging Guide",
+"VisuAlgo · 排序可视化":"VisuAlgo · Sorting",
+"VisuAlgo · 树可视化":"VisuAlgo · Trees",
+"菜鸟教程 · C++ 入门":"Runoob · C++ Intro",
+"菜鸟教程 · 继承":"Runoob · Inheritance",
+"菜鸟教程 · 类和对象":"Runoob · Classes & Objects",
+"菜鸟教程 · 模板":"Runoob · Templates",
+"菜鸟教程 · 数据结构(struct)":"Runoob · struct",
+"菜鸟教程 · 循环":"Runoob · Loops",
+"菜鸟教程 · 运算符":"Runoob · Operators",
+"菜鸟教程 · 字符串":"Runoob · Strings",
+"代码随想录":"Code Thinking (carl)",
+"递归与分治思想":"Recursion & Divide-and-Conquer",
+"动态规划入门":"DP Introduction",
+"牛客网":"NowCoder",
+"视频精讲 · B站 P143":"Video · Bilibili P143",
+"视频精讲 · B站 P223":"Video · Bilibili P223",
+"位运算技巧合集":"Bit Manipulation Tips",
+"CMake 官方教程":"CMake Official Tutorial",
+"cppreference · if 语句":"cppreference · if statement",
+"cppreference · 并发支持":"cppreference · Concurrency support",
+"cppreference · 参考手册":"cppreference · Reference",
+"cppreference · 构造函数":"cppreference · Constructors",
+"cppreference · 类":"cppreference · Classes",
+"cppreference · 模板":"cppreference · Templates",
+"cppreference · 输入输出":"cppreference · I/O",
+"cppreference · 位运算符":"cppreference · Bit operators",
+"cppreference · 虚函数":"cppreference · Virtual functions",
+"GDB 简明教程":"GDB Brief Guide",
+"LeetCode · 学习计划":"LeetCode · Study Plan",
+"LeetCode 热题 100":"LeetCode Hot 100",
+"LeetCode 中国":"LeetCode China",
+"OI Wiki · 复杂度":"OI Wiki · Complexity",
+"VisuAlgo · 图遍历":"VisuAlgo · Graph Traversal",
+"背包九讲":"Knapsack Nine Lectures",
+"菜鸟教程 · 常见错误":"Runoob · Common Errors",
+"菜鸟教程 · 函数":"Runoob · Functions",
+"菜鸟教程 · 异常处理":"Runoob · Exception Handling",
+"汉诺塔讲解":"Tower of Hanoi Guide",
+"视频精讲 · B站 P121":"Video · Bilibili P121",
+"视频精讲 · B站 P16":"Video · Bilibili P16",
+"视频精讲 · B站 P167":"Video · Bilibili P167",
+"视频精讲 · B站 P185":"Video · Bilibili P185",
+"视频精讲 · B站 P237":"Video · Bilibili P237",
+"视频精讲 · B站 P24":"Video · Bilibili P24",
+"视频精讲 · B站 P42":"Video · Bilibili P42",
+"视频精讲 · B站 P50":"Video · Bilibili P50",
+"视频精讲 · B站 P64":"Video · Bilibili P64",
+"视频精讲 · B站 P99":"Video · Bilibili P99",
+"视频项目 · B站 P72 通讯录":"Video Project · Bilibili P72 Contact Book",
+"3Blue1Brown · 本质理解线性代数":"3Blue1Brown · Essence of Linear Algebra",
+"MIT 线性代数(Gilbert Strang)":"MIT Linear Algebra (Gilbert Strang)",
+"可汗学院 · 线性代数":"Khan Academy · Linear Algebra",
+"3Blue1Brown · 行列式":"3Blue1Brown · Determinants",
+"3Blue1Brown · 特征向量":"3Blue1Brown · Eigenvectors",
+"PCA 原理(中文)":"PCA Explained",
+"3Blue1Brown · 微积分本质":"3Blue1Brown · Essence of Calculus",
+"吴恩达 ML 数学复习":"Andrew Ng ML Math Review",
+"可汗学院 · 导数":"Khan Academy · Derivatives",
+"3Blue1Brown · 贝叶斯定理":"3Blue1Brown · Bayes Theorem",
+"吴恩达 · 概率统计复习":"Andrew Ng · Probability Review",
+"StatQuest · 最大似然":"StatQuest · MLE",
+"NumPy 用户指南":"NumPy User Guide",
+"菜鸟教程 · NumPy":"Runoob · NumPy",
+"动手学深度学习 · NDArray":"Dive into DL · NDArray",
+"Pandas 用户指南":"Pandas User Guide",
+"Matplotlib 教程":"Matplotlib Tutorial",
+"动手学深度学习 · 数据":"Dive into DL · Data",
+"Jupyter 官方":"Jupyter Official",
+"Google Colab 免费 GPU":"Google Colab Free GPU",
+"Kaggle 数据集":"Kaggle Datasets",
+"吴恩达 机器学习":"Andrew Ng Machine Learning",
+"李宏毅 ML":"Hung-yi Lee ML",
+"sklearn 用户指南":"sklearn User Guide",
+"sklearn 分类教程":"sklearn Classification",
+"精确率召回率讲解":"Precision & Recall Explained",
+"ROC/AUC":"ROC/AUC",
+"sklearn 评估度量":"sklearn Metrics",
+"特征工程指南":"Feature Engineering Guide",
+"交叉验证":"Cross-validation",
+"sklearn 监督学习":"sklearn Supervised Learning",
+"集成学习":"Ensemble Learning",
+"聚类":"Clustering",
+"3Blue1Brown · 神经网络":"3Blue1Brown · Neural Networks",
+"动手学深度学习 · 多层感知机":"Dive into DL · MLP",
+"李宏毅 深度学习":"Hung-yi Lee Deep Learning",
+"PyTorch 官方教程":"PyTorch Official Tutorial",
+"动手学深度学习 · 自动求梯度":"Dive into DL · Autograd",
+"李宏毅 PyTorch":"Hung-yi Lee PyTorch",
+"CS231n 卷积可视化":"CS231n ConvNet Visualization",
+"PyTorch 视觉教程":"PyTorch Vision Tutorial",
+"动手学深度学习 · 卷积":"Dive into DL · Convolutions",
+"李宏毅 RNN/LSTM":"Hung-yi Lee RNN/LSTM",
+"The Illustrated Transformer":"The Illustrated Transformer",
+"动手学深度学习 · 循环网络":"Dive into DL · RNNs",
+"The Illustrated Transformer(中文)":"The Illustrated Transformer",
+"李宏毅 生成模型":"Hung-yi Lee Generative Models",
+"Attention Is All You Need":"Attention Is All You Need",
+"李宏毅 强化学习":"Hung-yi Lee RL",
+"OpenAI Spinning Up":"OpenAI Spinning Up",
+"RLHF 讲解":"RLHF Explained",
+"李宏毅 生成式大模型":"Hung-yi Lee LLMs",
+"Prompt 工程指南":"Prompt Engineering Guide",
+"RAG 综述":"RAG Survey",
+"CLIP 讲解":"CLIP Explained",
+"ReAct: 推理+行动":"ReAct: Reasoning + Acting",
+"AutoGPT/Agent 综述":"AutoGPT/Agent Survey",
+"MLOps 概念":"MLOps Concepts",
+"模型压缩":"Model Compression",
+"AI 安全与对齐":"AI Safety & Alignment",
+"C语言中文网 · C++ 教程":"C-Biancheng · C++ Tutorial",
+"视频精讲 · B站 P1":"Video · Bilibili P1",
+"菜鸟教程 · 指针":"Runoob · Pointers",
+"菜鸟教程 · 数据类型":"Runoob · Data Types",
+"视频精讲 · B站 P4":"Video · Bilibili P4",
+"视频精讲 · B站 P56":"Video · Bilibili P56",
+"菜鸟教程 · 字符串":"Runoob · Strings",
+"菜鸟教程 · 循环":"Runoob · Loops",
+"菜鸟教程 · 运算符":"Runoob · Operators",
+"菜鸟教程 · 继承":"Runoob · Inheritance",
+"菜鸟教程 · 类和对象":"Runoob · Classes & Objects",
+"菜鸟教程 · 模板":"Runoob · Templates",
+"菜鸟教程 · 数据结构(struct)":"Runoob · struct"
 };
 function t(zh){ if(LANG==="en"){ const v=I18N_EN[zh]; if(v!=null) return v; } return zh; }
 function pick(o,f){ if(!o) return ""; if(LANG==="en"){ const e=o[f+"_en"]; if(e!=null&&e!=="") return e; } return o[f]; }
+/* Translate Chinese comments inside code blocks when in English mode */
+var CODE_COMMENT_EN = {
+"C++ 既能写底层，也能写上层应用":"C++ works from low-level (kernel) to high-level apps",
+"这门课的目标：从完全不会到能独立写小项目":"Goal: from zero to writing small projects on your own",
+"检查是否装好编译器（命令行）":"Check if compiler is installed (command line)",
+"出现版本号即表示安装成功":"A version number means it's installed correctly",
+"典型命令（g++）":"Typical command (g++)",
+"这是单行注释":"This is a single-line comment",
+"行尾也可注释":"Trailing comments also work",
+"读入 a 运算符 b，输出结果":"Read a op b, print result",
+"用 switch 分发 + try/catch 处理除零":"Use switch dispatch + try/catch for divide-by-zero",
+"退出时 ofstream 写回, 启动 ifstream 载入":"On exit write back with ofstream; on startup load with ifstream",
+"联系人: 姓名 -> 电话":"Contact: name -> phone",
+"在 IDE 里点击行号左侧打红点":"In the IDE, click left of the line number to set a red breakpoint",
+"点「调试运行」，程序在断点处停下":"Click Debug; the program pauses at the breakpoint",
+"用「逐过程」观察每一步变量变化":"Use Step Over to watch variables change each step",
+"bug 在 200 行里？先注释后 100 行":"Bug in 200 lines? Comment out the last 100 first",
+"仍出错→在前 100 行；否则在后 100 行":"Still broken -> first 100; otherwise last 100",
+"如此二分，快速定位":"Repeat binary search to locate quickly",
+"小顶堆":"min-heap",
+"大顶堆":"max-heap",
+"堆要自己释放":"Heap must be freed manually",
+"堆区":"heap area",
+"栈区":"stack area",
+"全局区":"global area",
+"只读别名":"read-only alias",
+"深拷贝":"deep copy",
+"移动而非拷贝":"move, not copy",
+"释放后立即置空":"set to null immediately after free",
+"越界，UB":"out of bounds, UB",
+"段错误：解引用空指针":"Segfault: dereferencing a null pointer",
+"这里再访问 x 就会报错":"Accessing x here will crash",
+"先判空！":"Check for null first!",
+"删除栈顶":"pop the stack",
+"入队时立即标记":"mark on enqueue",
+"只剩一个":"only one left",
+"交换":"swap",
+"修改":"modify",
+"撤销":"undo",
+"改外部":"change outside",
+"跳过偶数":"skip even numbers",
+"边界与负数也要测":"test boundaries and negatives",
+"第 1 遍：独立思考 20min → 卡住看题解 → 重写":"Pass 1: think 20min -> check solution -> rewrite",
+"第 3 天 / 第 7 天：重做巩固":"Day 3 / Day 7: redo to reinforce",
+"终止条件":"base case",
+"终止条件永远第一行":"base case always on the first line",
+"递归调用":"recursive call",
+"递归 f(n)=f(n-1)+f(n-2)":"recursion f(n)=f(n-1)+f(n-2)",
+"递归版即斐波那契":"recursive version is Fibonacci",
+"记忆化 → 自底向上填 dp[] 数组":"memoization -> bottom-up dp[] table",
+"dp[i] = 以第 i 个结尾的 LIS 长度":"dp[i] = LIS length ending at position i",
+"dp[i] = max(dp[j]+1) 对所有 j<i 且 a[j]<a[i]":"dp[i] = max(dp[j]+1) for all j<i with a[j]<a[i]",
+"例：最长递增子序列":"e.g. Longest Increasing Subsequence",
+"爬楼梯":"climbing stairs",
+"全排列回溯":"permutation backtracking",
+"选-递归-撤销":"choose -> recurse -> undo",
+"二分查找：每次范围减半 → O(log n)":"Binary search: halve range each time -> O(log n)",
+"快排：选基准，小的放左大的放右，再对两侧递归":"Quick sort: pick pivot, smaller left larger right, recurse both sides",
+"归并排序：先分两半各自排序，再合并两个有序段":"Merge sort: split in half, sort each, merge two sorted halves",
+"插入排序":"insertion sort",
+"降序":"descending order",
+"邻接表":"adjacency list",
+"无向图存两遍":"undirected graph stored twice",
+"有环":"has cycle",
+"判环":"detect cycle",
+"判空：front == rear":"empty: front == rear",
+"判满：(rear+1)%cap == front":"full: (rear+1)%cap == front",
+"循环队列：牺牲一格区分空满":"circular queue: waste one slot to distinguish empty/full",
+"cnt<n 说明有环":"cnt<n means there's a cycle",
+"连通分量个数 = 对每个未访问点调用一次 dfs 的次数":"connected components = number of times dfs starts on unvisited nodes",
+"无锁安全":"lock-free safe",
+"两个线程各跑一次 → counter 稳定等于 200000":"two threads each run once -> counter reliably 200000",
+"两层嵌套循环各 n 次 → O(n²)":"two nested loops each n times -> O(n²)",
+"高频题示例：为什么基类析构要 virtual？":"Common interview: why must the base destructor be virtual?",
+"基类指针 delete 派生对象时，非虚析构只调基类析构 → 派生类资源泄漏":"deleting derived via base ptr without virtual destructor -> only base destructor runs -> derived resources leak",
+"虚析构":"virtual destructor",
+"虚析构保证 ~Der 一定被调用":"virtual destructor ensures ~Der is called",
+"用类封装数据与行为":"Use a class to encapsulate data and behavior",
+"模板代码通常放在 .h 里":"Template code usually goes in .h files",
+"常见：error: expected ';' before '}' token":"Common: error: expected ';' before '}' token",
+"含义：前面某行少了分号":"Meaning: a previous line is missing a semicolon",
+"处理：回到提示行号上方补分号":"Fix: go to the line above the error and add a semicolon",
+"调用：add(3, 4)":"Call: add(3, 4)",
+"打印 x 的地址":"Print address of x",
+"n 变成 2":"n becomes 2",
+"x 也变 10":"x also becomes 10",
+"d.x 只有唯一一份，不再歧义":"d.x has one unique copy, no ambiguity",
+"prev 就是新头":"prev is the new head",
+"在 head 后插入 p":"insert p after head",
+"unordered_map 底层即哈希表；map 底层是红黑树":"unordered_map is hash table; map is red-black tree",
+"拉链法定位桶":"chaining to locate the bucket",
+"找只出现一次的数":"find the number that appears only once",
+"中序位置":"in-order position",
+"之后可修改":"can be modified later",
+"括号明确意图":"parentheses clarify intent",
+"把长函数拆小、用有意义的名字":"break long functions smaller, use meaningful names",
+"长度 5，但数组占 6 字节(含\\0)":"length 5, but array takes 6 bytes (includes \\0)",
+"置第1位":"set bit 1",
+"清第2位":"clear bit 2",
+"取第3位=1":"test bit 3 is 1",
+"5 个选项，选中第 0、2 位：state = (1<<0)|(1<<2);":"5 options, select bits 0 and 2: state = (1<<0)|(1<<2);",
+"PI = 3;  // 错误：常量不能修改":"PI = 3;  // ERROR: constant cannot be modified",
+"这两行顺序反了会丢掉后半段！":"Reversing these two lines drops the second half!",
+"PI = 3;  // error: cannot modify a constant":"PI = 3;  // error: cannot modify a constant",
+"每周固定投入建议":"Recommended weekly time commitment",
+"刷题节奏（和本课程的间隔复习同思路）":"Practice cadence (same idea as spaced review)",
+"2h 读源码 + 1h 整理笔记发布 + 1h 刷题重做":"2h read source + 1h notes + 1h redo problems",
+"2（只看不删）":"2 (view only, don't delete)",
+"README 骨架":"README skeleton",
+"后端方向补课清单":"Backend study checklist",
+"Linux 常用命令 → 网络编程(TCP/epoll) → MySQL → Redis → RPC 概念":"Linux commands -> Network (TCP/epoll) -> MySQL -> Redis -> RPC concepts",
+"TopK：找最大的 k 个 → 维护「小」顶堆":"TopK: find largest k -> maintain a min-heap",
+"综合运用前 17 个阶段的知识":"Synthesize knowledge from stages 1-17",
+"建议先掌握：基础语法与文件概念":"Master: basic syntax & file concepts",
+"建议先掌握：基础运算符(s3)":"Master: basic operators (s3)",
+"综合运用前 17 个阶段的知识":"Synthesize knowledge from stages 1-17"
+};
+function translateCodeComments(code){
+  if(LANG!=="en"||!code) return code;
+  return code.replace(/(\/\/[^\n]*)/g, function(m){
+    var after = m.replace(/^\/\/\s*/, "");
+    var en = CODE_COMMENT_EN[after.trim()];
+    return en ? "// " + en : m;
+  });
+}
 function setLang(l){ LANG=l; if(data&&data.settings)data.settings.lang=l; saveData(); applyLang(); }
 function applyLang(){
   document.documentElement.lang = (LANG==="en")?"en":"zh-CN";
@@ -1861,7 +2146,7 @@ function renderStages(){
         '<div class="chk">'+(c?"✓":"")+'</div>'+
         '<div class="lt"><div class="t">'+escapeHtml(pick(l,"title"))+'</div><div class="m">'+t("约 ")+l.min+t(" 分钟")+rev+(isLast?' · '+t("上次学到"):'')+'</div></div></div>';
     }).join("");
-    const links=(s.links||[]).map(l=>'<a href="'+l[1]+'" target="_blank" rel="noopener">'+l[0]+'</a>').join("");
+    const links=(s.links||[]).map(l=>'<a href="'+l[1]+'" target="_blank" rel="noopener">'+t(l[0])+'</a>').join("");
     const isLastStage=lastStageId===s.id;
     return '<div class="stage '+(q?"open":(openStage===s.id?"open":""))+(isLastStage?" last-stage":"")+'" id="stage-'+s.id+'" data-level="'+lv+'">'+
       '<div class="stage-hd" data-act="stage" data-id="'+s.id+'">'+
@@ -2010,7 +2295,7 @@ function openLesson(id){
   const lock=c?null:newLessonLockReason(); // 防过载：未完成时检查是否允许新学
   const seq=allLessons(),ix=seq.findIndex(x=>x.lesson.id===id);
   const pv=seq[ix-1],nx=seq[ix+1];
-  const links=(f.stage.links||[]).map(x=>'<a href="'+x[1]+'" target="_blank" rel="noopener">'+x[0]+'</a>').join(" · ");
+  const links=(f.stage.links||[]).map(x=>'<a href="'+x[1]+'" target="_blank" rel="noopener">'+t(x[0])+'</a>').join(" · ");
   const lTitle=pick(l,"title");
   const lSummary=(LANG==="en"&&l.summary_en)?l.summary_en:l.summary;
   const lPit=pick(l,"pit");
@@ -2045,7 +2330,7 @@ function openLesson(id){
     '<h3>'+escapeHtml(lTitle)+'</h3>'+
     '<div class="meta">'+escapeHtml(pick(f.stage,"name"))+t(" · 建议 ")+l.min+t(" 分钟")+(c?' · '+t("✅ 已完成")+(c.lastReview?" · "+t("记忆等级 L")+((c.box||0)+1):""):' · '+t("未学"))+'</div>'+
     '<h4>'+t("📖 内容讲解")+'</h4><ul class="sum">'+lSummary.map(x=>'<li>'+escapeHtml(x)+'</li>').join("")+'</ul>'+
-    '<h4>'+t("💻 示例代码")+'</h4><div class="copy-code"><button class="cp" data-act="copy-code">'+t("复制")+'</button><pre><code>'+highlight(l.code)+'</code></pre></div>'+
+    '<h4>'+t("💻 示例代码")+'</h4><div class="copy-code"><button class="cp" data-act="copy-code">'+t("复制")+'</button><pre><code>'+highlight(translateCodeComments(pick(l,'code')))+'</code></pre></div>'+
     (lPit?'<div class="pit">'+t("⚠️ 易错点：")+escapeHtml(lPit)+'</div>':'')+
     (l.ex?'<div class="ex-box"><div class="ex-q">'+t("🤔 随堂思考：")+escapeHtml(lExQ)+'</div>'+
       '<div class="ex-a" hidden>'+escapeHtml(lExA)+'</div>'+
@@ -2078,15 +2363,57 @@ function openLesson(id){
 var AGI_QUIZ_COUNT=3;
 function agiShuffle(a){var r=a.slice();for(var i=r.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var tmp=r[i];r[i]=r[j];r[j]=tmp;}return r;}
 function agiIota(n){var a=[];for(var i=0;i<n;i++)a.push(i);return a;}
+/* ===== 题型体系：choice（选择）/ judge（判断）/ fill（填空）=====
+   · judge 复用选项渲染（正确 / 错误 两选项，同样参与乱序）；题库里可省略 o，只要 a:0|1（0=正确）
+   · fill 无选项，改为文本输入；判分走答案归一化（全角转半角 + 去空白 + 忽略大小写 + 中英标点等价 +
+     多解 ans:[...]），避免「差一个空格/大小写就判错」
+   rec 结构：{ai, kind, opts(显示顺序的选项文本；fill 为 null), ca(正确项在 opts 中的下标), ans(fill 的归一化答案数组)}
+   rec.ai 保留 authored 下标 → 错题本、错题重练、i18n 覆盖全部照旧。 */
+function agiKind(q){return (q&&q.type==="judge")?"judge":((q&&q.type==="fill")?"fill":"choice");}
+function agiAbc(i){return ["A","B","C","D","E","F"][i]||"";}
+function agiKindTag(k){return k==="fill"?(LANG==="en"?"Fill in the blank":"填空题"):(k==="judge"?(LANG==="en"?"True / False":"判断题"):(LANG==="en"?"Single choice":"选择题"));}
+function agiJudgeOpts(){return LANG==="en"?["True","False"]:["正确","错误"];}
+function agiNormAns(t){
+  var s=String(t==null?"":t);
+  s=s.replace(/[\uFF01-\uFF5E]/g,function(c){return String.fromCharCode(c.charCodeAt(0)-0xFEE0);});
+  s=s.replace(/\u3000/g," ").toLowerCase().replace(/\s+/g,"");
+  return s.replace(/[。，、；：！？·,.;:!?()\[\]{}<>《》〈〉「」『』【】—…\-_/\\|@#$%^&*+=~'"`]/g,"");
+}
+function agiFillAccepted(q){var a=q.ans;return (a==null?[]:(Array.isArray(a)?a:[a])).map(agiNormAns);}
+function agiOptsOf(s,ai){
+  var q=s.quiz[ai];
+  if(agiKind(q)==="judge")return agiJudgeOpts();
+  return (q.o||[]).slice();
+}
+/* 抽题（题型均衡）：先给每种存在的题型保底 1 题（总数不超过 N），再随机补满。
+   forceAi 用于「错题重练」——目标题固定排首位，不参与打乱。 */
+function agiDrawQuiz(bank,n,forceAi){
+  n=Math.min(n,bank.length);
+  var pool={choice:[],judge:[],fill:[]};
+  bank.forEach(function(q,i){pool[agiKind(q)].push(i);});
+  var picked=[],used={},force=(typeof forceAi==="number"&&forceAi>=0&&forceAi<bank.length);
+  if(force){picked.push(forceAi);used[forceAi]=1;}
+  ["choice","judge","fill"].forEach(function(t){
+    if(picked.length>=n)return;
+    var avail=pool[t].filter(function(i){return !used[i];});
+    if(!avail.length)return;
+    var k=avail[Math.floor(Math.random()*avail.length)];
+    used[k]=1;picked.push(k);
+  });
+  var rest=[];
+  for(var i=0;i<bank.length;i++){if(!used[i])rest.push(i);}
+  rest=agiShuffle(rest);
+  while(picked.length<n&&rest.length)picked.push(rest.shift());
+  if(!force)picked=agiShuffle(picked);
+  return picked;
+}
 function agiBuildQuiz(s,forceAi){
-  var idxs=agiShuffle(agiIota(s.quiz.length));
-  if(typeof forceAi==="number"&&forceAi>=0&&forceAi<s.quiz.length){
-    idxs=idxs.filter(function(x){return x!==forceAi;});   // 错题重练：把目标题放到首位
-    idxs.unshift(forceAi);
-  }
-  return idxs.slice(0,Math.min(AGI_QUIZ_COUNT,s.quiz.length)).map(function(ai){
-    var perm=agiShuffle(agiIota(s.quiz[ai].o.length));
-    return {ai:ai,perm:perm,ca:perm.indexOf(s.quiz[ai].a)};
+  var picked=agiDrawQuiz(s.quiz,Math.min(AGI_QUIZ_COUNT,s.quiz.length),forceAi);
+  return picked.map(function(ai){
+    var q=s.quiz[ai],kind=agiKind(q);
+    if(kind==="fill")return {ai:ai,kind:"fill",opts:null,ca:-1,ans:agiFillAccepted(q)};
+    var o=agiOptsOf(s,ai),perm=agiShuffle(agiIota(o.length));
+    return {ai:ai,kind:kind,opts:perm.map(function(j){return o[j];}),ca:perm.indexOf(q.a)};
   });
 }
 function startQuiz(stageId,startIdx){
@@ -2100,34 +2427,63 @@ function startQuiz(stageId,startIdx){
 function showQuiz(){
   const st=quizState,rec=st.qs[st.idx],q=st.stage.quiz[rec.ai];
   const dots=st.qs.map((_,i)=>'<i class="'+(i===st.idx?"on":st.answers[i]===undefined?"":(st.answers[i].ok?"ok":"no"))+'"></i>').join("");
+  var body=(rec.kind==="fill")
+    ? '<div class="q-fill"><input class="fill-input" id="fillInput" type="text" autocomplete="off" spellcheck="false" placeholder="'+(LANG==="en"?"Type your answer here…":"在这里输入答案…")+'"><button class="btn green" data-act="fill-submit">'+(LANG==="en"?"Submit":"提交")+'</button></div>'+
+      '<div class="fill-hint">'+(LANG==="en"?"Case, spaces and punctuation are ignored — just type the key term.":"大小写、空格与标点都不敏感，直接写关键词即可。")+'</div>'
+    : '<div id="opts">'+rec.opts.map(function(_,disp){return '<div class="q-opt" data-act="opt" data-i="'+disp+'"><div class="abc">'+agiAbc(disp)+'</div><div>'+escapeHtml(rec.opts[disp])+'</div></div>';}).join("")+'</div>';
   $("modalBox").innerHTML=
     '<h3>'+t("📝 ")+escapeHtml(pick(st.stage,"name"))+' · '+t("阶段测评")+'</h3>'+
-    '<div class="meta">'+(st.jump?t("🔁 错题重练 · 从第 ")+(st.idx+1)+t(" 题开始 · 答对自动移出错题本，不计入正式成绩"):t("第 ")+(st.idx+1)+t(" / ")+st.qs.length+t(" 题 · 答对一半即通关"))+'</div>'+
+    '<div class="meta">'+(st.jump?t("🔁 错题重练 · 从第 ")+(st.idx+1)+t(" 题开始 · 答对自动移出错题本，不计入正式成绩"):t("第 ")+(st.idx+1)+t(" / ")+st.qs.length+t(" 题 · 答对一半即通关"))+' · <span class="q-type">'+agiKindTag(rec.kind)+'</span></div>'+
     '<div class="q-dots">'+dots+'</div>'+
     '<div style="font-size:16px;font-weight:600;margin:10px 0">'+escapeHtml(q.q)+'</div>'+
-    '<div id="opts">'+rec.perm.map(function(ai2,disp){return '<div class="q-opt" data-act="opt" data-i="'+disp+'"><div class="abc">'+"ABCD"[disp]+'</div><div>'+escapeHtml(q.o[ai2])+'</div></div>';}).join("")+'</div>'+
+    body+
     '<div id="qWhy"></div>'+
     '<div class="modal-actions"><button class="btn ghost" data-act="close">'+t("退出测评")+'</button></div>';
   $("modalMask").classList.add("show");
+  var fi=$("fillInput");
+  if(fi){fi.focus();fi.addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();answerQuizFill();}});}
 }
-function answerQuiz(i){
-  const st=quizState;if(!st||st.answers[st.idx]!==undefined)return;
-  const rec=st.qs[st.idx],q=st.stage.quiz[rec.ai];
-  const ok=rec.ca===i;
-  st.answers[st.idx]={pick:i,ok:ok};
-  if(ok)st.correct++; else recordMistake(st.stage.id,rec.ai,rec.perm[i]);
-  const mk=st.stage.id+"#"+rec.ai;
-  if(ok&&data.mistakes&&data.mistakes[mk]){ // 重做答对 → 自动移出错题本
+function quizNextBtns(st){
+  return (st.idx<st.qs.length-1
+    ?'<div class="modal-actions"><button class="btn green" data-act="next-q">'+t("下一题 →")+'</button></div>'
+    :'<div class="modal-actions"><button class="btn green" data-act="finish-quiz">'+t("查看成绩 🏁")+'</button></div>');
+}
+/* 答对后自动移出错题本（错题重练场景） */
+function clearMistakeIfRedone(sid,ai){
+  var mk=sid+"#"+ai;
+  if(data.mistakes&&data.mistakes[mk]){
     delete data.mistakes[mk];saveData();renderMistakes();renderAch();
     toast(t("✅ 答对了，这题已自动移出错题本"));
   }
+}
+// 选择题 / 判断题：按显示下标作答
+function answerQuiz(i){
+  const st=quizState;if(!st||st.answers[st.idx]!==undefined)return;
+  const rec=st.qs[st.idx];if(rec.kind==="fill")return;
+  const q=st.stage.quiz[rec.ai];
+  const ok=rec.ca===i;
+  st.answers[st.idx]={pick:i,ok:ok};
+  if(ok)st.correct++; else recordMistake(st.stage.id,rec.ai,rec.opts[i]);
+  if(ok)clearMistakeIfRedone(st.stage.id,rec.ai);
   const opts=$("opts").querySelectorAll(".q-opt");
   opts[i].classList.add(ok?"right":"wrong");
-  if(!ok)opts[q.a].classList.add("right");
-  $("qWhy").innerHTML='<div class="q-why">'+(ok?t("✅ 正确！"):t("❌ 正确答案是 ")+"ABCD"[rec.ca]+t("。"))+' '+escapeHtml(q.why||"")+'</div>'+
-    (st.idx<st.qs.length-1
-      ?'<div class="modal-actions"><button class="btn green" data-act="next-q">'+t("下一题 →")+'</button></div>'
-      :'<div class="modal-actions"><button class="btn green" data-act="finish-quiz">'+t("查看成绩 🏁")+'</button></div>');
+  if(!ok)opts[rec.ca].classList.add("right");
+  $("qWhy").innerHTML='<div class="q-why">'+(ok?t("✅ 正确！"):t("❌ 正确答案是 ")+agiAbc(rec.ca)+t("。"))+' '+escapeHtml(q.why||"")+'</div>'+quizNextBtns(st);
+}
+// 填空题：读输入框 → 归一化比对
+function answerQuizFill(){
+  const st=quizState;if(!st||st.answers[st.idx]!==undefined)return;
+  const rec=st.qs[st.idx];if(rec.kind!=="fill")return;
+  const q=st.stage.quiz[rec.ai];
+  const el=$("fillInput"),raw=el?el.value:"";
+  if(!agiNormAns(raw)){toast(LANG==="en"?"Type an answer first":"先输入答案再提交","warn");return;}
+  const ok=rec.ans.indexOf(agiNormAns(raw))>=0;
+  st.answers[st.idx]={pick:raw,ok:ok};
+  if(ok)st.correct++; else recordMistake(st.stage.id,rec.ai,raw);
+  if(ok)clearMistakeIfRedone(st.stage.id,rec.ai);
+  if(el)el.disabled=true;
+  const sb=document.querySelector('[data-act="fill-submit"]');if(sb)sb.disabled=true;
+  $("qWhy").innerHTML='<div class="q-why">'+(ok?t("✅ 正确！"):t("❌ 正确答案是 ")+escapeHtml((q.ans||[])[0]||"")+t("。"))+' '+escapeHtml(q.why||"")+'</div>'+quizNextBtns(st);
 }
 function finishQuiz(){
   const st=quizState,s=st.stage,total=st.qs.length;
@@ -2162,7 +2518,7 @@ function showIntro(){
     '<div class="intro-step"><div class="n">1</div><div>'+t("每天打开先<b>打卡</b>，连续坚持可获得 XP 加成与成就（可在设置里设定提醒时间）。")+'</div></div>'+
     '<div class="intro-step"><div class="n">2</div><div>'+t("按「今日任务」学 1~2 节：先读<b>讲解</b>，把<b>示例代码</b>抄进编译器跑一遍。")+'</div></div>'+
     '<div class="intro-step"><div class="n">3</div><div>'+t("做每课的<b>随堂思考</b>，写下<b>笔记</b>；留意「易错点」能少走弯路。")+'</div></div>'+
-    '<div class="intro-step"><div class="n">4</div><div>'+t("学完一个阶段的全部课程即可参加<b>阶段测评</b>（拿 ⭐），并解锁一道<b>编程实战</b>：写完代码一键生成「AI 批改提示词」，发给任意大模型就能获得打分与建议。")+'</div></div>'+
+    '<div class="intro-step"><div class="n">4</div><div>'+t("学完一个阶段的全部课程即可参加<b>阶段测评</b>（拿 ⭐），并解锁<b>编程实战</b>（每阶段 5 道）：写完代码一键生成「AI 批改提示词」，发给任意大模型就能获得打分与建议。")+'</div></div>'+
     '<div class="intro-step"><div class="n">5</div><div>'+t("通关整座篇章有<b>庆祝动画 +100 XP</b> 通关奖励。")+'</div></div>'+
     '<div class="intro-step"><div class="n">6</div><div>'+t("隔几天回到「间隔复习」巩固记忆，防遗忘。")+'</div></div>'+
     '<div class="intro-step"><div class="n">7</div><div>'+((CURRICULUM_MODE==="py")
@@ -2214,12 +2570,12 @@ function openLab(stageId,k){
     '<h3>💻 '+t("实战：")+escapeHtml(pick(lab,"t"))+'</h3>'+
     '<div class="meta">'+escapeHtml(pick(s,"name"))+(labList(s).length>1?' · 💻 '+(k+1)+'/'+labList(s).length:'')+' · '+t("完成后 +")+lab.xp+t(" XP · 先在编译器里独立完成，再把代码粘贴回来")+'</div>'+
     '<h4>📋 题目要求</h4><ul class="lab-req">'+labReqOf(lab).map(r=>'<li>'+escapeHtml(r)+'</li>').join("")+'</ul>'+
-    '<h4>🧱 起步代码</h4><div class="copy-code"><button class="cp" data-act="copy-starter">复制</button><pre><code>'+highlight(lab.starter)+'</code></pre></div>'+
+    '<h4>🧱 起步代码</h4><div class="copy-code"><button class="cp" data-act="copy-starter">复制</button><pre><code>'+highlight(translateCodeComments(lab.starter))+'</code></pre></div>'+
     '<h4>'+(lab.mode==="text"?"✍️ 我的回答（自动保存）":"✍️ 我的代码（自动保存）")+'</h4><textarea class="code-area" id="labCode" placeholder="'+(lab.mode==="text"?"在下方题目框架里写下你的回答…":"把你在编译器里写好的完整代码粘贴到这里…")+'">'+escapeHtml(rec.code||"")+'</textarea>'+
     (lab.mode==="text"?"":'<h4>📤 程序运行输出</h4><textarea class="code-area out-area" id="labOut" placeholder="复制程序窗口的输出粘贴到这里（给 AI 老师的关键证据）">'+escapeHtml(rec.out||"")+'</textarea>')+
     '<h4>🧗 我卡在哪了（可选）</h4><textarea class="code-area out-area" id="labStuck" placeholder="例如：编译报错看不懂 / 结果不对不知道为什么">'+escapeHtml(rec.stuck||"")+'</textarea>'+
     '<div class="ex-box" style="margin-top:10px"><div class="ex-q">💡 提示（先自己想 10 分钟再看）</div><div class="ex-a" hidden>'+escapeHtml(labHintOf(lab))+'</div><div style="margin-top:8px"><button class="btn small ghost" data-act="reveal">查看提示</button></div></div>'+
-    (function(){const ans=(typeof LAB_ANSWERS!=="undefined"&&(LAB_ANSWERS[labKey(stageId,k)]||(k===0&&LAB_ANSWERS[stageId])))?(LAB_ANSWERS[labKey(stageId,k)]||LAB_ANSWERS[stageId]):lab.answer;return ans?'<div class="ex-box" style="margin-top:10px"><div class="ex-q">📘 参考解答（卡住再看，避免形成依赖）</div><div class="ex-a" hidden><pre><code>'+highlight(ans)+'</code></pre></div><div style="margin-top:8px"><button class="btn small ghost" data-act="reveal-answer">查看参考解答</button></div></div>':'';})()+
+    (function(){const ans=(typeof LAB_ANSWERS!=="undefined"&&(LAB_ANSWERS[labKey(stageId,k)]||(k===0&&LAB_ANSWERS[stageId])))?(LAB_ANSWERS[labKey(stageId,k)]||LAB_ANSWERS[stageId]):lab.answer;return ans?'<div class="ex-box" style="margin-top:10px"><div class="ex-q">📘 '+t("参考解答（卡住再看，避免形成依赖）")+'</div><div class="ex-a" hidden><pre><code>'+highlight(translateCodeComments(ans))+'</code></pre></div><div style="margin-top:8px"><button class="btn small ghost" data-act="reveal-answer">'+t("查看参考解答")+'</button></div></div>':'';})()+
     '<div class="modal-actions">'+
       '<button class="btn amber" data-act="lab-generate">🤖 生成 AI 批改提示词</button>'+
       (rec.done?'<button class="btn ghost" disabled>✅ 已完成</button>':'<button class="btn green" data-act="lab-done">✅ 我完成了（+'+lab.xp+' XP）</button>')+
@@ -2504,6 +2860,7 @@ document.addEventListener("click",function(e){
     case "use-style":setStyle(id);break;
     case "quiz":startQuiz(id);break;
     case "opt":answerQuiz(parseInt(tar.dataset.i,10));break;
+    case "fill-submit":answerQuizFill();break;
     case "next-q":if(quizState){quizState.idx++;showQuiz();}break;
     case "finish-quiz":finishQuiz();break;
     case "review":doReview(id);break;
@@ -2512,7 +2869,7 @@ document.addEventListener("click",function(e){
       a.hidden=!a.hidden;tar.textContent=a.hidden?t("查看参考答案"):t("收起答案");break;}
     case "copy-code":{
       const f=findLesson(modalLessonId);
-      if(f)copyText(f.lesson.code,t("代码已复制，快去编译器里运行 🔧"));break;}
+      if(f)copyText(translateCodeComments(pick(f.lesson,'code')),t("代码已复制，快去编译器里运行 🔧"));break;}
     case "copy-starter":{
       const s=CURRICULUM.find(x=>x.id===labId);
       const _lb=s?labList(s)[labK]:null;

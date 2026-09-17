@@ -266,6 +266,55 @@ const STAGE_META={
   }
 };;
 
+/* === English prereq translations (pre_en) === */
+(function(){
+  var PRE_EN = {
+    "建议先巩固：数组":"Review: arrays",
+    "建议先完成前六个篇章":"Complete the first 6 parts first",
+    "建议先学完：CNN 与序列模型(dl3)":"Complete: CNN & sequence models (dl3)",
+    "建议先学完：ml1-ml2":"Complete: ml1-ml2",
+    "建议先学完：ml1-ml3":"Complete: ml1-ml3",
+    "建议先学完：NumPy(sp1)":"Complete: NumPy (sp1)",
+    "建议先学完：Pandas(sp2)":"Complete: Pandas (sp2)",
+    "建议先学完：Python 入门(py1-4)":"Complete: Python intro (py1-4)",
+    "建议先学完：Python 与微积分基础":"Complete: Python & calculus basics",
+    "建议先学完：PyTorch 实战(dl2)":"Complete: PyTorch (dl2)",
+    "建议先学完：STL 容器(s12/s13)":"Complete: STL containers (s12/s13)",
+    "建议先学完：STL 顺序容器(s12)":"Complete: STL sequence containers (s12)",
+    "建议先学完：大语言模型(agi2)":"Complete: LLMs (agi2)",
+    "建议先学完：递归(s5-6)":"Complete: recursion (s5-6)",
+    "建议先学完：递归与分治(srec)":"Complete: recursion & divide-conquer (srec)",
+    "建议先学完：递归与记忆化(srec)":"Complete: recursion & memoization (srec)",
+    "建议先学完：队列与递归":"Complete: queues & recursion",
+    "建议先学完：函数(s5)":"Complete: functions (s5)",
+    "建议先学完：函数(s5)与异常基础":"Complete: functions (s5) & exception basics",
+    "建议先学完：函数与结构体":"Complete: functions & structs",
+    "建议先学完：机器学习(ml1-4)":"Complete: machine learning (ml1-4)",
+    "建议先学完：机器学习概览(ml1)":"Complete: ML overview (ml1)",
+    "建议先学完：类与指针":"Complete: classes & pointers",
+    "建议先学完：面向对象基础(s9)":"Complete: OOP basics (s9)",
+    "建议先学完：前沿(agi1-agi3)":"Complete: frontier topics (agi1-agi3)",
+    "建议先学完：深度学习(dl1-2) 与强化学习基础":"Complete: deep learning (dl1-2) & RL basics",
+    "建议先学完：深度学习与大模型认知(dl5)":"Complete: deep learning & LLM understanding (dl5)",
+    "建议先学完：神经网络基础(dl1)":"Complete: neural network basics (dl1)",
+    "建议先学完：数学基石(ma1-4) 与 Python(py1-4)":"Complete: math foundations (ma1-4) & Python (py1-4)",
+    "建议先学完：数组与指针":"Complete: arrays & pointers",
+    "建议先学完：现代 C++ 特性(s17)":"Complete: modern C++ features (s17)",
+    "建议先学完：线性代数 I(ma1)":"Complete: linear algebra I (ma1)",
+    "建议先学完：线性代数 I/II(ma1/ma2)":"Complete: linear algebra I/II (ma1/ma2)",
+    "建议先学完：指针与结构体(s7/s8)":"Complete: pointers & structs (s7/s8)",
+    "建议先学完：指针与引用(s7)":"Complete: pointers & references (s7)",
+    "建议先学完：注意力与 Transformer(dl4)":"Complete: attention & Transformer (dl4)",
+    "建议先掌握：基础语法与文件概念":"Master: basic syntax & file concepts",
+    "建议先掌握：基础运算符(s3)":"Master: basic operators (s3)",
+    "综合运用前 17 个阶段的知识":"Synthesize knowledge from stages 1-17"
+  };
+  Object.keys(STAGE_META).forEach(function(k){
+    var m = STAGE_META[k];
+    if(m.pre && PRE_EN[m.pre]) m.pre_en = PRE_EN[m.pre];
+  });
+})();
+
 /* 原有 18 个实战的参考解答（参考解答折叠用）；新增 4 个阶段的 lab.answer 已内置其上 */
 const LAB_ANSWERS={
   "s1": "#include <iostream>\nint main() {\n    std::cout << \"昵称：小明\" << std::endl;\n    std::cout << \"为什么学 C++：想做游戏\" << std::endl;\n    std::cout << \"今天：2026-08-23\" << std::endl;\n    return 0;\n}",
@@ -1486,15 +1535,15 @@ const AGI_STAGES=[
         "why": "梯度指向函数值增长最快的方向，故负梯度用于下降。"
       },
       {
-        "q": "反向传播依赖？",
+        "q": "函数在某点处的导数，其几何意义是该点处切线的？",
         "o": [
-          "链式法则",
-          "积分",
-          "行列式",
-          "特征值"
+          "斜率",
+          "截距",
+          "面积",
+          "周长"
         ],
         "a": 0,
-        "why": "多层复合函数求导靠链式法则逐层回传。"
+        "why": "导数就是切线斜率，斜率越大函数在该点变化越快，这正是梯度下降「沿最陡方向走」的来源。"
       },
       {
         "q": "梯度下降更新 θ 用？",
