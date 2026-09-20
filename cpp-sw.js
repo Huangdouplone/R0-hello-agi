@@ -1,7 +1,7 @@
 /* R0:hello agi Service Worker —— 提供离线缓存
  * 通过 http(s) 托管本目录时自动生效；file:// 直接打开时浏览器会拒绝注册，属正常现象。
  */
-const CACHE = "r0-hello-agi-v5";
+const CACHE = "r0-hello-agi-v6";
 /* ASSETS 必须与 index.html 里 <script src> 的 URL 逐字符一致（含 ?v=N 查询串）：
    缓存以「完整请求 URL」为键，裸文件名匹配不上带查询串的请求，会导致离线时取不到这些资源。 */
 const ASSETS = ["./", "index.html", "README.md", "LICENSE.md", "cpp-extra-data.js", "lang-en.js?v=15", "agi-quiz-extra.js?v=1", "agi-lab-extra.js?v=2", "agi-extra2.js?v=1", "agi-lab-extra2.js?v=1", "agi-lab-en.js?v=1", "cpp-sw.js"];

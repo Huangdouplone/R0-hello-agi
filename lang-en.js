@@ -78,12 +78,12 @@ const STAGE_EN = {
 const LESSON_EN = {
   /* ===== s1 ===== */
   "1-1": {title_en:"Meet C++: What Can It Do?", summary_en:[
-    "C++ is a high-performance, hardware-close, object-oriented general-purpose language.",
+    "C++ is a high-performance, low-level, object-oriented general-purpose language.",
     "Widely used in game engines, operating systems, high-frequency trading, embedded systems, and large servers.",
     "Learning path: build syntax and thinking foundations first, then gradually move to engineering practice."],
     pit_en:"Don't get stuck in the \"which language is best\" debate — pick one and stick with it; programming thinking is universal.",
     ex_q_en:"In your own words: what is C++'s biggest characteristic compared to languages like Python?",
-    ex_a_en:"C++ compiles to machine code, is hardware-close, high-performance, and gives fine-grained memory control; the trade-off is you manage more details yourself.",
+    ex_a_en:"C++ compiles to machine code, is low-level, high-performance, and gives fine-grained memory control; the trade-off is you manage more details yourself.",
     target_en:"Explain in one sentence: what is C++ and why learn it."},
   "1-2": {title_en:"Setup: Compiler & Editor", summary_en:[
     "A compiler turns C++ source into an executable: MSVC/MinGW(g++) on Windows, clang/g++ on macOS/Linux.",
@@ -1120,7 +1120,7 @@ const LESSON_EN = {
   "la4": {title_en:"Two-pointer Techniques", summary_en:[
     "Fast/slow pointers: find midpoint (fast 2x, slow 1x), detect cycle (if they meet, there's a cycle).",
     "Left/right colliding pointers: two-sum on sorted arrays, palindrome checks.",
-    "Same-direction sliding window: maintain a range for longest/shortest substring —主力 for string problems."],
+    "Same-direction sliding window: maintain a range for longest/shortest substring — the workhorse for string problems."],
     pit_en:"When checking fast, test both fast and fast->next; miss one and you dereference null and crash.",
     ex_q_en:"How to find the cycle entry in a cyclic list?",
     ex_a_en:"After meeting, put one pointer back at the head; both walk one step at a time; the next meeting point is the entry (mathematically provable).",
