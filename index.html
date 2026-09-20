@@ -13,7 +13,7 @@
   --cell0:#e6ecf2;--prebg:#1b2433;--shadow:0 2px 12px rgba(30,45,70,.06);
   --fg:#233044;--bg2:#e9eff5;
 }
-body{background:var(--bg);color:#2b3440;line-height:1.65;padding:18px;padding-bottom:60px;}
+body{background:var(--bg);color:var(--fg);line-height:1.65;padding:18px;padding-bottom:60px;}
 .container{max-width:1040px;margin:0 auto;}
 
 /* 头部 */
@@ -1710,7 +1710,57 @@ function gainXp(n){
 /* 星币：学习/复习赚币，仅用于解锁主页风格（纯外观），绝不 pay-to-win */
 function gainCoins(n){data.coins=(data.coins||0)+n;saveData();renderCoins();}
 function renderCoins(){const el=$("coinChip");if(el)el.textContent="🪙 "+(data.coins||0);}
-const STYLE_VARS=["--bg","--card","--line","--ink","--sub","--blue","--amber","--soft","--shadow","--red"];
+/* 皮肤可覆盖的「全部」变量：漏一个就会从基础主题泄漏 —— 典型症状是
+   暗色皮肤里冒出浅色区块（--bg2 泄漏）、文字读不出来（--fg 泄漏）。 */
+const STYLE_VARS=["--bg","--bg2","--card","--soft","--line","--ink","--fg","--sub",
+  "--blue","--green","--amber","--red","--purple","--shadow"];
+const ACCENT_KEYS=["--blue","--green","--amber","--red","--purple"];
+const ACCENT_FALLBACK={"--green":"#2e9e5b","--purple":"#8a63d2"};
+/* ---- 颜色工具：把皮肤签名色板推导出「明/暗对偶」，使皮肤与昼夜模式共存 ---- */
+function skRGB(h){h=String(h==null?"":h).trim();if(h.charAt(0)==="#")h=h.slice(1);
+  if(h.length===3)h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2];if(h.length!==6)return null;
+  var n=parseInt(h,16);return isNaN(n)?null:[(n>>16)&255,(n>>8)&255,n&255];}
+function skHSL(c){var r=c[0]/255,g=c[1]/255,b=c[2]/255,mx=Math.max(r,g,b),mn=Math.min(r,g,b),
+  l=(mx+mn)/2,d=mx-mn,h=0,s=0;
+  if(d){s=l>0.5?d/(2-mx-mn):d/(mx+mn);
+    if(mx===r)h=(g-b)/d+(g<b?6:0);else if(mx===g)h=(b-r)/d+2;else h=(r-g)/d+4;h*=60;}
+  return{h:h,s:s*100,l:l*100};}
+function skHex(H,S,L){H=((H%360)+360)%360;S=Math.max(0,Math.min(100,S))/100;L=Math.max(0,Math.min(100,L))/100;
+  var c=(1-Math.abs(2*L-1))*S,x=c*(1-Math.abs((H/60)%2-1)),m=L-c/2,r=0,g=0,b=0;
+  if(H<60){r=c;g=x;}else if(H<120){r=x;g=c;}else if(H<180){g=c;b=x;}
+  else if(H<240){g=x;b=c;}else if(H<300){r=x;b=c;}else{r=c;b=x;}
+  var f=function(v){var n=Math.max(0,Math.min(255,Math.round((v+m)*255)));return("0"+n.toString(16)).slice(-2);};
+  return "#"+f(r)+f(g)+f(b);}
+function skLum(hex){var c=skRGB(hex);if(!c)return .5;
+  var f=function(v){v/=255;return v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4);};
+  return .2126*f(c[0])+.7152*f(c[1])+.0722*f(c[2]);}
+function skRetune(hex,L,S){var c=skRGB(hex);if(!c)return hex;var o=skHSL(c);return skHex(o.h,S!=null?S:o.s,L);}
+/* 以皮肤主底色的色相为基调生成「另一极」色板：亮皮肤→暗色板，暗皮肤→亮色板 */
+function flipSkin(v,toDark){
+  var o=skHSL(skRGB(v["--bg"])||[255,255,255]),h=o.h,sh=Math.min(o.s,42),p={};
+  if(toDark){
+    p["--bg"]=skHex(h,sh,9);p["--bg2"]=skHex(h,sh,12);p["--card"]=skHex(h,Math.min(sh+4,46),13);
+    p["--soft"]=skHex(h,sh,11);p["--line"]=skHex(h,Math.min(sh+6,34),24);
+    p["--ink"]=skHex(h,20,93);p["--fg"]=skHex(h,20,93);p["--sub"]=skHex(h,13,65);
+    p["--shadow"]="0 6px 24px rgba(0,0,0,.5)";
+  }else{
+    p["--bg"]=skHex(h,Math.min(sh,70),97);p["--bg2"]=skHex(h,Math.min(sh,60),95);
+    p["--card"]=skHex(h,Math.min(sh,50),100);p["--soft"]=skHex(h,Math.min(sh,60),94);
+    p["--line"]=skHex(h,Math.min(sh,45),88);
+    p["--ink"]=skHex(h,26,17);p["--fg"]=skHex(h,26,17);p["--sub"]=skHex(h,15,46);
+    p["--shadow"]="0 6px 18px rgba(20,30,50,.12)";
+  }
+  ACCENT_KEYS.forEach(function(k){if(v[k])p[k]=skRetune(v[k],toDark?72:42);});
+  return p;
+}
+function skinPalette(st,dark){
+  var base=(st&&st.vars)||{};if(!Object.keys(base).length)return null;
+  var nativeLight=skLum(base["--bg"]||"#ffffff")>0.5,full=flipSkin(base,dark);
+  if(nativeLight===(!dark))Object.keys(base).forEach(function(k){full[k]=base[k];});
+  return full;
+}
+function themeIsDark(){var pref=(data.settings&&data.settings.theme)||"auto";
+  return pref==="dark"||(pref==="auto"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches);}
 const HOMEPAGE_STYLES=[
   {id:"default",name:"晨曦蓝",name_en:"Dawn Blue",icon:"🌤️",cost:0,desc:"默认 · 清爽蓝白",desc_en:"Default · clean blue & white",vars:{}},
   {id:"neon",name:"暗夜霓虹",name_en:"Neon Night",icon:"🌃",cost:60,desc:"深空底 + 霓虹紫边",desc_en:"Deep space + neon violet",vars:{"--bg":"#0e1020","--card":"#171a2e","--line":"#2a2f4a","--ink":"#e8ecff","--sub":"#9aa3c7","--blue":"#7c5cff","--amber":"#ffb454","--soft":"#1d2138","--shadow":"0 6px 20px rgba(0,0,0,.45)","--red":"#ff6b8a"}},
@@ -1732,8 +1782,15 @@ const HOMEPAGE_STYLES=[
 ];
 function applyStyle(){
   const st=HOMEPAGE_STYLES.find(s=>s.id===(data.activeStyle||"default"))||HOMEPAGE_STYLES[0];
-  const root=document.documentElement;
-  STYLE_VARS.forEach(k=>root.style.setProperty(k,st.vars[k]||""));
+  const root=document.documentElement, dark=themeIsDark();
+  const pal=skinPalette(st,dark);
+  if(!pal){ STYLE_VARS.forEach(k=>root.style.setProperty(k,"")); return; }
+  const full={}; Object.keys(pal).forEach(k=>{full[k]=pal[k];});
+  Object.keys(ACCENT_FALLBACK).forEach(k=>{ if(!full[k]) full[k]=skRetune(ACCENT_FALLBACK[k],dark?70:42); });
+  STYLE_VARS.forEach(k=>root.style.setProperty(k,full[k]||""));
+  /* 皮肤用 --blue 作主强调，站内主体走 --accent：一并同步，皮肤身份才落得到按钮上 */
+  if(full["--blue"]) root.style.setProperty("--accent",full["--blue"]);
+  if(full["--amber"]) root.style.setProperty("--accent2",full["--amber"]);
 }
 /* 科学防过载：每日新学上限 + 复习溢出锁（限制当天新课，保护记忆与效果） */
 function newLessonLockReason(){
