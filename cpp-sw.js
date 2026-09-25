@@ -1,10 +1,10 @@
 /* R0:hello agi Service Worker —— 提供离线缓存
  * 通过 http(s) 托管本目录时自动生效；file:// 直接打开时浏览器会拒绝注册，属正常现象。
  */
-const CACHE = "r0-hello-agi-v10";
+const CACHE = "r0-hello-agi-v33";
 /* ASSETS 必须与 index.html 里 <script src> 的 URL 逐字符一致（含 ?v=N 查询串）：
    缓存以「完整请求 URL」为键，裸文件名匹配不上带查询串的请求，会导致离线时取不到这些资源。 */
-const ASSETS = ["./", "index.html", "README.md", "LICENSE.md", "cpp-extra-data.js?v=2", "agi-concept.js?v=1", "lang-en.js?v=16", "agi-quiz-extra.js?v=1", "agi-lab-extra.js?v=2", "agi-extra2.js?v=1", "agi-lab-extra2.js?v=1", "agi-lab-en.js?v=1", "cpp-sw.js"];
+const ASSETS = ["./", "index.html", "README.md", "LICENSE.md", "cpp-extra-data.js?v=2", "agi-concept.js?v=2", "agi-deepen-s8.js?v=5", "agi-deepen-s9.js?v=5", "agi-deepen-s10.js?v=5", "agi-deepen-s567.js?v=5", "agi-deepen-s12.js?v=2", "agi-deepen-s34.js?v=1", "agi-deepen-s11.js?v=1", "agi-deepen-stl1.js?v=1", "agi-deepen-stl2.js?v=1", "agi-deepen-proj1.js?v=2", "agi-deepen-engcar.js?v=1", "agi-deepen-algo1.js?v=1", "agi-deepen-algo2.js?v=1", "agi-deepen-algo3.js?v=1", "agi-deepen-ma12.js?v=2", "agi-deepen-ma34.js?v=1", "agi-deepen-ml12.js?v=1", "agi-deepen-ml34.js?v=1", "agi-deepen-agi12.js?v=2", "agi-deepen-agi34.js?v=1", "agi-deepen-py12.js?v=1", "agi-deepen-py34.js?v=1", "agi-deepen-agi5.js?v=1", "agi-deepen-agi6.js?v=1", "agi-deepen-agi7.js?v=1", "agi-deepen-sp.js?v=1", "agi-deepen-dl12.js?v=1", "agi-deepen-dl345.js?v=1", "lang-en.js?v=16", "agi-quiz-extra.js?v=1", "agi-lab-extra.js?v=2", "agi-extra2.js?v=1", "agi-lab-extra2.js?v=1", "agi-lab-en.js?v=1", "cpp-sw.js"];
 self.addEventListener("install", function (e) {
   e.waitUntil(
     caches.open(CACHE).then(function (c) {
