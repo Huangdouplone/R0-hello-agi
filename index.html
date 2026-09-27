@@ -678,6 +678,8 @@ input.inp:focus,select.inp:focus{outline:none;border-color:var(--blue);box-shado
   background:var(--bg2);color:var(--sub);cursor:pointer;user-select:none;}
 .sec-jump [data-act="sb-nav"]:hover{border-color:var(--blue);color:var(--ink);}
 .sec-jump [data-act="sb-nav"].on{background:var(--bg2);background:color-mix(in srgb,var(--blue) 16%,var(--card));border-color:var(--blue);box-shadow:inset 0 0 0 1.5px var(--blue);color:var(--ink);font-weight:700;}
+/* 拓展徽标（教学审计 2026-09-27） */
+.ext-badge{display:inline-block;font-size:10px;vertical-align:middle;margin-left:6px;padding:1px 7px;border-radius:10px;background:color-mix(in srgb,var(--accent,#2f7ed8) 14%,transparent);color:var(--accent,#2f7ed8);font-weight:600;}
 </style>
 </head>
 <body data-page-node-id="pySFzavCtwwGmOq6lj71Am">
@@ -873,12 +875,14 @@ input.inp:focus,select.inp:focus{outline:none;border-color:var(--blue);box-shado
 <div id="toastWrap" class="toast-wrap" data-page-node-id="BMemSGCgtVEensRBjhfF2x"></div>
 <button id="toTop" class="to-top" aria-label="返回顶部" data-i18n-aria="返回顶部" data-page-node-id="DrskNYLug9A3BgyWsIXrZP">&#8593;</button>
 <script src="cpp-extra-data.js?v=2"></script>
-<script src="lang-en.js?v=16"></script>
+<script src="lang-en.js?v=17"></script>
 <script src="agi-quiz-extra.js?v=1"></script>
 <script src="agi-lab-extra.js?v=2"></script>
 <script src="agi-extra2.js?v=1"></script>
 <script src="agi-lab-extra2.js?v=1"></script>
 <script src="agi-lab-en.js?v=1"></script>
+<script src="agi-en-batch.js?v=1"></script>
+<script src="ped-ext.js?v=1"></script>
 <script src="agi-concept.js?v=2"></script>
 <script>window.DEEPEN_LAYERS = [];/* 深化层自注册表：每个 agi-deepen-*.js 末尾 push 自己的对象。
    新增批次只需 ①加 <script src> ②在 cpp-sw.js ASSETS 写同一串 URL —— 不必再改合并块。 */</script>
@@ -939,7 +943,7 @@ quiz:[{q:"C++ 程序的入口函数是？",o:["start()","main()","run()","begin(
 {id:"s2",icon:"🔢",name:"变量与基本类型",desc:"程序的数据从哪来、怎么存",
  goal:"能正确选择类型声明变量，理解作用域与类型转换的规则。",
  links:[["cppreference · 基本类型","https://zh.cppreference.com/w/cpp/language/types"],["菜鸟教程 · 数据类型","https://www.runoob.com/cplusplus/cpp-data-types.html"],["视频精讲 · B站 P4","https://www.bilibili.com/video/BV1et411b73Z?p=4"]],
- lab:{t:"圆的面积计算器",req:["用 const 定义 PI = 3.14159","从键盘读入半径（用 double）","输出面积，保留两位小数"],starter:`#include <iostream>\n#include <iomanip>\n\nint main() {\n    const double PI = 3.14159;\n    double r = 0;\n    // 读入 r，计算并输出面积\n\n    return 0;\n}`,hint:"fixed + setprecision(2) 控制小数位数。",xp:20},
+ lab:{t:"圆的面积计算器",req:["用 const 定义 PI = 3.14159","从键盘读入半径（用 double）","输出面积（小数位随意）"],starter:`#include <iostream>\n\nint main() {\n    const double PI = 3.14159;\n    double r = 0;\n    // 读入 r，计算并输出面积\n\n    return 0;\n}`,hint:"面积 = PI × r × r。小数位美化用 fixed + setprecision(2)——那是 3-6 的内容，学完再回来加。",xp:20},
  lessons:[
  {id:"2-1",title:"变量：给数据起个名字",min:8,summary:["变量是内存中一块有名字的空间，用来存放会变化的数据。","声明方式：类型 名字 = 初值; 例如 int score = 0;。","变量在使用前必须先声明。"],code:`int score = 0;\nscore = 95;   // 之后可修改\nstd::cout << score;`,pit:"读取未初始化的变量是未定义行为，值是随机的——声明时最好给初值。",ex:{q:"声明一个未初始化的 int 并打印，多运行几次会怎样？",a:"值可能每次都不同（垃圾值），所以声明时顺手给个初值最稳。"},target:"能声明并修改一个整数变量，输出它的值。"},
  {id:"2-2",title:"基本数据类型",min:12,summary:["整数：int、short、long、long long；浮点：float、double。","字符：char（单个字符）；布尔：bool（true/false）。","不同类型占用内存不同，double 比 float 精度更高。"],code:`int n = 10;\nlong long big = 10000000000LL;\ndouble pi = 3.14159;\nchar c = 'A';\nbool ok = true;`,pit:"int 通常约 ±21 亿：存电话号码、大 ID 会溢出，请用 long long。",ex:{q:"存「一个人的年龄」和「全世界人口」分别选什么类型？",a:"年龄 int 足够；人口约 80 亿超出 int 范围，要用 long long。"},target:"说出常见类型及用途，能正确选择 int 还是 double。"},
@@ -1211,6 +1215,48 @@ if(typeof AGI_STAGES!=="undefined")AGI_STAGES.forEach(s=>{_stageMap[s.id]=s;});
     if(e.t&&!s.lab.t_en) s.lab.t_en=e.t;
     if(e.req&&!s.lab.req_en) s.lab.req_en=e.req;
     if(e.hint&&!s.lab.hint_en) s.lab.hint_en=e.hint;
+    if(e.starter_en&&!s.lab.starter_en) s.lab.starter_en=e.starter_en;
+  });
+})();
+
+/* B31/B32/B33 批量英文侧表应用（agi-en-batch.js 提供 window.AGI_EN_BATCH）：
+   课节 target_en 注入 LESSON_EN；实战 starter_en 注入对应 lab；
+   题池 q_en/o_en/why_en/ans_en 注入 _stageMap 各阶段 quiz；跨路线对照 cref 英文。 */
+(function(){
+  var B=window.AGI_EN_BATCH; if(!B) return;
+  if(B.lessons&&typeof LESSON_EN!=="undefined")Object.keys(B.lessons).forEach(function(lid){
+    var rec=LESSON_EN[lid]||(LESSON_EN[lid]={}); var e=B.lessons[lid];
+    if(e.target_en&&!rec.target_en)rec.target_en=e.target_en;
+    if(e.code_en&&!rec.code_en)rec.code_en=e.code_en;
+  });
+  /* code_en 直写课节对象（lang-en.js 的 applyEn 字段表不含 code_en） */
+  if(B.lessons){
+    var _byId={};
+    Object.keys(_stageMap).forEach(function(sid){
+      ((_stageMap[sid]||{}).lessons||[]).forEach(function(l){ if(l&&!_byId[l.id])_byId[l.id]=l; });
+    });
+    Object.keys(B.lessons).forEach(function(lid){
+      var e=B.lessons[lid], l=_byId[lid];
+      if(l&&e.code_en&&!l.code_en)l.code_en=e.code_en;
+    });
+  }
+  if(B.labs)Object.keys(B.labs).forEach(function(key){
+    var i=key.indexOf("#"), sid, k;
+    if(i<0){ sid=key; k=0; } else { sid=key.slice(0,i); k=parseInt(key.slice(i+1),10)||0; }
+    var s=_stageMap[sid]; if(!s)return;
+    var labs=(s.labs&&s.labs.length)?s.labs:(s.lab?[s.lab]:[]);
+    var lab=labs[k]; if(lab&&!lab.starter_en)lab.starter_en=B.labs[key];
+  });
+  if(B.code_comment&&typeof CODE_COMMENT_EN!=="undefined")Object.assign(CODE_COMMENT_EN,B.code_comment);
+  if(B.quiz)Object.keys(B.quiz).forEach(function(key){
+    var m=key.match(/^([A-Za-z0-9_]+)\[(\d+)\]$/); if(!m)return;
+    var s=_stageMap[m[1]]; if(!s||!s.quiz)return;
+    var q=s.quiz[parseInt(m[2],10)]; if(!q)return;
+    var e=B.quiz[key];
+    if(e.q_en&&!q.q_en)q.q_en=e.q_en;
+    if(e.why_en&&!q.why_en)q.why_en=e.why_en;
+    if(e.o_en&&e.o_en.length===((q.o||[]).length)&&!q.o_en)q.o_en=e.o_en;
+    if(e.ans_en&&!q.ans_en)q.ans_en=e.ans_en;
   });
 })();
 
@@ -1466,6 +1512,8 @@ const I18N_EN={
  " 次尝试 · 历史最佳 ":" attempts · best ","从中间开始作答，不影响正式成绩":"Started mid-way; doesn't affect official score","答对 ":" correct "," 题":" questions","本次无奖励 XP（刷新最佳成绩可得 +10）":"No XP this time (beat your best for +10)","阶段通关 ⭐，继续向下一个阶段进发！":"Stage cleared ⭐, on to the next!","建议回看本阶段讲解与易错点，再来一次会更稳。":"Review this stage's notes, then retry.","答对的错题已自动移出错题本 ✅ 想刷新正式成绩就完整测一次。":"Correct ones auto-removed from mistakes ✅; take the full quiz to update official score.",
  "再测一次":"Retry","完整测一次":"Full quiz","好的":"OK","先完成本阶段全部课程再测评（":"Finish all lessons first (","）📚":" ) 📚",
  "内容讲解":"Explanation","示例代码":"Example code","复制":"Copy","易错点":"Common pitfall","学完你能做到":"You'll be able to","随堂思考":"Think about it","查看参考答案":"Show answer","收起答案":"Hide answer","撤销完成":"Undo complete","🔒 新学已锁定":"🔒 New lesson locked","我学会了（＋":"I've got it (+"," XP · +5 🪙）":" XP · +5 🪙)"," XP · +6 🪙）":" XP · +6 🪙)","关闭":"Close","继续学习":"Continue",
+"📋 题目要求":"📋 Requirements","🧱 起步代码":"🧱 Starter code","✍️ 我的回答（自动保存）":"✍️ My answer (auto-saved)","✍️ 我的代码（自动保存）":"✍️ My code (auto-saved)","在下方题目框架里写下你的回答…":"Write your answer in the frame below…","把你在编译器里写好的完整代码粘贴到这里…":"Paste the full code you wrote in your compiler here…","📤 程序运行输出":"📤 Program output","复制程序窗口的输出粘贴到这里（给 AI 老师的关键证据）":"Paste the program output here (key evidence for the AI grader)","🧗 我卡在哪了（可选）":"🧗 Where I am stuck (optional)","例如：编译报错看不懂 / 结果不对不知道为什么":"e.g. compile error I cannot read / wrong output I cannot explain","💡 提示（先自己想 10 分钟再看）":"💡 Hint (try 10 minutes before revealing)","查看提示":"Show hint","🤖 生成 AI 批改提示词":"🤖 Generate AI grading prompt","✅ 已完成":"✅ Done","✅ 我完成了（+":"✅ I did it (+"," XP）":" XP)","实战：":"Lab: ","完成后 +":"Reward +"," XP · 先在编译器里独立完成，再把代码粘贴回来":" XP · finish it in your compiler first, then paste the code back","参考解答（卡住再看，避免形成依赖）":"Reference solution (peek only when stuck)","查看参考解答":"Show reference solution","复制提示词":"Copy prompt","下载 .md 文件":"Download .md","🤖 AI 批改提示词已生成":"🤖 AI grading prompt generated","粘贴或发送给任意 AI 助手（ChatGLM / DeepSeek / Kimi / Claude / ChatGPT…）即可获得打分与改进建议。":"Paste or send it to any AI assistant (ChatGLM / DeepSeek / Kimi / Claude / ChatGPT…) to get grading and suggestions.",
+    " XP · 先独立完成；个别提示会引用后续章节写法，先按已学内容完成核心部分":" XP · finish it independently; a few hints reference later chapters - do the core with what you already know first",
  "← 上一课：":"← Prev: ","下一课：":"Next: "," →":" →","延伸阅读：":"Further reading: ",
  "实战：":"Lab: ","完成后 +":"Done +"," XP · 先在编译器里独立完成，再把代码粘贴回来":" XP · solve in your compiler, then paste back","题目要求":"Requirements","起步代码":"Starter code","我的回答（自动保存）":"My answer (auto-saved)","我的代码（自动保存）":"My code (auto-saved)","在下方题目框架里写下你的回答…":"Write your answer in the framework below…","把你在编译器里写好的完整代码粘贴到这里…":"Paste your complete code from the compiler here…","程序运行输出":"Program output","我卡在哪了（可选）":"Where I'm stuck (optional)","例如：编译报错看不懂 / 结果不对不知道为什么":"e.g. build error unclear / wrong output","提示（先自己想 10 分钟再看）":"Hint (think 10 min first)","查看提示":"Show hint","参考解答（卡住再看，避免形成依赖）":"Reference answer (only if stuck)","查看参考解答":"Show reference",
  "🤖 生成 AI 批改提示词":"🤖 Generate AI grading prompt","✅ 已完成":"✅ Done","已完成 · +":"Done · +"," XP":" XP","已解锁 · 奖励 ":"Unlocked · +"," XP 奖励":" XP reward","完成本阶段全部课程解锁":"Unlock after finishing all lessons",
@@ -1501,7 +1549,7 @@ const I18N_EN={
  "本周":"This week","本月":"This month"," 学习报告（":" study report ("," ~ ":" ~ ","）":")","📖 完成课程：":"📖 Lessons: "," 节 ｜ 💻 实战：":" | 💻 labs: "," 个":"","⏱️ 专注时长：约 ":"⏱️ Focus: ~ "," 小时 ｜ ✅ 打卡 ":" h | ✅ check-in ","/":"/"," 天":" days","⚡ 获得 XP：":"⚡ XP: "," ｜ 🔥 连续 ":" | 🔥 streak: "," 天":" days","📊 累计总进度：":"📊 Overall: "," 节（":" lessons (","%）":"%)","坚持一个月，习惯已成；下个月向更高目标进发。":"A month in, the habit is set — aim higher next month.",
  "完成的课程":"Lessons done","完成的实战":"Labs done","复习的章节":"Reviewed","这天没有完成课程记录。":"No lessons recorded this day."," 学习明细":" study detail","✅ 已打卡":"✅ Checked in","⏳ 未打卡":"⏳ Not checked in",
  "还没有笔记～ 在课程里写下理解就能在这里集中管理 📒":"No notes yet — write your thoughts in lessons to manage them here 📒","没有匹配的笔记，换个关键词或标签试试":"No matching notes, try another keyword or tag",
- "降低卡死挫败":"reduce frustration","查看提示（先自己想 10 分钟再看）":"Show hint (think 10 min first)","查看参考解答（卡住再看，避免形成依赖）":"Show reference (only if stuck)","生成 AI 批改提示词":"Generate AI grading prompt",
+ "降低卡死挫败":"reduce frustration","廖雪峰 Python 教程":"Liao Xuefeng Python Tutorial","菜鸟教程 Python3":"runoob Python3 Tutorial","官方教程(中文)":"Official Tutorial (Chinese)","菜鸟教程 · Python 列表":"runoob: Python Lists","菜鸟教程 · 字典":"runoob: Dictionaries","Python 字符串切片":"Python String Slicing","廖雪峰 · 函数":"Liao Xuefeng: Functions","菜鸟教程 · 文件":"runoob: Files","Python 官方 · 标准库":"Python Official: Standard Library","廖雪峰 · 面向对象":"Liao Xuefeng: Object-Oriented Programming","Python collections":"Python collections","Python datetime":"Python datetime","查看提示（先自己想 10 分钟再看）":"Show hint (think 10 min first)","查看参考解答（卡住再看，避免形成依赖）":"Show reference (only if stuck)","生成 AI 批改提示词":"Generate AI grading prompt",
  "语言":"Language","中文":"中文","English":"English",
  "的 R0 成长之旅 · ":"'s R0 journey · ","阶段":"chapters","节":"lessons","Python 优先路线":"Python-first track","C++ 优先路线":"C++-first track","每天一小步":"one small step a day","连续":"streak: "," 天":" days","学习者":"Learner","点击跳到该篇章":"Jump to this chapter"," · 约 ":" · ~ "," 小时 · 建议 ":" hrs · ~ "," 大篇章 · 全程约 ":" chapters · ~ ","📍 上次学到这里，点击继续":"📍 Continue from here, tap to resume","约 ":"~ ","上次学到这里":"Last studied here"," 阶段 · ":" stages · "," 节 · 已完成 ":" lessons · done ","项":" items","使用中":"In use","切换":"Switch"," 解锁":" unlock","✅ 已启用":"✅ enabled"," · 🔁 ":" · review "," · 推荐现在开始":" · recommended now","点击继续学习这一节":"Tap to continue this lesson","继续学习":"Continue","✅ 计划达成 · 🔁 ":"✅ Goal met · review ",
 "⚠️ 易错点：":"⚠️ Common pitfall:","🤔 随堂思考：":"🤔 Think about it:","🎯 学完你能做到：":"🎯 You'll be able to:","✍️ 在这里写下你的理解、疑问或代码练习（自动保存，写笔记可解锁成就）":"✍️ Write your notes, questions or practice code here (auto-saved; notes unlock achievements)","🔗 延伸阅读：":"🔗 Further reading:","✅ 我学会了（+":"I've got it (+"," · 建议 ":" · est. ","未学":"Not studied","记忆等级 L":"Memory L"," · 第 ":" · attempt ","答对 ":"correct "," ｜ ＋":" | +","🎉 阶段通关 ＋":"🎉 Stage cleared +","📈 刷新最佳 ＋":"📈 New best +","✅ 答对了，这题已自动移出错题本":"✅ Correct! Auto-removed from mistakes",
@@ -1846,14 +1894,22 @@ var CODE_COMMENT_EN = {
 function translateCodeComments(code){
   if(LANG!=="en"||!code) return code;
   /* 注释两种写法都翻：C++ 的 // 行注释，以及示例里 shell 风格「行首 #」注释。
-     #include 这类预处理行查不到映射，原样保留。 */
-  return code.replace(/(\/\/[^\n]*)|(^[ \t]*#[^\n]*)/gm, function(m){
+     #include 这类预处理行查不到映射，原样保留。
+     B31 扩展：中文字符串字面量走 CODE_STR_EN（agi-en-batch.js 生成），整词精确匹配。 */
+  var out=code.replace(/(\/\/[^\n]*)|(^[ \t]*#[^\n]*)/gm, function(m){
     var i=m.indexOf("//"), lead, key;
     if(i>=0){ lead=m.slice(0,i+2); key=m.slice(i+2).trim(); }
     else { i=m.indexOf("#"); lead=m.slice(0,i+1); key=m.slice(i+1).trim(); }
     var en=CODE_COMMENT_EN[key];
     return en ? lead+" "+en : m;
   });
+  if(typeof CODE_STR_EN!=="undefined"){
+    out=out.replace(/"([^"\n]*[\u3400-\u9fff][^"\n]*)"/g, function(m,g1){
+      var en=CODE_STR_EN[g1];
+      return en ? '"'+en+'"' : m;
+    });
+  }
+  return out;
 }
 function setLang(l){ LANG=l; if(data&&data.settings)data.settings.lang=l; saveData(); applyLang(); }
 function applyLang(){
@@ -2587,10 +2643,11 @@ function renderMap(){
   XT_MAP.nodes.forEach(function (n) {
     var pt = pos[n.id]; if (!pt) return;
     var label = xtLabel(n.id), w = xtPillW(label), hgt = 26;
+    var isExt = window.AGI_EXT_MARKS && AGI_EXT_MARKS.cmapNodes && AGI_EXT_MARKS.cmapNodes[n.id];
     var cls = "nd" + (n.tier === 0 ? " core" : "") + (sel === n.id ? " on" : "") + (sel && !near[n.id] ? " dim" : "");
     h += '<g class="' + cls + '" data-act="xt-pick" data-id="' + xtEsc(n.id) + '">' +
       '<rect x="' + (pt.x - w / 2).toFixed(1) + '" y="' + (pt.y - hgt / 2).toFixed(1) + '" width="' + w + '" height="' + hgt + '" rx="13"></rect>' +
-      '<text x="' + pt.x.toFixed(1) + '" y="' + (pt.y + 1).toFixed(1) + '">' + xtEsc(label) + "</text></g>";
+      '<text x="' + pt.x.toFixed(1) + '" y="' + (pt.y + 1).toFixed(1) + '">' + xtEsc(label) + (isExt ? (XT_EN() ? " ▲" : " ▲") : "") + "</text></g>";
   });
   svg.innerHTML = h;
   var note = document.getElementById("cmapNote");
@@ -2660,7 +2717,7 @@ function renderTerms(){
     var short = (XT_EN() && x.short_en) ? x.short_en : x.short;
     var vs = (XT_EN() && x.vs_en) ? x.vs_en : x.vs;
     var det = xtDet(x.term);
-    var s = '<div class="term"><h3>' + xtEsc(name) + "</h3>";
+    var s = '<div class="term"><h3>' + xtEsc(name) + (window.AGI_EXT_MARKS && AGI_EXT_MARKS.terms && AGI_EXT_MARKS.terms[x.term] ? ' <span class="ext-badge">📖 ' + (XT_EN() ? "Extended" : "拓展") + '</span>' : "") + "</h3>";
     if (x.cat) s += '<div class="term-cat">' + xtEsc(xtCat(x.cat)) + "</div>";
     s += '<div class="short">' + xtEsc(short) + "</div>";
     if (det.length) s += "<ul>" + det.map(function (d) { return "<li>" + xtEsc(d) + "</li>"; }).join("") + "</ul>";
@@ -2711,7 +2768,7 @@ function syncEnTable(lid, nw, prev){
   var ex = nw.ex || (prev && prev.ex) || {};
   var rec = LESSON_EN[lid] || (LESSON_EN[lid] = {});
   var f = function(k){ return nw[k] != null ? nw[k] : (prev ? prev[k] : null); };
-  ["title_en","summary_en","pit_en","target_en"].forEach(function(k){ var v=f(k); if(v!=null) rec[k]=v; });
+  ["title_en","summary_en","pit_en","target_en","code_en"].forEach(function(k){ var v=f(k); if(v!=null) rec[k]=v; });
   if (ex.q_en != null) rec.ex_q_en = ex.q_en;
   if (ex.a_en != null) rec.ex_a_en = ex.a_en;
 }
@@ -2736,7 +2793,7 @@ function mergeLesson(prev, nw, lid){
     ex: nw.ex || (prev && prev.ex),
     target: nw.target != null ? nw.target : (prev && prev.target)
   });
-  ["title_en","summary_en","pit_en","target_en"].forEach(function(k){
+  ["title_en","summary_en","pit_en","target_en","code_en"].forEach(function(k){
     if (nw[k] != null) o[k] = nw[k];
     else if (prev && prev[k] != null) o[k] = prev[k];
   });
@@ -2952,8 +3009,8 @@ function openLesson(id){
   const cref=CROSS_REF[id];
   const crefHtml=cref?'<div class="cross-ref" style="margin:12px 0;padding:10px 14px;background:var(--soft);border-radius:10px;border-left:3px solid var(--blue);font-size:13px">'+
     '<div style="font-weight:700;color:var(--blue);margin-bottom:4px">🔄 '+(LANG==="en"?"Cross-track reference":"跨语言对照")+'</div>'+
-    '<div>'+(LANG==="en"?"In Python, this is:":"在 Python 中对应：")+' <b>'+cref[1]+'</b></div>'+
-    '<div style="color:var(--sub);margin-top:2px">'+cref[3]+'</div></div>':'';
+    '<div>'+(LANG==="en"?"In Python, this is:":"在 Python 中对应：")+' <b>'+((LANG==="en"&&cref[2])?cref[2]:cref[1])+'</b></div>'+
+    '<div style="color:var(--sub);margin-top:2px">'+((LANG==="en"&&window.CREF_EN&&CREF_EN[id])?CREF_EN[id]:cref[3])+'</div></div>':'';
   $("modalBox").innerHTML=
     '<h3>'+escapeHtml(lTitle)+'</h3>'+
     '<div class="meta">'+escapeHtml(pick(f.stage,"name"))+t(" · 建议 ")+l.min+t(" 分钟")+(c?' · '+t("✅ 已完成")+(c.lastReview?" · "+t("记忆等级 L")+((c.box||0)+1):""):' · '+t("未学"))+'</div>'+
@@ -3195,6 +3252,7 @@ function totalLabs(){ var n=0;CURRICULUM.forEach(function(s){n+=labList(s).lengt
 function labsDone(){ return Object.values(data.labs||{}).filter(function(r){return r&&r.done;}).length; }
 function labReqOf(l){ return (LANG==="en"&&l.req_en&&l.req_en.length)?l.req_en:l.req; }
 function labHintOf(l){ return (LANG==="en"&&l.hint_en)?l.hint_en:l.hint; }
+function labStarterOf(l){ return (LANG==="en"&&l.starter_en)?l.starter_en:translateCodeComments(l.starter); }
 function labTitle(s,k){ var l=labList(s)[k||0]; return l?pick(l,"t"):pick(s,"name"); }
 function renderLabs(){
   /* 249 张卡平铺要把整页撑到 8 屏以上：按「实际对应阶段」分组折叠，
@@ -3248,18 +3306,18 @@ function openLab(stageId,k){
   labId=stageId;labK=k;modalLessonId=null;lastPrompt=null;
   $("modalBox").innerHTML=
     '<h3>💻 '+t("实战：")+escapeHtml(pick(lab,"t"))+'</h3>'+
-    '<div class="meta">'+escapeHtml(pick(s,"name"))+(labList(s).length>1?' · 💻 '+(k+1)+'/'+labList(s).length:'')+' · '+t("完成后 +")+lab.xp+t(" XP · 先在编译器里独立完成，再把代码粘贴回来")+'</div>'+
-    '<h4>📋 题目要求</h4><ul class="lab-req">'+labReqOf(lab).map(r=>'<li>'+escapeHtml(r)+'</li>').join("")+'</ul>'+
-    '<h4>🧱 起步代码</h4><div class="copy-code"><button class="cp" data-act="copy-starter">复制</button><pre><code>'+highlight(translateCodeComments(lab.starter))+'</code></pre></div>'+
-    '<h4>'+(lab.mode==="text"?"✍️ 我的回答（自动保存）":"✍️ 我的代码（自动保存）")+'</h4><textarea class="code-area" id="labCode" placeholder="'+(lab.mode==="text"?"在下方题目框架里写下你的回答…":"把你在编译器里写好的完整代码粘贴到这里…")+'">'+escapeHtml(rec.code||"")+'</textarea>'+
-    (lab.mode==="text"?"":'<h4>📤 程序运行输出</h4><textarea class="code-area out-area" id="labOut" placeholder="复制程序窗口的输出粘贴到这里（给 AI 老师的关键证据）">'+escapeHtml(rec.out||"")+'</textarea>')+
-    '<h4>🧗 我卡在哪了（可选）</h4><textarea class="code-area out-area" id="labStuck" placeholder="例如：编译报错看不懂 / 结果不对不知道为什么">'+escapeHtml(rec.stuck||"")+'</textarea>'+
-    '<div class="ex-box" style="margin-top:10px"><div class="ex-q">💡 提示（先自己想 10 分钟再看）</div><div class="ex-a" hidden>'+escapeHtml(labHintOf(lab))+'</div><div style="margin-top:8px"><button class="btn small ghost" data-act="reveal">查看提示</button></div></div>'+
+    '<div class="meta">'+escapeHtml(pick(s,"name"))+(labList(s).length>1?' · 💻 '+(k+1)+'/'+labList(s).length:'')+' · '+t("完成后 +")+lab.xp+t(" XP · 先独立完成；个别提示会引用后续章节写法，先按已学内容完成核心部分")+'</div>'+
+    '<h4>'+t("📋 题目要求")+'</h4><ul class="lab-req">'+labReqOf(lab).map(r=>'<li>'+escapeHtml(r)+'</li>').join("")+'</ul>'+
+    '<h4>'+t("🧱 起步代码")+'</h4><div class="copy-code"><button class="cp" data-act="copy-starter">'+t("复制")+'</button><pre><code>'+highlight(labStarterOf(lab))+'</code></pre></div>'+
+    '<h4>'+t(lab.mode==="text"?"✍️ 我的回答（自动保存）":"✍️ 我的代码（自动保存）")+'</h4><textarea class="code-area" id="labCode" placeholder="'+t(lab.mode==="text"?"在下方题目框架里写下你的回答…":"把你在编译器里写好的完整代码粘贴到这里…")+'">'+escapeHtml(rec.code||"")+'</textarea>'+
+    (lab.mode==="text"?"":'<h4>'+t("📤 程序运行输出")+'</h4><textarea class="code-area out-area" id="labOut" placeholder="'+t("复制程序窗口的输出粘贴到这里（给 AI 老师的关键证据）")+'">'+escapeHtml(rec.out||"")+'</textarea>')+
+    '<h4>'+t("🧗 我卡在哪了（可选）")+'</h4><textarea class="code-area out-area" id="labStuck" placeholder="'+t("例如：编译报错看不懂 / 结果不对不知道为什么")+'">'+escapeHtml(rec.stuck||"")+'</textarea>'+
+    '<div class="ex-box" style="margin-top:10px"><div class="ex-q">'+t("💡 提示（先自己想 10 分钟再看）")+'</div><div class="ex-a" hidden>'+escapeHtml(labHintOf(lab))+'</div><div style="margin-top:8px"><button class="btn small ghost" data-act="reveal">'+t("查看提示")+'</button></div></div>'+
     (function(){const ans=(typeof LAB_ANSWERS!=="undefined"&&(LAB_ANSWERS[labKey(stageId,k)]||(k===0&&LAB_ANSWERS[stageId])))?(LAB_ANSWERS[labKey(stageId,k)]||LAB_ANSWERS[stageId]):lab.answer;return ans?'<div class="ex-box" style="margin-top:10px"><div class="ex-q">📘 '+t("参考解答（卡住再看，避免形成依赖）")+'</div><div class="ex-a" hidden><pre><code>'+highlight(translateCodeComments(ans))+'</code></pre></div><div style="margin-top:8px"><button class="btn small ghost" data-act="reveal-answer">'+t("查看参考解答")+'</button></div></div>':'';})()+
     '<div class="modal-actions">'+
-      '<button class="btn amber" data-act="lab-generate">🤖 生成 AI 批改提示词</button>'+
-      (rec.done?'<button class="btn ghost" disabled>✅ 已完成</button>':'<button class="btn green" data-act="lab-done">✅ 我完成了（+'+lab.xp+' XP）</button>')+
-      '<button class="btn ghost" data-act="close">关闭</button></div>'+
+      '<button class="btn amber" data-act="lab-generate">'+t("🤖 生成 AI 批改提示词")+'</button>'+
+      (rec.done?'<button class="btn ghost" disabled>'+t("✅ 已完成")+'</button>':'<button class="btn green" data-act="lab-done">'+t("✅ 我完成了（+")+lab.xp+t(" XP）")+'</button>')+
+      ' <button class="btn ghost" data-act="close">'+t("关闭")+'</button></div>'+
     '<div class="ai-out" id="aiOut"></div>';
   $("modalMask").classList.add("show");
   const bind=(id,key)=>{$(id).addEventListener("input",function(){rec[key]=this.value;saveData();});};
@@ -3271,7 +3329,61 @@ function buildAiPrompt(stageId,k){
   if(!s)return "";
   const lab=labList(s)[k],rec=data.labs[labKey(stageId,k)]||{},li=levelInfo(data.xp);
   if(!lab)return "";
+  const EN=(LANG==="en");
   const L=[];
+  if(EN){
+    L.push("# 🧑‍🏫 Coding Assignment Grading Request");
+    L.push("");
+    L.push("Please act as a patient one-on-one programming tutor (covering C++ and Python). I am a complete beginner — please grade the assignment below:");
+    L.push("");
+    L.push("**Your task**");
+    if(lab.mode==="text"){
+      L.push("This assignment is a mock interview (plain text, not code). Act as a senior interviewer:");
+      L.push("1. Review each of my answers, pointing out strengths and real mistakes (wrong ideas, missing key points);");
+      L.push("2. Score each answer 0-10 and explain any deductions;");
+      L.push("3. Like a real interview, ask one deeper follow-up question per item for my next round;");
+      L.push("4. Finally provide a model full-mark answer for comparison.");
+    }else{
+      L.push("1. Check every requirement below and say whether it is met;");
+      L.push("2. Point out compile errors, logic errors and risks, with locations and reasons;");
+      L.push("3. Score 0-100 as correctness 40 + conventions 30 + style 30;");
+      L.push("4. Explain every fix in beginner-friendly language;");
+      L.push("5. End with an improved, commented reference version and 1-2 follow-up exercises.");
+    }
+    L.push("");
+    L.push("## Assignment: "+(EN&&(lab.t_en||lab.t)||lab.t)+" (stage: "+(pick(s,"name"))+")");
+    L.push("");
+    L.push("### Requirements");
+    (labReqOf(lab)||lab.req||[]).forEach((r,i)=>L.push((i+1)+". "+r));
+    L.push("");
+    L.push("### Official hint");
+    L.push(labHintOf(lab)||lab.hint||"");
+    if(lab.mode==="text"){
+      L.push("");
+      L.push("## Note");
+      L.push("This is a mock interview answer, not a coding task — grade it in interviewer mode as instructed above.");
+    }
+    L.push("");
+    L.push("## My "+(lab.mode==="text"?"answer":"code"));
+    L.push(lab.mode==="text"?"```":"```cpp");
+    L.push((rec.code||"").trim()||(lab.mode==="text"?"(not answered yet)":"(not finished yet)"));
+    L.push("```");
+    L.push("");
+    L.push("## Program output");
+    L.push("```");
+    L.push((rec.out||"").trim()||"(not run yet / no output)");
+    L.push("```");
+    if(rec.stuck&&rec.stuck.trim()){
+      L.push("");
+      L.push("## Where I am stuck");
+      L.push(rec.stuck.trim());
+    }
+    L.push("");
+    L.push("## My learning status");
+    L.push("- Progress: "+completedCount()+"/"+totalLessons()+" lessons · "+li.title+" (Lv."+li.level+") · total XP "+data.xp+" · labs done "+labsDone()+"/"+totalLabs());
+    L.push("- If my code is empty or badly broken, give hints first instead of a full solution.");
+    return L.join("\n");
+  }
   L.push("# 🧑‍🏫 编程作业批改请求");
   L.push("");
   L.push("请你扮演一名耐心的多语言编程老师（涵盖 C++ 与 Python）。我是零基础学员，请批改下面的编程作业：");

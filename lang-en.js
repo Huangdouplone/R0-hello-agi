@@ -1508,6 +1508,7 @@ const LESSON_EN = {
               if(le.ex_a_en) l.ex.a_en = le.ex_a_en;
             }
             if(le.target_en) l.target_en = le.target_en;
+            if(le.code_en) l.code_en = le.code_en;
           }
         }
       }

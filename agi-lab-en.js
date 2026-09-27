@@ -18,8 +18,8 @@ window.AGI_LAB_EN = {
 },
 "s2": {
   t: "Circle Area Calculator",
-  req: ["Define PI = 3.14159 with const", "Read the radius from the keyboard (as a double)", "Print the area with two decimal places"],
-  hint: "fixed together with setprecision(2) controls the number of decimals."
+  req: ["Define PI = 3.14159 with const", "Read the radius from the keyboard (as a double)", "Print the area (any decimals)"],
+  hint: "Area = PI x r x r. Pretty-print with fixed + setprecision(2) — that is lesson 3-6; come back and add it after finishing it."
 },
 "s3": {
   t: "Celsius to Fahrenheit",

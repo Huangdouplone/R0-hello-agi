@@ -34,13 +34,16 @@ L["s1"] = [
   xp:30}
 ];
 L["s2"] = [
- {t:"用类型转换写一个安全的输入解析器",t_en:"Safe Input Parser with Conversions",
-  req:["读入一行文本，尝试解析成整数；失败时给出提示并允许重试","解析成功后再尝试转成 double，打印两种表示的差异","用一个函数返回 bool 与解析结果（引用参数或 optional）"],
-  req_en:["Read a line, try to parse it as an int and offer a retry on failure","On success convert to double and print how both representations differ","Return success plus the parsed value from one function using a reference or optional"],
-  starter:"#include <iostream>\n#include <string>\n#include <optional>\n\nstd::optional<long long> parse(const std::string& s){\n    try { return std::stoll(s); } catch (...) { return std::nullopt; }\n}\n\nint main(){ std::string line; std::cin >> line; auto v = parse(line); std::cout << (v ? *v : -1) << std::endl; }",
-  hint:"std::stoll 遇到非法输入会抛 std::invalid_argument，用 optional 表达「可能没有值」比哨兵值更清晰。",
-  hint_en:"std::stoll throws on bad input; optional expresses absence more clearly than a sentinel value.",
-  xp:30},
+ {t:"表达式求值器（含非法输入处理）",t_en:"Expression Evaluator (with Bad Input Handling)",
+  req:["读入「数字 运算符 数字」并输出结果（+ - * /）","输入非法（数字位置读到字母、除数为 0）时给出提示而不是崩溃","本章还没学 try/catch：用 cin 的返回值或 if 检查状态即可"],
+  req_en:["Read \"digit operator digit\" and print the result (+ - * /)","On bad input (letters where a number goes, division by zero) print a hint instead of crashing","try/catch comes much later: check the cin state or use if-guards for now"],
+  starter:"#include <iostream> \n \nint main() { \n    double a, b; char op; \n    if (std::cin >> a >> op >> b) { \n        // dispatch on op; division needs a b==0 check \n    } else { \n        std::cout << \"bad input\" << std::endl; \n    } \n    return 0; \n}",
+  starter_en:"#include <iostream> \n \nint main() { \n    double a, b; char op; \n    if (std::cin >> a >> op >> b) { \n        // dispatch on op; division needs a b==0 check \n    } else { \n        std::cout << \"bad input\" << std::endl; \n    } \n    return 0; \n}",
+  hint:"cin >> 在类型不匹配时进入失败状态（后续读取全部跳过），if(std::cin >> x) 就能发现它；除零是逻辑错误，编译器帮不了你。",
+  hint_en:"cin >> enters a failed state on type mismatch (further reads are skipped); if(std::cin >> x) catches it. Division by zero is a logic error — the compiler will not help.",
+  xp:30}
+
+,
  {t:"溢出与精度边界测试",t_en:"Overflow and Precision Boundaries",
   req:["打印 int 与 long long 的最大最小值，并观察加一的结果","累加 0.1 一百次后与 10.0 比较是否相等，说明结论","改用整数分（以分为单位）实现同样的累加，验证结果精确"],
   req_en:["Print int and long long limits and observe what adding one does","Sum 0.1 a hundred times, compare with 10.0 and explain the result","Redo the sum using integer cents and confirm it is exact"],
