@@ -9,7 +9,7 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;}
 :root{
   --green:#2e9e5b;--blue:#2f7ed8;--amber:#f0a020;--red:#e2553b;--purple:#8a63d2;
-  --ink:#233044;--sub:#6b7785;--bg:#eef2f6;--card:#ffffff;--soft:#f5f8fb;--line:#e3e9ef;
+  --ink:#233044;--sub:#5f6a79;--bg:#eef2f6;--card:#ffffff;--soft:#f5f8fb;--line:#e3e9ef;
   --cell0:#e6ecf2;--prebg:#1b2433;--shadow:0 2px 12px rgba(30,45,70,.06);
   --fg:#233044;--bg2:#e9eff5;
 }
@@ -46,7 +46,7 @@ body{background:var(--bg);color:var(--fg);line-height:1.65;padding:18px;padding-
 /* 区块 */
 .section{background:var(--card);border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 2px 12px rgba(35,48,68,.06);}
 .section h2{font-size:18px;color:var(--ink);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
-.section h2 .tag{font-size:12px;font-weight:600;color:#fff;background:var(--blue);padding:2px 10px;border-radius:20px;}
+.section h2 .tag{font-size:12px;font-weight:600;color:color-mix(in srgb,var(--blue) 45%,var(--ink));background:color-mix(in srgb,var(--blue) 16%,var(--card));padding:2px 10px;border-radius:20px;}
 
 /* 打卡横幅 */
 .checkin{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#fff4e0,#eafaf0);border:1px solid #ffe1a8;border-radius:14px;padding:14px 18px;}
@@ -330,7 +330,7 @@ body{background:var(--bg);color:var(--fg);line-height:1.65;padding:18px;padding-
 .ring-legend .lg-new::before{background:var(--green);}
 .ring-legend .lg-rev::before{background:var(--blue);}
 /* ---- 旧版结构恢复补丁 ---- */
-.sec h2 .tag{font-size:12px;font-weight:600;color:#fff;background:var(--blue);padding:2px 10px;border-radius:20px;}
+.sec h2 .tag{font-size:12px;font-weight:600;color:color-mix(in srgb,var(--blue) 45%,var(--ink));background:color-mix(in srgb,var(--blue) 16%,var(--card));padding:2px 10px;border-radius:20px;}
 .filter-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
 .fb-label{font-size:13px;color:var(--sub);}
 .filter-bar input[type=text]{flex:1;min-width:200px;max-width:320px;}
@@ -368,6 +368,26 @@ body{background:var(--bg);color:var(--fg);line-height:1.65;padding:18px;padding-
 }
 /* ---- 编程实战：成就墙式横排网格（旧版质感回归） ---- */
 .lab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;}
+/* 实战按阶段分组折叠：组标题就是索引，展开后才是原来的卡片网格 */
+.lab-tools{margin:2px 0 10px;}
+.lab-group{border:1px solid var(--line);border-radius:12px;margin-bottom:6px;overflow:hidden;background:var(--card);}
+.lab-ghd{display:flex;align-items:center;gap:8px;width:100%;text-align:left;border:none;background:transparent;
+  cursor:pointer;padding:9px 12px;font-size:13.5px;color:var(--ink);font-weight:700;font-family:inherit;}
+.lab-ghd:hover{background:var(--soft);}
+.lab-ghd .lg-caret{width:12px;color:var(--sub);font-size:12px;}
+.lab-ghd .lg-count{margin-left:auto;font-size:12px;font-weight:600;color:var(--sub);white-space:nowrap;}
+.lab-group.open .lab-ghd{border-bottom:1px dashed var(--line);}
+.lab-gbody{display:none;padding:10px;}
+.lab-group.open .lab-gbody{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;}
+@media (max-width:640px){.lab-group.open .lab-gbody{grid-template-columns:1fr;}}
+.mk-pager{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:12px;font-size:13px;color:var(--sub);}
+.pg-btn,.pg-opt{min-width:34px;height:32px;padding:0 10px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;cursor:pointer;font-size:13px;font-family:inherit;}
+.pg-btn:hover,.pg-opt:hover{border-color:var(--blue);}
+.pg-btn.on,.pg-opt.on{background:color-mix(in srgb,var(--blue) 58%,#0b1a2e);border-color:transparent;color:#fff;font-weight:600;}
+.pg-ell{padding:0 2px;}
+.pg-jump{width:58px;height:30px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);padding:0 8px;font-size:13px;}
+.pg-info,.pg-size{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+@media (max-width:640px){.mk-pager{gap:8px;font-size:12px;}}
 .lab-card{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:14px;cursor:pointer;transition:transform .15s,box-shadow .2s;position:relative;}
 .lab-card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(30,45,70,.10);border-color:var(--blue);}
 .lab-card.locked{opacity:.55;filter:grayscale(.6);cursor:default;}
@@ -637,7 +657,7 @@ input.inp:focus,select.inp:focus{outline:none;border-color:var(--blue);box-shado
 .term-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;}
 .term{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;}
 .term h3{margin:0 0 4px;font-size:15px;}
-.term-cat{display:inline-block;font-size:10.5px;color:var(--green);background:rgba(46,158,91,.12);border-radius:6px;padding:1px 7px;margin-bottom:6px;}
+.term-cat{display:inline-block;font-size:10.5px;color:color-mix(in srgb,var(--green) 45%,var(--ink));background:color-mix(in srgb,var(--green) 14%,var(--card));border-radius:6px;padding:1px 7px;margin-bottom:6px;}
 .term .short{font-size:13px;color:var(--ink);line-height:1.6;margin-bottom:8px;}
 .term ul{margin:0 0 8px;padding-left:18px;}
 .term li{font-size:12.5px;color:var(--sub);line-height:1.7;}
@@ -738,7 +758,8 @@ input.inp:focus,select.inp:focus{outline:none;border-color:var(--blue);box-shado
   </section>
 
   <section id="labSec" class="sec" data-page-node-id="s9kIxCTIkOUCsk8Y48aYjI">
-    <h2><span data-i18n="编程实战">编程实战</span> <span class="tag" data-i18n="多道编译题 · AI 批改">多道编译题 · AI 批改</span></h2>
+    <h2><span data-i18n="编程实战">编程实战</span> <span class="tag" id="labTag">多道编译题 · AI 批改</span></h2>
+    <div class="lab-tools"><button class="btn sm ghost" id="labToggle" data-act="lab-toggle-all">展开全部实战</button></div>
     <div class="rev-hint" data-i18n="每学完一个阶段即解锁对应实战题：在编译器里独立完成 → 把「代码 + 运行输出」粘贴回来 → 一键生成 AI 批改提示词，发给任意大模型（ChatGLM / DeepSeek / Kimi / Claude…）就能获得打分、纠错与改进建议。">每学完一个阶段即解锁对应实战题：在编译器里独立完成 → 把「代码 + 运行输出」粘贴回来 → 一键生成 AI 批改提示词，发给任意大模型（ChatGLM / DeepSeek / Kimi / Claude…）就能获得打分、纠错与改进建议。</div>
     <div class="lab-grid" id="labGrid" data-page-node-id="xt95mXDGNkig7OYUkkDejN"></div>
   </section>
@@ -872,7 +893,7 @@ input.inp:focus,select.inp:focus{outline:none;border-color:var(--blue);box-shado
 <script src="agi-deepen-stl2.js?v=1"></script>
 <script src="agi-deepen-proj1.js?v=2"></script>
 <script src="agi-deepen-engcar.js?v=1"></script>
-<script src="agi-deepen-algo1.js?v=1"></script>
+<script src="agi-deepen-algo1.js?v=2"></script>
 <script src="agi-deepen-algo2.js?v=1"></script>
 <script src="agi-deepen-algo3.js?v=1"></script>
 <script src="agi-deepen-ma12.js?v=2"></script>
@@ -880,12 +901,12 @@ input.inp:focus,select.inp:focus{outline:none;border-color:var(--blue);box-shado
 <script src="agi-deepen-ml12.js?v=1"></script>
 <script src="agi-deepen-ml34.js?v=1"></script>
 <script src="agi-deepen-agi12.js?v=2"></script>
-<script src="agi-deepen-agi34.js?v=1"></script>
+<script src="agi-deepen-agi34.js?v=2"></script>
 <script src="agi-deepen-py12.js?v=1"></script>
 <script src="agi-deepen-py34.js?v=1"></script>
 <script src="agi-deepen-agi5.js?v=1"></script>
 <script src="agi-deepen-agi6.js?v=1"></script>
-<script src="agi-deepen-agi7.js?v=1"></script>
+<script src="agi-deepen-agi7.js?v=2"></script>
 <script src="agi-deepen-sp.js?v=1"></script>
 <script src="agi-deepen-dl12.js?v=1"></script>
 <script src="agi-deepen-dl345.js?v=1"></script>
@@ -1391,7 +1412,7 @@ function defaultData(){return{version:3,name:"学习者",goal:2,xp:0,
  coins:0,unlockedStyles:["default"],activeStyle:"default",dailyNewCap:4,reviewLock:8,
  completed:{},daily:{},notes:{},quiz:{},achievements:{},labs:{},mistakes:{},phaseSeen:{},aiUsed:0,focusMinutes:0,flags:{},lastExport:null,
  streak:0,longestStreak:0,lastStudyDate:null,lastCheckinDate:null,
- settings:{theme:"auto",remind:"20:00",notify:false,mode:"cpp",lang:"zh"},
+ settings:{theme:"auto",remind:"20:00",notify:false,mode:"cpp",lang:""},   // lang 留空 = 没选过，交给 sysLocale()
  startedDate:todayStr(),introSeen:0};}
 function loadData(){
   try{let raw=localStorage.getItem(STORAGE_KEY);
@@ -1413,10 +1434,12 @@ function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":
 /* ================= i18n（中 / EN 切换） ================= */
 /* t(zh): 传入中文原文作为 key，英文模式下返回 I18N_EN[zh]，否则原样返回中文。
    pick(o,f): 取数据字段的英文版 o[f+"_en"]（若存在），否则回退中文 o[f]。课程正文(讲解/自测/lab)经此函数，后续补 _en 字段即可自动切换。 */
-let LANG=(data&&data.settings&&data.settings.lang)||"zh";
+/* 默认语言跟随系统：浏览器语言不是 zh* 就默认英文；用户手动切换过则以存储值为准 */
+function sysLocale(){var l=String(navigator.language||(navigator.userLanguage||"")).toLowerCase();return l.indexOf("zh")===0?"zh":"en";}
+let LANG=(data&&data.settings&&data.settings.lang)||sysLocale();
 const I18N_EN={
  "总进度":"Total progress","已学课程":"Lessons done","连续天数 🔥":"Day streak 🔥","累计学时 (h)":"Study hours (h)","累计 XP":"Total XP","成就徽章":"Badges",
- "成长仪表盘":"Growth Dashboard","今日任务":"Today","学习计时":"Focus Timer","学习路线":"Roadmap","课程全景":"All Courses","编程实战":"Labs","间隔复习":"Review","错题本":"Mistakes","学习日历":"Calendar","成就墙":"Achievements","笔记中心":"Notes","每日报告":"Reports","设置与数据":"Settings & Data",
+ "成长仪表盘":"Growth Dashboard","今日任务":"Today","学习计时":"Focus Timer","学习路线":"Roadmap","课程全景":"All Courses","编程实战":"Labs", "展开全部实战": "Expand all labs", "收起全部实战": "Collapse all labs", " 题": " labs", "已完成 ": "done ", "未解锁": "locked", " 组": " groups","间隔复习":"Review","错题本":"Mistakes","学习日历":"Calendar","成就墙":"Achievements","笔记中心":"Notes","每日报告":"Reports","设置与数据":"Settings & Data",
  "快速导航":"Quick nav","收起侧边栏到屏幕左侧":"Collapse sidebar to left edge","篇章导航":"Chapters","当前":"Current","📍 当前":"📍 Current",
  "继续上次：":"Continue: ","已完成 ✓ 可复习 / 回顾":"Done ✓ review / revisit","推荐现在开始":"recommended now","去学习":"Study","新学":"New","复习":"Review",
  "全部课程已完成！":"All lessons completed!","可回顾项目实战、复习巩固，或挑战自己的小项目":"Review projects, reinforce, or challenge yourself","去复习":"Go review","你有 ":"You have ","节课到了复习时间，":" lessons due for review,","每节 +3 XP · +2 🪙":"+3 XP · +2 🪙 per lesson",
@@ -1921,11 +1944,23 @@ function flipSkin(v,toDark){
   ACCENT_KEYS.forEach(function(k){if(v[k])p[k]=skRetune(v[k],toDark?72:42);});
   return p;
 }
+function skAA(a,b){var la=skLum(a),lb=skLum(b);return (Math.max(la,lb)+0.05)/(Math.min(la,lb)+0.05);}
+/* 派生色板的 --sub 在浅底与深底上都容易掉到 WCAG AA 以下（实测 3.2~4.1）。
+   这里只沿明度收紧到 ≥4.5，保留色相与饱和度，所以每个皮肤在昼夜两侧仍然是它自己。 */
+function skEnforceAA(pal){
+  if(!pal||!pal["--sub"])return pal;
+  var bg=pal["--card"]||pal["--bg"];if(!bg)return pal;
+  var o=skHSL(skRGB(pal["--sub"]));if(!o)return pal;
+  var darker=skLum(bg)>0.5,n=0;
+  var bg2=pal["--bg"]||bg;   /* 底色取最保守的那个：卡片达标但页面底不达标同样会被看见 */
+  while(Math.min(skAA(pal["--sub"],bg),skAA(pal["--sub"],bg2))<4.5&&n++<18){o.l=Math.max(0,Math.min(100,o.l+(darker?-3:3)));pal["--sub"]=skHex(o.h,o.s,o.l);}
+  return pal;
+}
 function skinPalette(st,dark){
   var base=(st&&st.vars)||{};if(!Object.keys(base).length)return null;
   var nativeLight=skLum(base["--bg"]||"#ffffff")>0.5,full=flipSkin(base,dark);
   if(nativeLight===(!dark))Object.keys(base).forEach(function(k){full[k]=base[k];});
-  return full;
+  return skEnforceAA(full);
 }
 function themeIsDark(){var pref=(data.settings&&data.settings.theme)||"auto";
   return pref==="dark"||(pref==="auto"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches);}
@@ -2972,7 +3007,13 @@ function agiNormAns(t){
   s=s.replace(/\u3000/g," ").toLowerCase().replace(/\s+/g,"");
   return s.replace(/[。，、；：！？·,.;:!?()\[\]{}<>《》〈〉「」『』【】—…\-_/\\|@#$%^&*+=~'"`]/g,"");
 }
-function agiFillAccepted(q){var a=q.ans;return (a==null?[]:(Array.isArray(a)?a:[a])).map(agiNormAns);}
+/* 填空题的英文可接受答案走 ans_en：英文态用户不可能猜中文关键词，只读 q.ans 等于必然判错
+   （与 world 的 fillAccepted 同一修法）*/
+function agiFillAccepted(q){
+  var a=q.ans, list=(a==null?[]:(Array.isArray(a)?a:[a]));
+  var e=q.ans_en, el=(e==null?[]:(Array.isArray(e)?e:[e]));
+  return list.concat(el).map(agiNormAns);
+}
 function agiOptsOf(s,ai){
   var q=s.quiz[ai];
   if(agiKind(q)==="judge")return agiJudgeOpts();
@@ -3156,21 +3197,46 @@ function labReqOf(l){ return (LANG==="en"&&l.req_en&&l.req_en.length)?l.req_en:l
 function labHintOf(l){ return (LANG==="en"&&l.hint_en)?l.hint_en:l.hint; }
 function labTitle(s,k){ var l=labList(s)[k||0]; return l?pick(l,"t"):pick(s,"name"); }
 function renderLabs(){
-  var html="";
+  /* 249 张卡平铺要把整页撑到 8 屏以上：按「实际对应阶段」分组折叠，
+     组标题带阶段名与完成度，默认全部收起，展开态存 data.labOpen（刷新后保留）。 */
+  var open=data.labOpen||{},html="",groups=0,total=0,doneAll=0;
   CURRICULUM.forEach(function(s,si){
     const unlocked=s.lessons.every(l=>data.completed[l.id]);
-    var list=labList(s),multi=list.length>1;
-    list.forEach(function(lab,k){
+    var list=labList(s); if(!list.length)return;
+    var multi=list.length>1, doneN=0;
+    var body=list.map(function(lab,k){
       const rec=data.labs[labKey(s.id,k)];
+      if(rec&&rec.done)doneN++;
       const cls="lab-card "+(rec&&rec.done?"done":unlocked?"":"locked");
-      html+='<div class="'+cls+'" '+(unlocked?'data-act="lab"':'')+' data-id="'+s.id+'" data-k="'+k+'">'+
+      return '<div class="'+cls+'" '+(unlocked?'data-act="lab"':'')+' data-id="'+s.id+'" data-k="'+k+'">'+
         '<div class="lc-badge">'+(rec&&rec.done?"✅":unlocked?"💻":"🔒")+'</div>'+
         '<div class="lc-t">'+escapeHtml(pick(lab,"t"))+'</div>'+
         '<div class="lc-m">'+(si+1)+'. '+escapeHtml(pick(s,"name"))+(multi?' · 💻 '+(k+1)+'/'+list.length:'')+'</div>'+
         '<div class="lc-m">'+(rec&&rec.done?t("已完成 · +")+lab.xp+t(" XP"):unlocked?t("已解锁 · 奖励 ")+lab.xp+t(" XP"):t("完成本阶段全部课程解锁"))+'</div></div>';
-    });
+    }).join("");
+    groups++; total+=list.length; doneAll+=doneN;
+    const isOpen=!!open[s.id];
+    html+='<div class="lab-group'+(isOpen?" open":"")+'">'+
+      '<button class="lab-ghd" data-act="lab-group" data-id="'+s.id+'" aria-expanded="'+(isOpen?"true":"false")+'">'+
+      '<span class="lg-caret">'+(isOpen?"▾":"▸")+'</span>'+
+      '<span class="lg-ic">'+escapeHtml(pick(s,"ic")||"💻")+'</span>'+
+      '<span class="lg-name">'+(si+1)+'. '+escapeHtml(pick(s,"name"))+'</span>'+
+      '<span class="lg-count">'+list.length+(LANG==="en"?(list.length>1?" labs":" lab"):" 题")+(doneN?" · "+t("已完成 ")+doneN:"")+(!unlocked?" · "+t("未解锁"):"")+'</span>'+
+      '</button><div class="lab-gbody">'+body+'</div></div>';
   });
   $("labGrid").innerHTML=html;
+  var tg=$("labToggle");
+  if(tg){const allOpen=groups>0&&CURRICULUM.every(function(s){return !labList(s).length||open[s.id];});
+    tg.textContent=allOpen?t("收起全部实战"):t("展开全部实战");tg.dataset.id=allOpen?"collapse":"expand";}
+  var tag=$("labTag");
+  if(tag)tag.textContent=LANG==="en"?(total+" labs · "+groups+" stage groups · "+doneAll+" done")
+    :(total+" 题 · "+groups+" 个阶段组 · 已完成 "+doneAll);
+}
+function toggleLabGroup(id){ data.labOpen=data.labOpen||{}; data.labOpen[id]=!data.labOpen[id]; saveData(); renderLabs(); }
+function toggleAllLabs(mode){
+  data.labOpen={};
+  if(mode!=="collapse") CURRICULUM.forEach(function(s){ if(labList(s).length) data.labOpen[s.id]=true; });
+  saveData(); renderLabs();
 }
 function openLab(stageId,k){
   k=k||0;
@@ -3499,6 +3565,8 @@ document.addEventListener("click",function(e){
       const _lb=s?labList(s)[labK]:null;
       if(_lb)copyText(_lb.starter,t("起步代码已复制 🧱"));break;}
     case "lab":openLab(id,kk);break;
+    case "lab-group":toggleLabGroup(id);break;
+    case "lab-toggle-all":toggleAllLabs(id);break;
     case "lab-generate":generateAiPrompt();break;
     case "lab-copy":if(lastPrompt)copyText(lastPrompt,t("提示词已复制，发给 AI 老师吧 🤖"));break;
     case "lab-dl":{
@@ -3547,6 +3615,10 @@ document.addEventListener("click",function(e){
     case "mistake-redo":{const s=CURRICULUM.find(x=>x.id===id);if(s&&s.quiz)startQuiz(id,parseInt(tar.dataset.idx,10)||0);else toast(t("该阶段暂无测评"),"warn");break;}
     case "mistake-del":{if(data.mistakes&&data.mistakes[id]){delete data.mistakes[id];saveData();renderMistakes();renderAch();toast(t("已移除该题"));}break;}
     case "mistake-clear":if(confirm(t("确定清空错题本？"))){data.mistakes={};saveData();renderMistakes();renderAch();toast(t("错题本已清空"));}break;
+    case "mk-page":data.mkPage=parseInt(id,10)||1;saveData();renderMistakes();break;
+    case "mk-prev":data.mkPage=Math.max(1,(data.mkPage||1)-1);saveData();renderMistakes();break;
+    case "mk-next":data.mkPage=(data.mkPage||1)+1;saveData();renderMistakes();break;
+    case "mk-size":{const n=parseInt(id,10)||5,top=((data.mkPage||1)-1)*(data.mkSize||5);data.mkSize=n;data.mkPage=Math.floor(top/n)+1;saveData();renderMistakes();break;}
     case "stage-filter":{
       const f=tar.dataset.filter;$("stages").dataset.filter=f;
       document.querySelectorAll("#stageFilter .chip").forEach(c=>c.classList.toggle("active",c.dataset.filter===f));
@@ -3613,6 +3685,9 @@ function bindSettings(){
     r.readAsText(file);
   });
   $("modalMask").addEventListener("click",e=>{if(e.target===$("modalMask"))closeModal();});
+  /* 错题本翻页的「跳至 N 页」：输入框走 change 与回车两条路，不额外加按钮 */
+  document.addEventListener("change",e=>{const el=e.target;if(el&&el.classList&&el.classList.contains("pg-jump"))mkJump(el.value);});
+  document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target&&e.target.classList&&e.target.classList.contains("pg-jump"))mkJump(e.target.value);});
   document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal();});
   if(window.matchMedia){
     try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",function(){if((data.settings.theme||"auto")==="auto")applyTheme();});}catch(e){}
@@ -3660,25 +3735,60 @@ function recordMistake(sid,idx,pick){
   data.mistakes[sid+"#"+idx]={sid:sid,idx:idx,pick:pick,when:todayStr()};
   saveData();checkAchievements();
 }
+/* 错题本翻页：错题会一直累积，平铺会把板块越拉越长。
+   默认每页 5 题，可选 5 / 10 / 15；页码与每页题数都进存档，刷新后不丢。 */
+function mkPaged(arr){
+  const size=data.mkSize||5, pages=Math.max(1,Math.ceil(arr.length/size));
+  const page=Math.min(Math.max(1,data.mkPage||1),pages);
+  data.mkPage=page;
+  return {page:page,pages:pages,size:size,total:arr.length,items:arr.slice((page-1)*size,page*size)};
+}
+function mkPagerHtml(st){
+  if(!st.total)return "";
+  const en=LANG==="en";
+  const btn=(label,act,id,on)=>'<button class="pg-btn'+(on?" on":"")+'" data-act="'+act+'"'+(id?' data-id="'+id+'"':"")+">"+label+"</button>";
+  const nums=[];
+  if(st.pages<=7){for(let i=1;i<=st.pages;i++)nums.push(i);}
+  else{
+    nums.push(1);
+    if(st.page>3)nums.push(0);
+    for(let j=Math.max(2,st.page-1);j<=Math.min(st.pages-1,st.page+1);j++)nums.push(j);
+    if(st.page<st.pages-2)nums.push(0);
+    nums.push(st.pages);
+  }
+  const numsHtml=nums.map(n=>n===0?'<span class="pg-ell">…</span>':btn(String(n),"mk-page",String(n),n===st.page)).join("");
+  const jump='<input class="pg-jump" type="number" min="1" max="'+st.pages+'" value="'+st.page+'">';
+  const info=en?('<span class="pg-info">'+st.pages+" pages / "+st.total+" items · jump to "+jump+"</span>")
+    :('<span class="pg-info">共 '+st.pages+" 页 / "+st.total+" 个 · 跳至 "+jump+" 页</span>");
+  const size='<span class="pg-size">'+(en?"Per page ":"每页 ")+[5,10,15].map(n=>'<button class="pg-opt'+(n===st.size?" on":"")+'" data-act="mk-size" data-id="'+n+'">'+n+"</button>").join("")+(en?"":" 题")+"</span>";
+  return '<div class="mk-pager">'+(st.page>1?btn(en?"Prev":"上一页","mk-prev","",false):"")+numsHtml+
+    (st.page<st.pages?btn(en?"Next":"下一页","mk-next","",false):"")+info+size+"</div>";
+}
+function mkJump(v){const n=parseInt(v,10);if(!n)return;data.mkPage=n;saveData();renderMistakes();}
 function renderMistakes(){
   const keys=Object.keys(data.mistakes||{});
   $("mistakeTag").textContent=keys.length+t(" 题");
   if(keys.length===0){$("mistakeList").innerHTML='<div class="rev-item"><div class="ti">'+t("还没有错题～ 测评答错的题会自动收进来，方便日后集中攻克 💪")+'</div></div>';return;}
-  $("mistakeList").innerHTML=keys.map(k=>{
+  const st=mkPaged(keys);
+  $("mistakeList").innerHTML=st.items.map(k=>{
     const m=data.mistakes[k];
     /* 章要跨路线查：错题可能属于另一条路线的章，只按当前 CURRICULUM 找会取到 undefined 并中断整页渲染 */
     const s=_stageMap[m.sid];if(!s||!s.quiz||!s.quiz[m.idx])return "";
     const q=s.quiz[m.idx];
+    /* 填空题没有 ABCD 下标：直接取 q.ans，否则卡片会打出「正确答案：undefined」 */
+    const isFill=!q.o||!q.o.length;
+    const correctTxt=isFill?String((Array.isArray(q.ans)?q.ans[0]:q.ans)||"—"):("ABCD"[q.a]||"—");
+    const pickTxt=isFill?(typeof m.pick==="number"?(m.pick>=0?("ABCD"[m.pick]||"—"):String(m.pick))||"—":String(m.pick==null?"—":m.pick)):("ABCD"[m.pick]||"—");
     return '<div class="mistake-item">'+
       '<div class="mi-top"><b>'+escapeHtml(pick(s,"name"))+'</b> · '+t("第 ")+(m.idx+1)+t(" 题")+'</div>'+
       '<div class="mi-q">'+escapeHtml(agiQText(q))+'</div>'+
-      '<div class="mi-ans">'+t("你的选择：")+("ABCD"[m.pick])+t(" ｜ 正确答案：")+("ABCD"[q.a])+'</div>'+
+      '<div class="mi-ans">'+t("你的选择：")+escapeHtml(pickTxt)+t(" ｜ 正确答案：")+escapeHtml(correctTxt)+'</div>'+
       '<div class="mi-why">'+escapeHtml(agiWhyText(q))+'</div>'+
       '<div class="mi-actions">'+
         '<button class="btn small green" data-act="mistake-redo" data-id="'+m.sid+'" data-idx="'+m.idx+'">'+t("🔁 从本题开始重练")+'</button>'+
         '<button class="btn small ghost" data-act="mistake-del" data-id="'+k+'">'+t("移除")+'</button>'+
       '</div></div>';
-  }).filter(Boolean).join("")+'<div class="mi-clear"><button class="btn small ghost" data-act="mistake-clear">'+t("清空错题本")+'</button></div>';
+  }).filter(Boolean).join("")+mkPagerHtml(st)+'<div class="mi-clear"><button class="btn small ghost" data-act="mistake-clear">'+t("清空错题本")+'</button></div>';
 }
 
 /* ---- 日历明细弹窗 ---- */
@@ -3777,6 +3887,11 @@ function renderNotes(){
 
 function init(){
   loadData();
+  /* D22：LANG 原先只在脚本顶部求值一次，那时 data 还是 null（loadData 要到这儿才跑），
+     结果已存的语言偏好被永久忽略 —— 英文用户每次刷新都退回默认语言。
+     必须在 loadData() 之后重新解析，再走 applyLang 同步 title / <html lang> / data-i18n 节点。 */
+  LANG = (data.settings && data.settings.lang) || sysLocale();
+  applyLang();
   applyMode((data.settings&&data.settings.mode)||"cpp", false);
   applyTheme();
   applyStyle();

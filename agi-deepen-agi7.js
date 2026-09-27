@@ -678,6 +678,7 @@ print("已写出 plan90.txt：这张图从今天起有主人了")`,
           q: "做最小复现时，闭环的三步是：先固定随机源，接着先对齐＿＿＿＿，最后才比较绝对分数；因为形状对不上指向实现或环境差异，形状对而分数不对多半指向口径差异。",
           type: "fill",
           ans: ["曲线形状", "曲线", "形状", "趋势", "曲线趋势", "相对趋势"],
+          ans_en: ["curve shape", "shape", "trend", "loss curve", "relative trend"],
           why: "顺序不能反：分桶均值、相对降幅、拐点位置与方法之间的相对差距这类形状信息对实现与环境敏感、对评测口径相对钝感，能把问题干净切成两类。先追绝对分数会让人不自觉地去调超参凑数，形成一场假复现。",
           q_en: "In a minimal reproduction the three steps are: pin the random sources, then first match the _____, and only then compare absolute scores - because a shape mismatch points at implementation or environment, while a matching shape with wrong values usually points at the protocol.",
           why_en: "The order cannot flip: shape information - bucketed means, relative drop, knee position, the gap between methods - is sensitive to implementation and environment but fairly blunt to evaluation protocol, which splits failures cleanly into two classes. Chasing the absolute number first tempts you into tuning until it matches, which is a fake reproduction."

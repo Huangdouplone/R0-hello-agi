@@ -906,7 +906,7 @@ int main() {
       },
       {
         q: "DP 的时间复杂度通常可以写成「______ × 转移代价」（填一个两字或三字术语）。",
-        type: "fill", ans: ["状态数", "状态个数", "状态总数"],
+        type: "fill", ans: ["状态数", "状态个数", "状态总数"], ans_en: ["states", "number of states", "state count"],
         why: "状态数与每个状态的计算代价相乘就是总代价，它是动手前估算法可行性的第一道检查，一般以 10^7 为舒适上限。",
         q_en: "A DP's running time is usually written as '______ times the transition cost'.",
         why_en: "Number of states times per-state cost is the total — the first feasibility check before writing code, with about 10^7 taken as comfortable."
