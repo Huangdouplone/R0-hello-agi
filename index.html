@@ -2612,24 +2612,118 @@ function xtDet(id){ var x = xtTerm(id); return x ? ((XT_EN() && x.detail_en) ? x
 function xtCats(){ var c = []; XT_TERMS.forEach(function(x){ if (x.cat && c.indexOf(x.cat) < 0) c.push(x.cat); }); return c; }
 var XT_CX = 390, XT_CY = 210;
 var XT_RINGS = { 1: { rx: 126, ry: 84 }, 2: { rx: 246, ry: 128 }, 3: { rx: 338, ry: 194 } };
-var XT_OFFSET = { 1: 0, 2: 0, 3: Math.PI / 10 };
-function xtLayout(){
+/* —— F4 容量解法（自 R0-hello-office 同步）：环半径与画布随「各层节点 × 胶囊宽度」自适应 ——
+   ① 每层角度按胶囊宽度加权分配（宽占长弧、窄占短弧）+ 宽窄交错，环周长需求 = Σw + n×16；
+   ② 需求 ≤ 基线周长时该层 k=1（中文态保持 780×428 基线不变）；
+   ③ 放不下时只放大该层 + 由内向外穿越保护（rx 90 / ry 40）；
+   ④ xtLayout 末尾带跨环贪心避让（碰撞对各沿自身环反向转 0.02rad，有界 30 轮）；
+   ⑤ viewBox 按外环反推，在 renderMap 里动态设置。 */
+function xtPillWH(id) { return { w: xtPillW(xtLabel(id)), wrapped: false }; }
+function xtEllipsePerimeter(rx, ry) {
+  return Math.PI * (3 * (rx + ry) - Math.sqrt((3 * rx + ry) * (rx + 3 * ry)));
+}
+function xtGeom() {
   var byTier = {};
   XT_MAP.nodes.forEach(function (n) { (byTier[n.tier] = byTier[n.tier] || []).push(n.id); });
-  var pos = {};
-  (byTier[0] || []).forEach(function (id) { pos[id] = { x: XT_CX, y: XT_CY }; });
-  Object.keys(XT_RINGS).forEach(function (t2) {
-    var list = byTier[t2] || [], R = XT_RINGS[t2];
+  var rings = {}, maxW = 0;
+  Object.keys(XT_RINGS).forEach(function (t2) { rings[t2] = { rx: XT_RINGS[t2].rx, ry: XT_RINGS[t2].ry }; });
+  Object.keys(rings).forEach(function (t2) {
+    var list = byTier[t2] || []; if (!list.length) return;
+    var sumW = 0;
+    list.forEach(function (id) { var w = xtPillWH(id).w; sumW += w; if (w > maxW) maxW = w; });
+    var need = sumW + 16 * list.length;
+    var base = xtEllipsePerimeter(rings[t2].rx, rings[t2].ry);
+    var k = need > base ? need / base : 1;
+    rings[t2].rx = Math.round(rings[t2].rx * k);
+    rings[t2].ry = Math.round(rings[t2].ry * k);
+  });
+  var order = [1, 2, 3].filter(function (t2) { return byTier[t2] && byTier[t2].length; });
+  var i, a, b;
+  for (i = 1; i < order.length; i++) {
+    a = rings[order[i - 1]]; b = rings[order[i]];
+    if (b.rx < a.rx + 90) b.rx = a.rx + 90;
+    if (b.ry < a.ry + 40) b.ry = a.ry + 40;
+  }
+  var outerRx = 0, outerRy = 0;
+  order.forEach(function (t2) {
+    if (rings[t2].rx > outerRx) outerRx = rings[t2].rx;
+    if (rings[t2].ry > outerRy) outerRy = rings[t2].ry;
+  });
+  var W = Math.max(780, Math.ceil((outerRx + maxW / 2 + 10) * 2));
+  var H = Math.max(428, Math.ceil((outerRy + 19) * 2));
+  return { cx: Math.round(W / 2), cy: Math.round(H / 2), rings: rings, W: W, H: H };
+}
+function xtAngleForFraction(f, rx, ry) {
+  var N = 720, cum = [0], i, t, ds, total = 0;
+  for (i = 1; i <= N; i++) {
+    t = 2 * Math.PI * (i - 0.5) / N;
+    ds = Math.sqrt(rx * rx * Math.sin(t) * Math.sin(t) + ry * ry * Math.cos(t) * Math.cos(t)) * (2 * Math.PI / N);
+    total += ds; cum.push(total);
+  }
+  var target = f * total;
+  for (i = 1; i <= N; i++) { if (cum[i] >= target) return 2 * Math.PI * i / N; }
+  return 2 * Math.PI;
+}
+function xtSlotAngles(list, rx, ry) {
+  var GAP = 16, i, ws = [], span = 0, acc = 0;
+  for (i = 0; i < list.length; i++) { ws.push(xtPillWH(list[i]).w); span += ws[i] + GAP; }
+  var byW = list.map(function (x, k2) { return k2; }).sort(function (a, b) { return ws[b] - ws[a]; });
+  var seq = [], lo = 0, hi = byW.length - 1, wide = true;
+  while (lo <= hi) { seq.push(wide ? byW[lo++] : byW[hi--]); wide = !wide; }
+  var angles = [];
+  for (i = 0; i < seq.length; i++) {
+    var k2 = seq[i];
+    acc += ws[k2] / 2;
+    angles[k2] = xtAngleForFraction(acc / span, rx, ry) - Math.PI / 2;
+    acc += ws[k2] / 2 + GAP;
+  }
+  return angles;
+}
+function xtLayout(){
+  var G = xtGeom();
+  var byTier = {};
+  XT_MAP.nodes.forEach(function (n) { (byTier[n.tier] = byTier[n.tier] || []).push(n.id); });
+  var pos = {}, meta = {};
+  (byTier[0] || []).forEach(function (id) { pos[id] = { x: G.cx, y: G.cy }; });
+  Object.keys(G.rings).forEach(function (t2) {
+    var list = byTier[t2] || [], R = G.rings[t2];
+    if (!list.length) return;
+    var angs = xtSlotAngles(list, R.rx, R.ry);
     list.forEach(function (id, i) {
-      var ang = -Math.PI / 2 + (XT_OFFSET[t2] || 0) + (2 * Math.PI * i) / list.length;
-      pos[id] = { x: XT_CX + R.rx * Math.cos(ang), y: XT_CY + R.ry * Math.sin(ang) };
+      pos[id] = { x: G.cx + R.rx * Math.cos(angs[i]), y: G.cy + R.ry * Math.sin(angs[i]) };
+      meta[id] = { ang: angs[i], rx: R.rx, ry: R.ry };
     });
   });
+  /* 跨环贪心避让：环间净距按「同角上下」设定，斜角处两环的宽胶囊会 AABB 咬合；
+     碰撞对各沿自身环反向转 0.02rad，有界 30 轮，确定性收敛。 */
+  var ids = Object.keys(meta), pad = 2, iter, i, j;
+  function boxOf(id) { var w = xtPillWH(id).w; return { x: pos[id].x - w / 2, y: pos[id].y - 13, w: w, h: 26 }; }
+  function hit(a, b) {
+    var A = boxOf(a), B = boxOf(b);
+    return A.x - pad < B.x + B.w && B.x - pad < A.x + A.w && A.y - pad < B.y + B.h && B.y - pad < A.y + A.h;
+  }
+  for (iter = 0; iter < 30; iter++) {
+    var pair = null;
+    for (i = 0; i < ids.length && !pair; i++) {
+      for (j = i + 1; j < ids.length; j++) { if (hit(ids[i], ids[j])) { pair = [ids[i], ids[j]]; break; } }
+    }
+    if (!pair) break;
+    var mi = meta[pair[0]], mj = meta[pair[1]];
+    var d = mi.ang - mj.ang;
+    while (d > Math.PI) d -= 2 * Math.PI;
+    while (d < -Math.PI) d += 2 * Math.PI;
+    var s1 = d >= 0 ? 1 : -1;
+    mi.ang += s1 * 0.02; mj.ang += -s1 * 0.02;
+    pos[pair[0]] = { x: G.cx + mi.rx * Math.cos(mi.ang), y: G.cy + mi.ry * Math.sin(mi.ang) };
+    pos[pair[1]] = { x: G.cx + mj.rx * Math.cos(mj.ang), y: G.cy + mj.ry * Math.sin(mj.ang) };
+  }
   return pos;
 }
 function xtPillW(l){ return Math.max(58, Math.round(l.length * 6 + 16)); }
 function renderMap(){
   var svg = document.getElementById("cmapSvg"); if (!svg || !XT_MAP.nodes.length) return;
+  var G = xtGeom();
+  svg.setAttribute("viewBox", "0 0 " + G.W + " " + G.H);   /* F4：画布随节点数/语言自适应 */
   var pos = xtLayout(), sel = xtSel, near = {};
   if (sel) { near[sel] = 1; XT_MAP.edges.forEach(function (e) { if (e.a === sel) near[e.b] = 1; else if (e.b === sel) near[e.a] = 1; }); }
   var h = "";
