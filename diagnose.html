@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>诊断与修复 · Diagnose & Repair</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;}
+body{min-height:100vh;background:linear-gradient(135deg,#1a2744,#0d1420);color:#e6edf5;display:flex;align-items:center;justify-content:center;padding:24px;}
+.card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:20px;max-width:560px;width:100%;padding:34px 30px;}
+h1{font-size:19px;margin-bottom:4px;}
+.sub{font-size:12.5px;opacity:.65;margin-bottom:20px;}
+h3{font-size:14px;margin:20px 0 8px;opacity:.85;}
+.chk{padding:8px 12px;border-radius:8px;font-size:13.5px;margin:4px 0;font-family:Consolas,monospace;}
+.chk.ok{background:rgba(46,158,91,.15);color:#6dd49a;}
+.chk.bad{background:rgba(226,85,59,.15);color:#ff8a80;}
+.chk.warn{background:rgba(240,160,32,.12);color:#f0a020;}
+.btn{display:inline-block;padding:11px 24px;border-radius:12px;border:none;cursor:pointer;font-size:14px;font-weight:700;margin:6px 4px;transition:transform .12s;}
+.btn:active{transform:scale(.96);}
+.btn.fix{background:#2e9e5b;color:#fff;}
+.btn.rl{background:#2f7ed8;color:#fff;}
+.hint{font-size:12px;opacity:.55;margin-top:16px;line-height:1.7;}
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>🧩 诊断与修复 · Diagnose &amp; Repair</h1>
+  <div class="sub">页面打不开或功能异常时使用 · Use when the page won't load or misbehaves</div>
+  <h3>📋 检查结果 · Check results</h3>
+  <div id="results"></div>
+  <h3>🔧 修复操作 · Repair actions</h3>
+  <button class="btn fix" id="btnFix">🧹 清除缓存并重试 · Clear cache &amp; retry</button>
+  <button class="btn rl" id="btnReload">🔄 仅刷新 · Reload</button>
+  <div class="hint">
+    清除缓存会删除本站的离线缓存与 Service Worker，刷新后重新下载最新文件。<br>
+    Clearing removes this site's offline cache and service worker; the next load fetches fresh files.<br><br>
+    如果清除后仍无法使用，请检查网络连接或联系站点维护者。<br>
+    If the problem persists, check your network or contact the site maintainer.
+  </div>
+</div>
+<script>
+(function () {
+  var R = document.getElementById("results");
+  function row(txt, cls) { R.innerHTML += '<div class="chk ' + cls + '">' + txt + '</div>'; }
+  /* 1. 基础连通性 */
+  row("✅ HTML 已加载 · HTML loaded", "ok");
+  /* 2. 关键全局检测（按 R0 系列通用的核心对象） */
+  var globals = ["CURRICULUM","CUR","LANG_DATA","OFFICE_CURRICULUM","AGENT_CURRICULUM","I18N","TERMS","renderAll"];
+  var found = [];
+  for (var i = 0; i < globals.length; i++) {
+    try { if (typeof window[globals[i]] !== "undefined") found.push(globals[i]); } catch(e) {}
+  }
+  if (found.length > 0) row("✅ 渲染器数据可用 · Renderer data: " + found.join(", "), "ok");
+  else row("⚠️ 未检测到渲染器数据（如果是本站页面，请从首页进入）", "warn");
+  /* 3. SW 缓存状态 */
+  if ("caches" in window) {
+    caches.keys().then(function (ks) {
+      if (ks.length === 0) row("○ 无 SW 缓存 · No SW cache", "warn");
+      else ks.forEach(function (k) { row("📦 SW 缓存: " + k, "ok"); });
+    });
+  } else row("○ 浏览器不支持 Cache API", "warn");
+  /* 4. SW 注册状态 */
+  if (navigator.serviceWorker) {
+    navigator.serviceWorker.getRegistrations().then(function (rs) {
+      if (rs.length === 0) row("○ 无 SW 注册 · No SW registered", "warn");
+      else rs.forEach(function (r) { row("⚙️ SW: " + (r.scope || "unknown scope"), "ok"); });
+    });
+  }
+  /* 5. 在线状态 */
+  row(navigator.onLine ? "🌐 在线 · Online" : "📡 离线 · Offline", navigator.onLine ? "ok" : "bad");
+  /* 修复按钮 */
+  document.getElementById("btnFix").addEventListener("click", function () {
+    if (!("caches" in window)) { location.reload(); return; }
+    caches.keys().then(function (ks) {
+      return Promise.all(ks.map(function (k) { return caches.delete(k); }));
+    }).then(function () {
+      if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) {
+        return navigator.serviceWorker.getRegistrations().then(function (rs) {
+          return Promise.all(rs.map(function (r) { return r.unregister(); }));
+        });
+      }
+    }).then(function () { location.reload(); });
+  });
+  document.getElementById("btnReload").addEventListener("click", function () { location.reload(); });
+})();
+</script>
+</body>
+</html>

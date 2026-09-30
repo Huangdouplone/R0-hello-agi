@@ -187,7 +187,8 @@ const DEEPEN_S9 = {
         "析构顺序与构造顺序相反：后构造的先析构，这在成员之间有依赖关系时很重要。",
         "若类会被继承，且可能通过基类指针删除派生对象，基类析构必须是 virtual（见 s10-8），否则派生部分不会被析构。",
         "析构函数里不要让异常逃出去（C++11 起析构默认 noexcept）——释放失败应记录而不是抛出。",
-        "判断是否需要析构的提问方式：「它拥有什么需要归还的东西？」——拥有资源才需要析构。"
+        "判断是否需要析构的提问方式：「它拥有什么需要归还的东西？」——拥有资源才需要析构。",
+        "命名口径：析构 + 拷贝构造 + 拷贝赋值三者齐备即「三法则（Rule of Three）」，加上移动语义即「五法则（Rule of Five）」；能全免则守「零法则」。"
       ],
       summary_en: [
         "A destructor runs automatically at the end of an object's life to release what it owns: memory, file handles, locks, connections.",
@@ -196,7 +197,8 @@ const DEEPEN_S9 = {
         "Destruction runs in reverse order of construction — relevant when members depend on each other.",
         "If the class can be inherited and deleted through a base pointer, the base destructor must be virtual (s10-8).",
         "Never let an exception escape a destructor (noexcept since C++11) — log the failure instead.",
-        "Ask: what does this object own that must be returned? Owning resources is what requires a destructor."
+        "Ask: what does this object own that must be returned? Owning resources is what requires a destructor.",
+        "Naming note: destructor + copy constructor + copy assignment make the Rule of Three; adding move semantics makes the Rule of Five. Need none of them? Follow the Rule of Zero."
       ],
       code: "class FileGuard {\npublic:\n  explicit FileGuard(const char *p) : f_(std::fopen(p, \"r\")) {}\n  ~FileGuard() { if (f_) std::fclose(f_); }     // 离开作用域自动关闭\n  FileGuard(const FileGuard &) = delete;         // 禁止拷贝，避免重复关闭\n  FileGuard &operator=(const FileGuard &) = delete;\n  bool ok() const { return f_ != nullptr; }\nprivate:\n  std::FILE *f_{nullptr};\n};",
       pit: "在析构函数里抛异常：栈展开过程中再有异常逃出会直接终止程序，比泄漏更难排查。",

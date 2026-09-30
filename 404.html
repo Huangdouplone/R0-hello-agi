@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>404 · 页面不存在 | R0:hello agi · 造 AGI 型应用</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;}
+body{min-height:100vh;background:linear-gradient(135deg,#2f7ed8,#2e9e5b);color:#fff;display:flex;align-items:center;justify-content:center;padding:24px;}
+.card{background:rgba(15,23,38,.55);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.18);border-radius:22px;max-width:620px;width:100%;padding:38px 34px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.35);}
+.code{font-size:76px;font-weight:800;letter-spacing:4px;line-height:1;opacity:.92;}
+.code span{display:inline-block;animation:bob 2.6s ease-in-out infinite;}
+.code span:nth-child(2){animation-delay:.18s}.code span:nth-child(3){animation-delay:.36s}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.icon{font-size:44px;margin:10px 0 2px;}
+h1{font-size:20px;margin:6px 0 2px;}
+.sub-en{font-size:12.5px;opacity:.75;margin-bottom:16px;}
+p{font-size:14.5px;line-height:1.8;margin:8px 0;}
+p.en{opacity:.78;font-size:13px;margin-top:2px;}
+.path{font-size:12px;opacity:.6;word-break:break-all;margin:10px 0 4px;font-family:Consolas,monospace;}
+.acts{margin:20px 0 6px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btn{display:inline-block;padding:11px 24px;border-radius:12px;text-decoration:none;font-size:14.5px;font-weight:700;border:none;cursor:pointer;transition:transform .12s;}
+.btn:active{transform:scale(.96);}
+.btn.home{background:#fff;color:#1c2a44;}
+.btn.ghost{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.35);}
+.count{font-size:12.5px;opacity:.7;margin-top:10px;min-height:18px;}
+.chips{margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,.16);}
+.chips-t{font-size:11.5px;opacity:.65;margin-bottom:10px;}
+.chip{display:inline-block;padding:6px 14px;margin:3px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:#fff;text-decoration:none;font-size:12.5px;transition:background .15s;}
+.chip:hover{background:rgba(255,255,255,.24);}
+.foot{margin-top:18px;font-size:11px;opacity:.5;}
+.langs{display:flex;gap:18px;justify-content:center;font-size:11.5px;opacity:.65;margin-top:6px;}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="code"><span>4</span><span>0</span><span>4</span></div>
+  <div class="icon">🤖</div>
+  <h1>页面不存在 · Page Not Found</h1>
+  <div class="sub-en">R0:hello agi · 造 AGI 型应用 ｜ R0:hello agi · Build AGI apps</div>
+  <p>你要找的页面不存在或已被移动——可能是链接过期、路径笔误，或资源尚未部署。</p>
+  <p class="en">The page you are looking for does not exist or has been moved - a stale link, a typo in the path, or content that is not deployed yet.</p>
+  <div class="path" id="p">（路径会显示在这里 · path shows here）</div>
+  <div class="acts">
+    <a class="btn home" id="home" href="/">🏠 返回首页 · Home</a>
+    <button class="btn ghost" id="stay">留在此页 · Stay</button>
+  </div>
+  <div class="count" id="cd"></div>
+  <div class="chips">
+    <div class="chips-t">R0 系列 · 其他站点 · Other sites in the series</div>
+    <a class="chip" href="/R0-hello-agent/">🧭 agent</a> <a class="chip" href="/R0-hello-office/">🗂️ office</a> <a class="chip" href="/R0-hello-world/">🌍 world</a>
+  </div>
+  <div class="langs">本页双语并列 · This page is bilingual by design</div>
+  <div class="foot">拾色造梦企划 · EDU 系列 · R0:hello</div>
+</div>
+<script>
+(function () {
+  /* 站点前缀探测：GitHub Pages 项目页形如 /R0-hello-xxx/；根部署则回退 / */
+  var m = location.pathname.match(/^(\/(R0-hello-[a-z]+)\/)/);
+  var base = m ? m[1] : "/";
+  if (m && m[2] !== "R0-hello-agi") {
+    /* 若前缀是兄弟站，回首页按钮指向本站 */
+    base = "/" + "R0-hello-agi" + "/";
+  }
+  var home = document.getElementById("home");
+  home.href = base;
+  /* 误访路径展示 */
+  var p = document.getElementById("p");
+  p.textContent = "路径 · Path: " + location.pathname;
+  /* 8 秒自动回首页（可点「留在此页」取消） */
+  var left = 8, cancelled = false, timer = null;
+  var cd = document.getElementById("cd");
+  function tick() {
+    if (cancelled) { cd.textContent = ""; return; }
+    if (left <= 0) { location.replace(base); return; }
+    cd.textContent = left + " 秒后自动返回首页 · auto-return in " + left + "s";
+    left--; timer = setTimeout(tick, 1000);
+  }
+  document.getElementById("stay").addEventListener("click", function () {
+    cancelled = true; clearTimeout(timer); cd.textContent = "已取消自动跳转 · auto-return cancelled";
+  });
+  timer = setTimeout(tick, 1000);
+})();
+</script>
+</body>
+</html>
