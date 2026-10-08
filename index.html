@@ -601,15 +601,45 @@ input.inp:focus,select.inp:focus{outline:none;border-color:var(--blue);box-shado
 /* ---- 窄屏适配 ---- */
 @media (max-width:720px){
   .content{padding:68px 12px 56px;}
-  .brand{max-width:140px;font-size:14px;}
+  .brand{max-width:140px;font-size:14px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .xpbar{width:80px;}
   .lvbox,.xp-text{display:none;}
   .sidebar{width:82%;}
+}
+/* ---- 手机端顶栏：允许换行，隐藏非关键元素 ---- */
+@media (max-width:480px){
+  .topbar{flex-wrap:wrap;height:auto;min-height:52px;padding:6px 10px;gap:8px;}
+  .topbar .sb-toggle{order:0;}
+  .topbar .brand{order:1;flex:1;min-width:60px;font-size:13px;max-width:none;}
+  .topbar .streak-chip,.topbar .coin-chip{display:none;}
+  .topbar .xpbar{order:99;flex-basis:100%;height:6px;margin-top:2px;}
+  .topbar #modeSwitch{order:2;}
+  .topbar #themeBtn{order:3;}
+  .topbar .gh-btn{order:4;}
+  .topbar #langBtn{order:5;}
+  .dash{grid-template-columns:repeat(2,1fr);gap:8px;}
+  .stat{padding:10px 8px;}
 }
 
 /* ===== 概念地图 + 名词库（自 agent 站移植） ===== */
 .cmap-wrap{overflow-x:auto;}
 .cmap-svg{width:100%;height:auto;min-height:380px;min-width:640px;display:block;background:var(--soft);border:1px solid var(--line);border-radius:14px;}
+/* 窄屏：概念地图按可读比例渲染（缩到容器宽会让 11px 标签掉到 5px，只能图区内横滚）、
+   今日任务圆环卡居中不再留死白、章节进度条可收缩（360 下会顶出屏幕）、触控目标补足。 */
+@media(max-width:640px){
+  .cmap-svg{min-width:680px;min-height:0;}
+  .cmap-wrap{-webkit-overflow-scrolling:touch;mask-image:linear-gradient(90deg,#000 calc(100% - 26px),transparent);-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 26px),transparent);}
+  .chip{min-height:34px;display:inline-flex;align-items:center;}
+  .today-wrap{gap:12px;flex-direction:column;}
+  .today-main{min-width:0;width:100%;}
+  .goal-ring{width:100%;max-width:260px;margin:0 auto;}
+  .stage-hd .nm{min-width:0;}
+  .stage-hd .pg{min-width:0;}
+  .stage-bar{width:80px;}
+  .sb-collapse{min-height:40px;padding:8px 10px;display:flex;align-items:center;}
+  .sb-item,.sb-group-hd{min-height:40px;}
+  .toast{max-width:calc(100vw - 32px);}
+}
 .cmap-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
 .chip-more{border-style:dashed;}
 .ach-grp{margin-bottom:14px;}
@@ -876,7 +906,7 @@ input.inp:focus,select.inp:focus{outline:none;border-color:var(--blue);box-shado
 <div id="toastWrap" class="toast-wrap" data-page-node-id="BMemSGCgtVEensRBjhfF2x"></div>
 <button id="toTop" class="to-top" aria-label="返回顶部" data-i18n-aria="返回顶部" data-page-node-id="DrskNYLug9A3BgyWsIXrZP">&#8593;</button>
 <script src="cpp-extra-data.js?v=2"></script>
-<script src="lang-en.js?v=17"></script>
+<script src="lang-en.js?v=18"></script>
 <script src="agi-quiz-extra.js?v=1"></script>
 <script src="agi-lab-extra.js?v=2"></script>
 <script src="agi-extra2.js?v=1"></script>
@@ -890,7 +920,7 @@ input.inp:focus,select.inp:focus{outline:none;border-color:var(--blue);box-shado
 <script src="agi-deepen-s8.js?v=5"></script>
 <script src="agi-deepen-s9.js?v=5"></script>
 <script src="agi-deepen-s10.js?v=5"></script>
-<script src="agi-deepen-s567.js?v=5"></script>
+<script src="agi-deepen-s567.js?v=6"></script>
 <script src="agi-deepen-s12.js?v=2"></script>
 <script src="agi-deepen-s34.js?v=1"></script>
 <script src="agi-deepen-s11.js?v=1"></script>
@@ -1162,7 +1192,7 @@ quiz:[{q:"主动抛出错误用？",o:["catch","throw","try","error"],a:1,why:"t
 ],
 quiz:[{q:"独占所有权的智能指针是？",o:["shared_ptr","unique_ptr","weak_ptr","auto_ptr"],a:1,why:"unique_ptr 独占资源、不可拷贝。"},{q:"类型安全的空指针常量是？",o:["NULL","0","nullptr","void*"],a:2,why:"nullptr 专指空指针，不会误匹配整数重载。"},{q:"RAII 的核心是？",o:["用对象生命周期管理资源","手动 delete","全局变量","宏"],a:0,why:"对象析构时自动释放资源。"}]},
 
-{id:"s18",icon:"🎮",name:"项目实战",desc:"把知识拼成真正能跑的东西",
+{id:"s18",icon:"🎮",name:"项目实战",desc:"把知识拼成真正能跑的东西——项目实战章，约为常规章 2.5 倍时长，建议分 2–3 次完成",
  goal:"综合运用所学，完成并重构 5 个小项目，体验完整开发流程。",
  links:[["Google C++ 风格指南","https://google.github.io/styleguide/cppguide.html"],["cppreference · 参考手册","https://zh.cppreference.com/w/cpp"],["视频项目 · B站 P72 通讯录","https://www.bilibili.com/video/BV1et411b73Z?p=72"]],
  lab:{t:"综合项目：命令行计算器",req:["循环显示菜单：+ - * / q（退出）","计算逻辑封装成函数，switch 分发","除零用异常处理，非法输入给出提示","代码分函数组织、命名清晰、有注释"],starter:`#include <iostream>\n#include <stdexcept>\n\ndouble calc(double a, char op, double b) {\n    // 实现\n    return 0;\n}\n\nint main() {\n    // 菜单循环\n\n    return 0;\n}`,hint:"先把 calc 写对，再套菜单循环；异常从 calc 里 throw 出去。",xp:40},
@@ -1273,7 +1303,7 @@ const MODE_ORDERS={
 /* 每条路线的 11 大篇章（range 指向该路线 CURRICULUM 的下标区间） */
 const MODE_PHASES={
  cpp:[
-  {icon:"🌱",name:"第一篇章 · 编程启航",name_en:"Ch.1 · Programming Start",range:[0,4],desc:"环境、语法、函数——打牢 C++ 地基",desc_en:"Setup, syntax, functions — solid C++ foundations",wk:3},
+  {icon:"🌱",name:"第一篇章 · 编程启航",name_en:"Ch.1 · Programming Start",range:[0,4],desc:"环境、语法、函数——打牢 C++ 地基（本篇节奏约每天 20 分钟）",desc_en:"Setup, syntax, functions — solid C++ foundations (about 20 minutes a day)",wk:3},
   {icon:"🧱",name:"第二篇章 · 数据与内存",name_en:"Ch.2 · Data & Memory",range:[5,7],desc:"数组、字符串、指针与结构体——攻克 C++ 难关",desc_en:"Arrays, strings, pointers and structs — the C++ hurdles",wk:3},
   {icon:"⚙️",name:"第三篇章 · C++ 系统深入",name_en:"Ch.3 · C++ Systems Deep Dive",range:[8,11],desc:"面向对象、模板、调试——C++ 核心内功",desc_en:"OOP, templates, debugging — C++ core mastery",wk:4},
   {icon:"🚀",name:"第四篇章 · C++ 实战与拔高",name_en:"Ch.4 · C++ Projects & Depth",range:[12,18],desc:"STL、文件、异常、现代 C++ 与项目——工程化",desc_en:"STL, files, exceptions, modern C++ and a project",wk:7},
@@ -4189,9 +4219,6 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
 else init();
 
 </script>
-
-/* 资源完整性自检已移至 diagnose.html（手动诊断页） */
-
 
 </body>
 </html>

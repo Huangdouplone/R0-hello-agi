@@ -23,7 +23,7 @@ const STAGE_EN = {
   "s15": {name_en:"File I/O", desc_en:"Persist data beyond memory to disk", goal_en:"Read/write data to files and handle failure gracefully."},
   "s16": {name_en:"Exception Handling", desc_en:"Keep programs alive when errors happen", goal_en:"Handle errors gracefully without crashing."},
   "s17": {name_en:"Modern C++", desc_en:"Write cleaner, safer C++", goal_en:"Use modern C++ (smart pointers, move, auto) for safer, cleaner code."},
-  "s18": {name_en:"Project Practice", desc_en:"Assemble knowledge into real, running things", goal_en:"Apply everything learned; build and refactor 5 small projects; experience the full dev workflow."},
+  "s18": {name_en:"Project Practice", desc_en:"Assemble knowledge into real, running things — a project chapter about 2.5× a normal one; plan 2–3 sittings", goal_en:"Apply everything learned; build and refactor 5 small projects; experience the full dev workflow."},
 
   /* Extra stages from cpp-extra-data.js */
   "sdbg": {name_en:"Debugging Basics", desc_en:"Code runs but crashes? Learn to read errors and use the debugger", goal_en:"Master reading compiler errors; use breakpoints/print statements to locate and fix common bugs; stop fearing red error messages."},
