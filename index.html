@@ -633,9 +633,15 @@ input.inp:focus,select.inp:focus{outline:none;border-color:var(--blue);box-shado
   .today-wrap{gap:12px;flex-direction:column;}
   .today-main{min-width:0;width:100%;}
   .goal-ring{width:100%;max-width:260px;margin:0 auto;}
-  .stage-hd .nm{min-width:0;}
-  .stage-hd .pg{min-width:0;}
+  .stage-hd{flex-wrap:wrap;gap:8px 10px;}
+  /* .nm 原本 flex:1 1 0 + min-width:0，而行内固定项（图标 30 + 层级标签 54 +
+     进度 80 + 箭头 13 + 4 段间距）已占掉 237px，标题只剩 23px → CJK 逐字竖排。
+     给它一个真实起点并让进度块自己换行，标题才拿得回一行。 */
+  .stage-hd .nm{flex:1 1 140px;min-width:0;}
+  .stage-hd .pg{flex:0 0 auto;min-width:0;}
+  .stage-hd .lv-tag,.stage-hd .ar{flex:0 0 auto;}
   .stage-bar{width:80px;}
+  .report{overflow-x:hidden;}
   .sb-collapse{min-height:40px;padding:8px 10px;display:flex;align-items:center;}
   .sb-item,.sb-group-hd{min-height:40px;}
   .toast{max-width:calc(100vw - 32px);}
