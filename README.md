@@ -1,244 +1,193 @@
 # R0:hello agi
 
-**R0：从零开始的 agi 之路**
+从零基础起步、面向 AGI 工程方向的静态自学课程，单文件应用，可离线运行。
+A static, self-contained self-study course from zero programming basis toward AGI engineering.
 
-> © **制作者 / Creator: Bilibili 黄豆666 (huangdouplone)** · 版权所有 / All rights reserved.
->
-> 内容与代码由 **AI 辅助生成 / 组装**，技术细节请以官方文档与权威教材为准。
+- **路线 Routes**：C++（默认）与 Python，共享阶段池与学习进度 / C++ (default) and Python, sharing the stage pool and learning progress
+- **形式 Form**：单个 `index.html`（界面 + 逻辑）+ 38 个外部脚本 + 1 个 Service Worker / a single `index.html` (UI + logic) + 38 external scripts + 1 Service Worker
+- **运行 Runtime**：无后端、无构建步骤、无第三方依赖；直接打开 `index.html` 即可 / no backend, no build step, no third-party dependencies; open `index.html` directly
+- **统计口径 Data basis**：下列数字为 2026-11-21 加载全部脚本后的运行时实测。全站池、默认 C++ 路线与 Python 路线分列，避免混用口径。
+  Counts measured at runtime on 2026-11-21 after loading all scripts. The full pool, the default C++ route and the Python route are reported separately to avoid mixing scopes.
 
-从零基础起步、终到 AGI 工程方向的长期编程课程。**纯静态、零依赖、可离线**：单文件 HTML 应用 + 外部课程数据脚本 + Service Worker，无后端、无构建步骤、无第三方运行时依赖。
-
-*A long-form, zero-basis programming course heading toward AGI engineering. Purely static, dependency-free and offline-capable: a single-file HTML app plus external data modules and a Service Worker.*
+课程文案、界面与代码由 AI 辅助生成与组装；技术细节请以权威资料为准。
+Curriculum text, UI and code are generated and assembled with AI assistance. Verify technical details against authoritative sources.
 
 ---
 
-## 中文
+## 内容规模（运行时实测） Content scale (measured at runtime)
 
-### 1. 项目边界
+| 指标 Metric | 全站池 Full stage pool | 默认 C++ 路线 Default C++ route | Python 路线 Python route |
+| --- | ---: | ---: | ---: |
+| 阶段 Stages | **56** | **52** | **27** |
+| 部分 Parts | — | **11** | **6** |
+| 课节 Lessons | **354** | **330** | **161** |
+| 阶段测评题 Stage-quiz questions | **704** | **652** | **324** |
+| 编程实战 Coding labs | **269** | **249** | **123** |
 
-| 维度 | 说明 |
-| --- | --- |
-| 形态 | 单文件 `index.html`（UI + 全部逻辑）+ 7 个外部数据脚本 + 1 个 Service Worker |
-| 运行 | 双击 `index.html` 即可运行；通过 http(s) 托管时自动启用离线缓存（PWA） |
-| 存储 | 全部学习数据存于浏览器 `localStorage`，无服务端、无账号体系 |
-| 依赖 | 零外部依赖。不引用任何 CDN、字体、图表库或前端框架，图表为手写内联 SVG |
-| 适配 | PC / 移动端响应式；移动端可「添加到主屏幕」当 App 使用 |
+全站池题型分布：选择 389 · 判断 158 · 填空 157。每次抽 3 题（`AGI_QUIZ_COUNT = 3`），每种出现的题型至少一题。
+Quiz types in the full pool: choice 389 · true-false 158 · fill-in 157. Three questions are drawn per attempt (`AGI_QUIZ_COUNT = 3`), with at least one from each present type.
 
-### 2. 内容规模（实测）
+范围关系：基础池为 49 个 C++ 路线阶段 + 4 个 Python 专属阶段 = 53；深化层在运行时插入 `agi5`、`agi6`、`agi7`，形成 56 阶段池。C++ 路线为 49 + 3 = 52 阶段；Python 路线为 24 + 3 = 27。两条路线共享数学 / AI 阶段，C++ 与 Python 基础部分互斥。
+Scope relationship: the base pool has 49 C++-route stages + 4 Python-only stages = 53; the deepening layers insert `agi5`, `agi6`, `agi7` at runtime, giving a 56-stage pool. The C++ route is 49 + 3 = 52 stages; the Python route is 24 + 3 = 27. Both routes share the math / AI stages; the C++ and Python foundations are mutually exclusive.
 
-| 指标 | 数值 |
-| --- | --- |
-| 阶段池 | **53**（两条路线共用） |
-| 课节总数 | **264** |
-| 阶段测评题 | **477**（choice 265 · judge 106 · fill 106） |
-| 每阶段题库 / 抽题数 | 9 / 3（`AGI_QUIZ_COUNT = 3`） |
-| 编程实战 | **266**（每阶段 5 道） |
-| 成就 / 称号等级 | 39 / 15 |
+实战分布：52 个阶段各 5 道、`eng` 6 道、`agi5`/`agi6`/`agi7` 各 1 道，合计 269；默认 C++ 路线为 48×5 + 6 + 3×1 = 249，4 个 Python 专属阶段另有 20 道。
+Lab distribution: 52 stages have 5 labs each, `eng` has 6, and `agi5`/`agi6`/`agi7` have 1 each, totaling 269. The default C++ route is 48×5 + 6 + 3×1 = 249; the 4 Python-only stages add 20.
 
-### 3. 双路线设计
+其他运行时指标 Other runtime metrics：
 
-两条路线**共用同一池 53 个阶段与全部学习进度**（做题、打卡、成就、笔记、复习均按阶段 / 课节 `id` 共享），差异仅在**学习顺序与篇章结构**：
+| 指标 Metric | 数值 Value |
+| --- | ---: |
+| 成就 / 称号等级 Achievements / title levels | 85 / 15 |
+| 首页主题 Homepage themes | 16（1 默认 + 15 星币解锁 / 1 default + 15 coin-unlocked） |
+| 名词 Terms | 326 条记录 / 7 类（326 records / 7 categories） |
+| 概念图 Concept map | 17 节点 / 20 边（17 nodes / 20 edges） |
 
-| 路线 | 篇章 | 阶段 | 课节 | 路径 |
-| --- | ---: | ---: | ---: | --- |
-| ⚙️ **C++（默认）** | 11 | 49 | 244 | C++ 地基 → 数学基石 → C++ 系统深入与实战 → 算法修炼 → 工程素养与求职 → 科学计算 → 机器学习 → 深度学习 → AGI 前沿 |
-| 🐍 **Python** | 6 | 24 | 114 | Python 启航 → 数学基石 → 科学计算 → 机器学习 → 深度学习 → AGI 前沿（C++ 系统纵深作为可选深造专题） |
+名词分类：基础概念 66 · 训练与数据 42 · 应用与智能体 16 · 评估与安全 27 · C++ 系统 147 · C++ 基础 8 · AI 数学 20。
+Term categories: basic concepts 66 · training and data 42 · applications and agents 16 · evaluation and safety 27 · C++ systems 147 · C++ fundamentals 8 · AI math 20.
 
-实现方式为两份显式的 id 顺序表与篇章区间：
+## 两条路线 Two routes
+
+两条路线共享阶段池与进度（测评、打卡、成就、笔记与复习均按阶段 / 课节 `id` 存档），只在顺序与部分结构上不同。
+Both routes share the stage pool and progress (quizzes, check-ins, achievements, notes and reviews are keyed by stage / lesson `id`); they differ only in ordering and part structure.
+
+| 路线 Route | 部分 Parts | 阶段 Stages | 课节 Lessons | 实战 Labs | 路径 Path |
+| --- | ---: | ---: | ---: | ---: | --- |
+| C++（默认 / default） | 11 | 52 | 330 | 249 | C++ 基础 → 数学 → C++ 系统与实战 → 算法 → 工程与求职 → 科学计算 → 机器学习 → 深度学习 → AGI 前沿 / C++ foundation → math → C++ systems and labs → algorithms → engineering and jobs → scientific computing → machine learning → deep learning → AGI frontier |
+| Python | 6 | 27 | 161 | 123 | Python 入门 → 数学 → 科学计算 → 机器学习 → 深度学习 → AGI 前沿 / Python start → math → scientific computing → machine learning → deep learning → AGI frontier |
+
+顺序由两张显式的 id 列表定义。
+Ordering is defined by two explicit id lists:
 
 ```js
-const MODE_ORDERS = { cpp: [...49 个 id], py: [...24 个 id] };
-const MODE_PHASES = { cpp: [...11 篇章, range:[起, 止]], py: [...6 篇章] };
+const MODE_ORDERS = { cpp: [...52 ids], py: [...27 ids] };
+const MODE_PHASES = { cpp: [...11 parts], py: [...6 parts] };
 ```
 
-Python 路线独有的 4 个阶段（`py1`–`py4`）不在 C++ 路线的顺序表中，构成 49 + 4 = 53 的阶段池。切换路线只改变顺序视图，不触碰进度数据。
+`py1`–`py4` 为 Python 专属基础阶段，不在 C++ 顺序中；`agi5`–`agi7` 在启动时插入两条顺序。切换路线只改变视图，不改进度数据。
+`py1`–`py4` are Python-only foundation stages and are absent from the C++ order; `agi5`–`agi7` are inserted into both orders at startup. Switching routes changes only the view, not the progress data.
 
-### 4. 技术架构
+## 功能 Features
 
-#### 4.1 加载顺序与脚本职责
+- **阶段测评 Stage quiz**：每次抽 3 题，记录最高分与错题。/ 3 questions drawn per attempt; records the best score and mistakes.
+- **编程实战 Coding labs**：默认 C++ 路线 249 道，含起始代码与提示，并有一键生成 AI 批改提示词。/ 249 labs on the default C++ route, with starter code and hints, plus a one-click AI grading prompt generator.
+- **间隔复习 Spaced repetition**：2 / 4 / 7 / 15 / 30 / 60 天复习队列，配合错题本。/ Review queues at 2 / 4 / 7 / 15 / 30 / 60 days plus a mistake log.
+- **每日上限 Daily cap**：新学默认每天 4 节（可调 1–10）；待复习积压超过阈值（默认 8）时暂停新学。/ New lessons default to 4 per day (adjustable 1–10); new learning is locked when the review backlog exceeds a threshold (default 8).
+- **进度追踪 Progress tracking**：热力图、85 个成就（含 AGI 里程碑）、15 级称号、16 种主题、可导出的日 / 周 / 月报告。/ Heatmap, 85 achievements (including AGI milestones), 15 title levels, 16 themes, exportable day/week/month reports.
+- **星币 Star coins**：通过学习、复习、打卡、测评与实战获得，仅用于兑换首页主题。/ Earned through study, review, check-in, quizzes and labs; spent only on homepage themes.
+- **断点续学 Resume**：记录上次查看的课节，在首页高亮提示。/ The last viewed lesson is recorded and highlighted on the home page.
+- **数据管理 Data control**：导出 / 导入 / 重置。/ Export / import / reset.
+
+## 架构 Architecture
+
+外部脚本按固定顺序注入。
+External scripts are injected in a fixed order:
 
 ```
-cpp-extra-data.js   → EXTRA_STAGES / STAGE_META / LAB_ANSWERS / JOB_STAGES / AGI_STAGES
-lang-en.js          → STAGE_EN / LESSON_EN（英文对照）
-agi-quiz-extra.js   → AGI_QUIZ_EXTRA   每阶段 +2 测评题
-agi-extra2.js       → AGI_QUIZ_EXTRA   每阶段 +2 判断 +2 填空
-agi-lab-extra.js    → AGI_LAB_EXTRA    每阶段 +2 实战
-agi-lab-extra2.js   → AGI_LAB_EXTRA    每阶段 +2 实战
-agi-lab-en.js       → AGI_LAB_EN       原始实战（labs[0]）的英文对照
-        ↓  启动期合并
-_stageMap[id] = stage（含 lessons[] / quiz[] / lab + labs[]）
-        ↓  单向读取
-渲染层：renderAll() → 概览 / 路线 / 实战 / 篇章 …
+cpp-extra-data.js          EXTRA_STAGES / STAGE_META / LAB_ANSWERS / JOB_STAGES / AGI_STAGES
+lang-en.js                 STAGE_EN / LESSON_EN
+agi-quiz-extra.js          AGI_QUIZ_EXTRA   +2 quizzes per stage
+agi-extra2.js              AGI_QUIZ_EXTRA   +2 true-false +2 fill-in per stage
+agi-lab-extra.js           AGI_LAB_EXTRA    +2 labs per stage
+agi-lab-extra2.js          AGI_LAB_EXTRA    +2 labs per stage
+agi-lab-en.js              AGI_LAB_EN
+agi-en-batch.js            AGI_EN_BATCH     batch EN for target/code/quiz/lab starter
+agi-concept.js             interactive concept map
+agi-deepen-*.js            28 deepening layers: lesson bodies, quizzes, labs, terms, achievements
+ped-ext.js                 "extension" tags for out-of-scope terms
+        ↓  merged at startup
+_stageMap[id] = stage (lessons[] / quiz[] / lab + labs[])
+        ↓  assembled per MODE_ORDERS
+renderAll() → overview / route / labs / parts / terms / concept map …
 ```
 
-关键约定：**阶段与篇章容器由 JS 用 `innerHTML` 重建**，需被脚本寻址的 `id` 一律挂在内层容器；交互统一走 `data-act` 全局事件委派。
+阶段与部分容器通过 `innerHTML` 重建；可被脚本寻址的 `id` 放在内层容器。交互使用全局 `data-act` 事件委托。
+Stage and part containers are rebuilt with `innerHTML`; script-addressable `id`s sit on inner containers. Interactions use global `data-act` event delegation.
 
-#### 4.2 数据模型
+数据模型 Data model：
 
 ```js
 stage = {
   id, icon, name, desc, goal,
   lessons: [{ id, title, min, summary[], code, pit, ex:{q,a}, target }],
-  quiz: [{ q, o:[…], a: 正确下标, why, type: "choice"|"judge"|"fill", ans }],
-  lab:  { t, req[], starter, hint, xp },   // 原始实战，等价于 labs[0]
-  labs: [ … ]                              // 运行期由 lab + 叠加层合并而成
+  quiz: [{ q, o:[…], a, why, q_en, why_en, o_en, type }],
+  lab:  { t, req[], starter, hint, xp },   // original lab, equal to labs[0]
+  labs: [ … ]                              // merged from overlays at startup
 }
 ```
 
-#### 4.3 叠加层（overlay）扩展模式
+新题目与实战通过 `AGI_QUIZ_EXTRA` / `AGI_LAB_EXTRA` 在启动时以 `concat` 加入；原始 `cpp-extra-data.js` 不变。`labs[0]` 始终是原始实战，因此进度键有效。统计实战用 `totalLabs()`。
+New questions and labs are added via `AGI_QUIZ_EXTRA` / `AGI_LAB_EXTRA` with `concat` at startup; the original `cpp-extra-data.js` is unchanged. `labs[0]` is always the original lab, so progress keys stay valid. Count labs with `totalLabs()`.
 
-新增题库与实战**不改动 `cpp-extra-data.js`**，而是以叠加层 + 启动期 `concat` 注入：
+进度键：`labKey(sid, k) = k > 0 ? sid + "#" + k : sid`。`k = 0` 保留旧键，`k ≥ 1` 用 `sid#k`；新增实战无需迁移进度。
+Progress keying: `labKey(sid, k) = k > 0 ? sid + "#" + k : sid`. `k = 0` keeps the legacy key; `k ≥ 1` uses `sid#k`; adding labs requires no progress migration.
 
-| 全局 | 内容 | 效果 |
-| --- | --- | --- |
-| `AGI_QUIZ_EXTRA` | 每阶段 +4 题（+2 判断 +2 填空） | 每阶段题库 9 题（抽 3） |
-| `AGI_LAB_EXTRA` | 每阶段 +4 道实战 | 每阶段 5 道 / 全站 266 道 |
-| `AGI_LAB_EN` | 原始实战（`labs[0]`）的英文对照 | 只补缺字段，不覆盖已有英文 |
+填空答案做归一化，抽取按题型均衡，选项乱序时记录原始下标。深化后每阶段题库为 4–15 题，而非早期固定的 9 题。
+Quiz answers are normalized and draws are type-balanced; option shuffling tracks the original index. After deepening, each stage has a bank of 4–15 questions rather than the earlier fixed 9.
 
-合并时 `s.labs = (s.lab ? [s.lab] : []).concat(le[id])` —— **`labs[0]` 恒为原 `s.lab`**，因此旧进度键永不失效。
+国际化覆盖（运行时） Internationalization coverage (runtime)：
 
-#### 4.4 题库与抽题
+| 层 Layer | 覆盖 Coverage |
+| --- | --- |
+| 阶段名 Stage names | 53 / 56（`agi5`–`agi7` 缺英文名 / lack English names） |
+| 课节标题 Lesson titles | 332 / 354 |
+| 课节 summary / pit / target | 354 / 354 |
+| 课节 code Lesson code | 59 / 354 |
+| 测评题干 / 解析 Quiz prompts / explanations | 704 / 704 |
+| 测评选项侧表 Quiz option side tables | 392 / 704（判断题选项按语言生成 / true-false options are generated by language） |
+| 实战要求 / 提示 Lab requirements / hints | 269 / 269 |
+| 实战起始代码 Lab starter code | 133 / 269 |
+| 名词 / 概念图边 Terms / concept-map edges | 326 / 326 · 20 / 20 |
+| `ex` 题 `ex` questions | 中文 / Chinese |
 
-- **题型**：`choice` / `judge` / `fill`。判断题为双选项且同样参与乱序；填空题为 `<input class="fill-input">`。
-- **答案归一化**：`agiNormAns` 做全角转半角、去空白与中英标点、转小写后再比对。
-- **题型均衡抽题**：`agiDrawQuiz` 先为每种已存在的题型各保底抽 1 题，再随机填满剩余名额（本课程抽 3 题，即三种题型各 1 题）。
-- **选项乱序保索引**：打乱选项时同步记录原索引，正确答案跟随移动。
+`t(zh)` 以中文原文为键查 `I18N_EN`；`pick(o, f)` 先读 `o[f + "_en"]`，缺失回退中文。加载时求值的模块级常量会被固化为中文，因此导航存键、渲染时翻译。
+`t(zh)` looks up `I18N_EN` by the Chinese original; `pick(o, f)` reads `o[f + "_en"]` first and falls back to Chinese. Module-level constants that are evaluated at load time get baked to Chinese, so navigation stores keys and translates at render time.
 
-#### 4.5 进度键与向后兼容
+## 运行与部署 Run and deploy
 
-```js
-labKey(sid, k) = k > 0 ? sid + "#" + k : sid
+```bash
+# 直接打开 / Open directly
+index.html
+
+# 或用 http(s) 提供服务以启用 Service Worker / Or serve over http(s) to enable the Service Worker
+python -m http.server 8080
 ```
 
-`k = 0` 沿用旧键（`sid`），`k ≥ 1` 使用 `sid#k`。新增实战题时**老用户进度零迁移**。统计实战总数须用 `totalLabs()`。
+在 GitHub Pages 上，将本目录作为仓库根推送，从 `main` 的 `/ (root)` 部署。
+For GitHub Pages, push this directory as the repository root and deploy from `main`, `/ (root)`.
 
-#### 4.6 i18n 机制与覆盖
+`cpp-sw.js` 为 Service Worker（当前 `CACHE = r0-hello-agi-v55`）。其 `ASSETS` 必须与页面 `<script src>` 的 URL 逐字符一致（含 `?v=N`）；修改任何被缓存的文件后需 bump `CACHE`。
+`cpp-sw.js` is the Service Worker (current `CACHE = r0-hello-agi-v55`). Its `ASSETS` must match the page's `<script src>` URLs character for character (including `?v=N`); bump `CACHE` after changing any cached file.
 
-| 机制 | 说明 |
+## 已知限制 Known limitations
+
+1. 阶段名英化覆盖 53 / 56；`agi5`–`agi7` 无英文名。/ Stage-name EN coverage is 53 / 56; `agi5`–`agi7` lack English names.
+2. 课节标题英化 332 / 354，代码英化 59 / 354，`ex` 题保留中文。/ Lesson-title EN coverage is 332 / 354; code EN coverage is 59 / 354; `ex` questions stay Chinese.
+3. 实战起始代码英化 133 / 269；要求与提示已全双语。/ Lab starter EN coverage is 133 / 269; requirements and hints are fully bilingual.
+4. `agi5`–`agi7` 各 1 道实战，多数阶段为 5 道。/ `agi5`–`agi7` have one lab each, versus five for most stages.
+5. 两路线长度不同（C++ 52 / 330；Python 27 / 161），进度按 id 共享。/ Route lengths differ (C++ 52 / 330; Python 27 / 161), while progress is shared by id.
+6. 进度存于 `localStorage`，请定期导出。/ Progress is stored in `localStorage`; export regularly.
+
+## 文件 Files
+
+| 文件 File | 作用 Role |
 | --- | --- |
-| `t(zh)` | 中文原文作 key，命中 `I18N_EN[zh]` 则返回英文，否则原样返回 |
-| `pick(o, f)` | 读取 `o[f + "_en"]`，为空则回退中文 `o[f]` |
-| `STAGE_EN` / `LESSON_EN` | 阶段名 **53/53**、课节标题 **264/264** |
-| `LAB_EN` / `AGI_LAB_EN` / `t_en` | 实战标题 **266/266** |
+| `index.html` | 应用入口：界面、渲染与逻辑 / App entry: UI, rendering and logic |
+| `cpp-extra-data.js` | 课程数据：阶段 / 元数据 / 实战答案 / 求职 / AGI 阶段 / Curriculum data: stages / metadata / lab answers / job / AGI stages |
+| `lang-en.js` | 基础英文表（`STAGE_EN` / `LESSON_EN`）/ Base English tables |
+| `agi-quiz-extra.js` / `agi-extra2.js` | 阶段测评叠加层 / Stage quiz overlays |
+| `agi-lab-extra.js` / `agi-lab-extra2.js` | 实战叠加层 / Lab overlays |
+| `agi-lab-en.js` | 实战基础英文表 / Base lab English tables |
+| `agi-en-batch.js` | 批量英文侧表 / Batch English side tables |
+| `agi-concept.js` | 交互式概念图拓扑 / Interactive concept-map topology |
+| `agi-deepen-*.js` | 28 个深化层 / 28 deepening layers |
+| `ped-ext.js` | 超范围名词的「拓展」标记 / "Extension" tags for out-of-scope terms |
+| `cpp-sw.js` | Service Worker（离线缓存 / offline cache） |
+| `diagnose.html` / `404.html` | 诊断页与自定义 404 / Diagnostic page and custom 404 |
+| `README.md` / `LICENSE.md` | 本文档 / MIT 许可 / This document / MIT license |
 
-课节正文（讲解 / 示例 / 易错 / 思考）为中文。已知陷阱：模块级常量若在加载期直接求值会被烘焙成中文（须存 key、渲染时再 `t()`）；字典缺 key 时 `t()` 静默返回 key，界面会露出裸 key，需断言校验；动态 setter 漏挂语言刷新会导致切语言不更新。
+## 许可 License
 
-#### 4.7 离线与 PWA
+MIT，见 `LICENSE.md`。作者：B 站 黄豆666（huangdouplone）。按「原样」提供，仅供学习，不作任何担保。
+MIT. See `LICENSE.md`. Creator: Bilibili 黄豆666 (huangdouplone). Provided as-is for study, without warranty.
 
-`cpp-sw.js` 为 Service Worker：
-- **`ASSETS` 与 `<script src>` 的 URL 逐字符一致**（含 `?v=N`）。缓存以完整请求 URL 为键，裸文件名匹配不上带查询串的请求。
-- 预缓存逐个 `add().catch()`，任一资源缺失只跳过它自己，不会让整批失败。
-- 新增资源必须同时 **加入 ASSETS** 并 **bump `CACHE` 版本**。
-
-#### 4.8 自检套件
-
-`verify/` 为本地验证脚本（**不参与部署**），基于 playwright-core + 系统 Edge 无头运行，覆盖：内联/外部 JS 语法、SW ASSETS 与页面请求 URL 一致性、DOM id 死引用、`data-act` 分派覆盖、数据字段与下标合法性、选项越界与重复、填空答案非空、路线引用的阶段 id 存在性与篇章区间连续性、i18n key 泄漏与英文残留、空存档不崩，以及三种题型真实出现率与逐题判分的端到端回归。
-
-> 关键经验：**抽查前先断言题库长度大于抽题数**（否则随机性归零）；**题库 / 数据键必须与路线引用的 `id` 严格一致**，写错会静默回退而不报错。
-
-### 5. 学习机制
-
-- **阶段测评**：每阶段 9 题库随机抽 3 题（单选 / 判断 / 填空，选项乱序）。
-- **编程实战**：每阶段 5 道，附起始代码与提示，可一键生成 **AI 批改提示词** 交给任意大模型获取评分与建议。
-- **间隔复习**：2 / 4 / 7 / 15 / 30 / 60 天队列 + 错题本。
-- **每日上限保护**：每日新学默认上限 4 节（可调 1–10）；待复习积压超过阈值（默认 8）时锁定新学，强制先巩固。
-- **激励**：学习日历热力图、累计学时、连续天数、39 枚成就（含 AGI 里程碑）、15 级称号、可复制的日 / 周 / 月进度报告。
-- **星币经济**：学习 / 复习 / 打卡 / 测评 / 实战均可赚取星币，**仅用于解锁主页配色风格**（15 套），不做 pay-to-win。
-- **记忆续学**：自动记录最后观看的课节（含已标记完成者），「今日任务」顶部高光「继续上次」。
-- **数据自管**：导出 / 导入 / 重置。
-
-### 6. 本地运行与部署
-
-直接双击 `index.html` 即可使用。
-
-> 需要**离线 / PWA** 能力时须通过 http(s) 访问（`file://` 下浏览器会拒绝注册 Service Worker，属正常现象，不影响其他功能）：
->
-> ```bash
-> python -m http.server 8080     # 然后访问 http://localhost:8080
-> ```
-
-**部署到 GitHub Pages**：将本目录全部文件（`index.html`、7 个数据脚本、`cpp-sw.js`）推送至仓库**根目录**，然后在 *Settings → Pages → Build and deployment → Source* 选择 `Deploy from a branch`、分支 `main`、目录 `/ (root)`。
-
-### 7. 已知限制
-
-1. **课节正文为中文**：界面框架、阶段名、课节标题、实战标题均已双语，正文（讲解 / 示例 / 易错 / 思考 / 题目）为中文。
-2. **两条路线课时不等**：C++ 路线 49 阶段 / 244 节，Python 路线 24 阶段 / 114 节，进度按阶段 id 共享。
-3. **数据存于本机**：清除浏览器数据会丢失进度，请定期导出备份。
-
-### 8. 授权与声明
-
-本仓库（含全部课程文案、界面与代码）由 **AI 辅助生成 / 组装**。内容按「零基础 → AGI 工程」路线整理，但技术细节请以权威资料为准，使用前请自行核对。仓库仅供学习交流，按现状提供，不作任何担保。授权条款见 `LICENSE.md`。
-
----
-
-## English
-
-### Overview
-
-`R0:hello agi` is a long-form, zero-basis programming course whose single goal is to take someone who has never written code all the way to **AGI engineering**. It is a **purely static, dependency-free, offline-capable** single-file HTML app with 7 external data modules and a Service Worker — no backend, no build step, no third-party runtime dependency.
-
-### Scope (measured)
-
-| Metric | Value |
-| --- | --- |
-| Stage pool | **53** (shared by both tracks) |
-| Lessons (total) | **264** |
-| Stage-quiz questions | **477** (choice 265 · true-false 106 · fill-in 106) |
-| Bank per stage / drawn per attempt | 9 / 3 |
-| Coding labs | **266** (5 per stage) |
-| Achievements / title levels | 39 / 15 |
-
-### Two tracks
-
-Both tracks share the **same pool of 53 stages and all progress** (exercises, check-ins, achievements, notes, reviews keyed by stage/lesson `id`). Only the learning order and chapter structure differ:
-
-- **C++ track (default)** — 11 chapters / 49 stages / 244 lessons.
-- **Python track** — 6 chapters / 24 stages / 114 lessons; C++ systems depth is offered as an optional advanced track afterwards.
-
-This is implemented as two explicit id-order tables plus chapter ranges (`MODE_ORDERS` / `MODE_PHASES`). The four Python-only stages (`py1`–`py4`) are absent from the C++ order, giving 49 + 4 = 53. Switching tracks only changes the view order — never the progress data.
-
-### Architecture
-
-- **Data / logic separation.** `cpp-extra-data.js` holds the curriculum; `lang-en.js`, `agi-quiz-extra.js`, `agi-extra2.js`, `agi-lab-extra.js`, `agi-lab-extra2.js`, and `agi-lab-en.js` supply translations and overlays.
-- **Overlay extension pattern.** New questions and labs ship as `window.AGI_QUIZ_EXTRA` / `window.AGI_LAB_EXTRA` and are merged at startup via `concat`; `cpp-extra-data.js` is never edited. Merging keeps `labs[0]` as the original `s.lab`, so existing progress keys never break.
-- **Question types & scoring.** `choice` / `judge` / `fill`; answers are normalised (full-width → half-width, punctuation and whitespace stripped, lower-cased) before comparison. Draws are **type-balanced** — each existing type gets at least one slot (3 drawn ⇒ one of each) — and option shuffling preserves the original answer index.
-- **Progress keying.** `labKey(sid, k) = k > 0 ? sid + "#" + k : sid`, so `k = 0` keeps the legacy key and adding labs requires **zero progress migration**.
-- **i18n.** `t(zh)` looks up a Chinese-keyed dictionary, `pick(o, f)` prefers `o[f + "_en"]`. Stage names 53/53, lesson titles 264/264, and lab titles 266/266 are bilingual; lesson bodies are Chinese.
-- **Offline / PWA.** The Service Worker's `ASSETS` list matches the page's `<script src>` URLs **character for character** (including `?v=N`) — the cache is keyed by full request URL, so bare filenames would miss. Precache is per-item with `catch()`, and every added asset requires a cache-version bump.
-- **Verification.** `verify/` (not deployed) runs headless audits: syntax, Service-Worker asset consistency, DEAD DOM ids, `data-act` dispatch coverage, data integrity, route id/range validity, i18n leaks, empty-save resilience, and end-to-end quiz scoring.
-
-### Run & deploy
-
-Open `index.html` directly, or serve over http(s) to enable the Service Worker (`python -m http.server 8080`). For GitHub Pages, push everything to the repository **root** and deploy from the `main` branch, `/ (root)`.
-
-### Known limitations
-
-1. Lesson bodies (explanations, samples, pitfalls, questions) remain Chinese; shell, stage names, lesson titles, and lab titles are bilingual.
-2. The two tracks differ in length (C++ 49 stages / 244 lessons; Python 24 stages / 114 lessons) while sharing progress by stage id.
-3. Progress lives in `localStorage` — back up with the built-in export.
-
-### License & disclosure
-
-All curriculum text, UI, and code were **generated / assembled with AI assistance**. Verify technical details against authoritative sources before relying on them. Provided as-is for learning purposes, without warranty. See `LICENSE.md`.
-
----
-
-## 📦 文件清单 / Files
-
-| 文件 | 作用 |
-| --- | --- |
-| `index.html` | 应用入口：UI + 全部渲染与业务逻辑 |
-| `cpp-extra-data.js` | 课程数据：`EXTRA_STAGES` / `STAGE_META` / `LAB_ANSWERS` / `JOB_STAGES` / `AGI_STAGES` |
-| `lang-en.js` | 英文对照数据（`STAGE_EN` / `LESSON_EN`） |
-| `agi-quiz-extra.js` | 测评题叠加层（`AGI_QUIZ_EXTRA`），每阶段 +2 道 |
-| `agi-extra2.js` | 测评题叠加层（`AGI_QUIZ_EXTRA`），每阶段 +2 判断 +2 填空 → 每阶段 9 题（抽 3） |
-| `agi-lab-extra.js` | 实战叠加层（`AGI_LAB_EXTRA`），每阶段 +2 道 |
-| `agi-lab-extra2.js` | 实战叠加层（`AGI_LAB_EXTRA`），每阶段 +2 道 → 每阶段 5 道 / 全站 266 道 |
-| `agi-lab-en.js` | 原始实战（`labs[0]`）的英文对照（`AGI_LAB_EN`），只补缺不覆盖 |
-| `cpp-sw.js` | Service Worker（离线缓存） |
-| `README.md` / `LICENSE.md` | 本文档 / MIT 授权 |
-| `verify/` | 本地自检脚本，**不参与部署** |
-
-## 🏷️ Topics
-
-`agi` · `artificial-intelligence` · `machine-learning` · `deep-learning` · `llm` · `learning-roadmap` · `self-study` · `cpp` · `python` · `static-site` · `pwa` · `offline-first`
+Topics：`agi` · `artificial-intelligence` · `machine-learning` · `deep-learning` · `llm` · `learning-roadmap` · `self-study` · `cpp` · `python` · `static-site` · `pwa` · `offline-first`
